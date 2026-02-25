@@ -37,21 +37,29 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
     const isV4 = result.version === 'v4';
     const isV6 = result.version === 'v6';
     const isV7 = result.version === 'v7';
+    const isV8 = result.version === 'v8';
 
-    const copyData = (isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1)))) as unknown as CopyData;
-    const marketBenchmark = (isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))) as unknown as MarketBenchmark;
+    // v8 uses v7 copy/benchmark for now (no dedicated v8 files yet)
+    const copyData = (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1)))) as unknown as CopyData;
+    const marketBenchmark = (isV8 || isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))) as unknown as MarketBenchmark;
 
     const marketComparison = useMemo(() => {
         if (!aggregates) return null;
         return calculateMarketComparison(result.answers, marketBenchmark, aggregates);
     }, [result.answers, aggregates, marketBenchmark]);
 
-    const chartData = Object.entries(result.areaScores).map(([area, data]) => ({
-        subject: area,
-        user: data.raw,
-        avg: aggregates?.avgAreaScores?.[area] || 0,
-        fullMark: 20,
-    }));
+    // avgAreaScores is stored as raw points (0–20), same scale as user.raw.
+    // Guard: if avg values look like percent (>20), convert them to raw points.
+    const chartData = Object.entries(result.areaScores).map(([area, data]) => {
+        const rawAvg = aggregates?.avgAreaScores?.[area] || 0;
+        const scaledAvg = rawAvg > 20 ? Math.round(rawAvg * 20 / 100) : rawAvg;
+        return {
+            subject: area,
+            user: data.raw,
+            avg: scaledAvg,
+            fullMark: 20,
+        };
+    });
 
     const levelInfo = copyData.level_copy[result.level];
 
