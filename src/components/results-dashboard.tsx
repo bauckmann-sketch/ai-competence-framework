@@ -25,6 +25,7 @@ import { calculateMarketComparison } from '@/lib/benchmark-engine';
 import { cn } from '@/lib/utils';
 
 import { FitnessReport } from './fitness-report';
+import { CtaSection } from './cta-section';
 
 interface ResultsProps {
     result: CalculationResult;
@@ -422,44 +423,8 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                     </section>
                 )}
 
-                {/* SECTION 6: Doporučený další krok (CTA) */}
-                <section className="space-y-12 py-12 border-t border-border">
-                    <div className="flex flex-col items-center text-center space-y-6">
-                        <div className="inline-flex gap-1">
-                            {[1, 2, 3].map(i => <div key={i} className="h-2 w-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: `${i * 100}ms` }} />)}
-                        </div>
-                        <h2 className="text-5xl font-black tracking-tighter text-slate-900">Další kroky pro úroveň <span className="text-primary italic">{result.level}</span></h2>
-                        <p className="text-slate-500 text-lg max-w-3xl leading-relaxed">{levelInfo.description}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {levelInfo.next_steps.map((step, idx) => (
-                            <div key={idx} className="group cursor-default">
-                                <div className="bg-card border border-border p-8 rounded-[32px] h-full flex flex-col items-center text-center space-y-6 hover:border-primary/40 transition-all hover:translate-y-[-8px] hover:shadow-xl">
-                                    <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl font-black text-primary group-hover:scale-110 transition-transform">
-                                        {idx + 1}
-                                    </div>
-                                    <p className="text-lg font-bold leading-snug text-slate-800">{step}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 pt-8">
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-black px-12 py-8 rounded-full text-lg shadow-lg shadow-primary/20 h-auto gap-3">
-                            <Mail className="h-5 w-5" /> Zaslat report e-mailem
-                        </Button>
-                        <Button variant="outline" className="border-border hover:bg-slate-50 text-slate-600 font-bold px-12 py-8 rounded-full text-lg h-auto gap-3 border-2">
-                            <Globe className="h-5 w-5" /> Chci školení / konzultaci
-                        </Button>
-                    </div>
-
-                    <div className="flex justify-center pt-20 pb-10">
-                        <Button variant="ghost" onClick={onReset} className="text-slate-400 hover:text-primary uppercase text-xs font-black tracking-[0.3em] gap-3">
-                            <RefreshCw className="h-4 w-4" /> Resetovat a začít znovu
-                        </Button>
-                    </div>
-                </section>
+                {/* SECTION 6: Inovatix services CTA + WhatsApp */}
+                <CtaSection result={result} onReset={onReset} />
             </div>
         </div>
     );
