@@ -1,0 +1,48 @@
+{
+    "schema_version": "1.0",
+    "title": "Market Benchmark (V4 Elite)",
+    "note": "Benchmark data for V4 methodology.",
+    "benchmarks": {
+        "usage_frequency": {
+            "question_id": "Q1_2",
+            "values": {
+                "never": 5,
+                "lt_weekly": 15,
+                "weekly": 25,
+                "almost_daily": 35,
+                "multi_daily": 20
+            }
+        },
+        "tool_categories_used": {
+            "question_id": "Q1_3",
+            "values": {
+                "llm_chat": 90,
+                "sources": 45,
+                "automation": 12,
+                "presentations": 20,
+                "graphics": 25,
+                "video": 10,
+                "meeting_notes": 15,
+                "translation": 60,
+                "voice": 5,
+                "none": 2
+            }
+        },
+        "top_tools_used": {
+            "question_id": "Q1_5",
+            "values": {
+                "chatgpt": 85,
+                "copilot": 30,
+                "gemini": 20,
+                "claude": 15,
+                "perplexity": 10,
+                "notebooklm": 5,
+                "canva_ai": 35,
+                "video_tools": 12,
+                "elevenlabs": 8,
+                "automation_tools": 10,
+                "other": 5
+            }
+        }
+    }
+}

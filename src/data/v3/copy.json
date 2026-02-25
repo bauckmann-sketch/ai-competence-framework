@@ -1,0 +1,334 @@
+{
+  "schema_version": "1.0",
+  "framework_name": "AI Competence Framework by Inovatix",
+  "area_copy": {
+    "A": {
+      "title": "A – AI základy a orientace",
+      "what_it_measures": "Volba nástroje a schopnost reagovat, když AI nedává dobré výsledky.",
+      "score_bands": [
+        {
+          "range": [
+            0,
+            7
+          ],
+          "summary": "Základní orientace je spíš náhodná. Často chybí systematický postup při zlepšování výstupu."
+        },
+        {
+          "range": [
+            8,
+            13
+          ],
+          "summary": "Zvládáte běžné situace a umíte dělat první kroky k vylepšení výstupu."
+        },
+        {
+          "range": [
+            14,
+            20
+          ],
+          "summary": "Volíte nástroj účelně a umíte efektivně „debugovat“ zadání i postup."
+        }
+      ]
+    },
+    "B": {
+      "title": "B – Promptování a kontext",
+      "what_it_measures": "Struktura zadání, práce s kontextem, formátem a kritérii kvality.",
+      "score_bands": [
+        {
+          "range": [
+            0,
+            7
+          ],
+          "summary": "Zadání bývá krátké a bez struktury; výsledky jsou proměnlivé."
+        },
+        {
+          "range": [
+            8,
+            13
+          ],
+          "summary": "Máte základní strukturu, ale občas chybí kritéria kvality nebo konkrétní vstupy."
+        },
+        {
+          "range": [
+            14,
+            20
+          ],
+          "summary": "Zadáváte systematicky, umíte specifikovat formát i kontrolní kritéria."
+        }
+      ]
+    },
+    "C": {
+      "title": "C – Ověřování a AI literacy",
+      "what_it_measures": "Ověřování faktů, práce se zdroji, prevence halucinací a rizik.",
+      "score_bands": [
+        {
+          "range": [
+            0,
+            7
+          ],
+          "summary": "Ověřování je spíš výjimečné; roste riziko nepřesností."
+        },
+        {
+          "range": [
+            8,
+            13
+          ],
+          "summary": "Ověřujete selektivně; vhodné posílit systematiku a práci s primárními zdroji."
+        },
+        {
+          "range": [
+            14,
+            20
+          ],
+          "summary": "Ověřujete konzistentně a používáte postupy, které zvyšují spolehlivost výstupů."
+        }
+      ]
+    },
+    "D": {
+      "title": "D – Workflow a produktivita",
+      "what_it_measures": "Reálné používání AI v rutinních úlohách a šíře využití napříč prací.",
+      "score_bands": [
+        {
+          "range": [
+            0,
+            7
+          ],
+          "summary": "AI zatím nepřináší stabilní úsporu času nebo se používá jen zřídka."
+        },
+        {
+          "range": [
+            8,
+            13
+          ],
+          "summary": "AI pomáhá v několika úlohách; další růst je hlavně o šablonách a opakovatelnosti."
+        },
+        {
+          "range": [
+            14,
+            20
+          ],
+          "summary": "AI je pevná součást workflow a výrazně zrychluje více typů úloh."
+        }
+      ]
+    },
+    "E": {
+      "title": "E – Asistenti a automatizace",
+      "what_it_measures": "Šablony, asistenti a (případně) automatizace pro konzistenci a škálování.",
+      "score_bands": [
+        {
+          "range": [
+            0,
+            7
+          ],
+          "summary": "Zatím chybí šablony/asistenti; práce je často „od nuly“."
+        },
+        {
+          "range": [
+            8,
+            13
+          ],
+          "summary": "Máte šablony nebo asistenta; další krok je opakovatelné workflow nebo jednoduchá automatizace."
+        },
+        {
+          "range": [
+            14,
+            20
+          ],
+          "summary": "Pracujete s asistenty a automatizacemi tak, aby výsledky byly konzistentní a škálovatelné."
+        }
+      ]
+    },
+    "F": {
+      "title": "F – Tvorba a komunikace",
+      "what_it_measures": "Tvorba obsahu (texty/prezentace/vizuály) a konzistence stylu/brandu.",
+      "score_bands": [
+        {
+          "range": [
+            0,
+            7
+          ],
+          "summary": "AI se v tvorbě obsahu používá minimálně nebo bez stabilního procesu."
+        },
+        {
+          "range": [
+            8,
+            13
+          ],
+          "summary": "AI pomáhá v části tvorby; smysl dává sjednotit tone-of-voice a postup iterací."
+        },
+        {
+          "range": [
+            14,
+            20
+          ],
+          "summary": "Máte proces tvorby a udržujete konzistenci stylu i kvality výstupů."
+        }
+      ]
+    }
+  },
+  "level_copy": {
+    "Explorer": {
+      "headline": "Explorer",
+      "description": "AI spíš zkoušíte. Největší přínos přinese jednoduchý systém práce a 2–3 stabilní use-casy.",
+      "next_steps": [
+        "Vyberte 2 opakovatelné úlohy, kde AI ušetří čas (např. emaily, shrnutí, návrhy textů).",
+        "Používejte jednu šablonu zadání (cíl → kontext → formát → kontrolní kritéria).",
+        "Zaveďte jednoduché ověřování faktů (min. 1 primární zdroj u faktických tvrzení)."
+      ]
+    },
+    "User": {
+      "headline": "User",
+      "description": "AI používáte pravidelně, ale často ad-hoc. Zisk je v konzistenci, šablonách a ověřování.",
+      "next_steps": [
+        "Vytvořte si 3–5 uložených prompt šablon pro nejčastější úlohy.",
+        "U faktických výstupů zaveďte kontrolní krok (zdroje + rychlá verifikace).",
+        "Zkuste 1 asistent / system instrukce pro opakující se styl a formát výstupů."
+      ]
+    },
+    "Power User": {
+      "headline": "Power User",
+      "description": "Máte postupy a umíte iterovat. Další růst je v integraci do workflow a prvních automatizacích.",
+      "next_steps": [
+        "Standardizujte 1 pracovní proces (SOP) s AI: vstupy → prompt → kontrola → výstup.",
+        "Zvažte práci se zdroji (např. NotebookLM) pro spolehlivější odpovědi nad podklady.",
+        "Nastavte 1 jednoduchou automatizaci nebo asistenta pro opakující se výstupy."
+      ]
+    },
+    "Builder": {
+      "headline": "Builder",
+      "description": "Stavíte systémy a škálujete. Klíčové je řízení kvality a bezpečné rozšiřování use-casů.",
+      "next_steps": [
+        "Zaveďte kontrolní kritéria kvality (checklist) pro klíčové typy výstupů.",
+        "Vybudujte knihovnu šablon/asistentů pro tým (konzistentní styl i struktura).",
+        "Rozšiřte automatizace o monitoring a lidskou kontrolu tam, kde je riziko."
+      ]
+    },
+    "Architect": {
+      "headline": "Architect",
+      "description": "AI používáte systémově a škálujete napříč úlohami. Dává smysl měřit dopad a nastavovat governance.",
+      "next_steps": [
+        "Definujte metriky dopadu (čas, kvalita, chybovost) pro klíčové AI workflow.",
+        "Zaveďte pravidla práce se zdroji a citlivými daty (role-based přístupy).",
+        "Navrhněte roadmapu: kde AI přidá největší hodnotu v příštích 90 dnech."
+      ]
+    }
+  },
+  "brakes_copy": {
+    "brake_C": {
+      "title": "Metodická brzda: oblast C (AI literacy)",
+      "text": "V metodice Inovatix je oblast C (ověřování a AI literacy) klíčová pro bezpečné škálování. Pokud je C nízká, omezuje to maximální zařazení do vyšší úrovně – i když jsou ostatní oblasti silné."
+    }
+  },
+  "recommendations_by_area_low": {
+    "A": [
+      "Udělejte si krátký „rozcestník nástrojů“: který nástroj na jaký typ úkolu.",
+      "Zaveďte jeden standardní postup, když výstup nesedí: kontext → formát → příklady → změna nástroje."
+    ],
+    "B": [
+      "Používejte jednu šablonu zadání: cíl → kontext → publikum → formát → kritéria kvality.",
+      "U klíčových úloh přidávejte ukázku (example) požadovaného výstupu."
+    ],
+    "C": [
+      "U faktických výstupů vyžadujte zdroje a ověřte minimálně jeden primární zdroj.",
+      "Oddělte „nápady“ od „faktů“: u faktů vždy kontrola, u brainstormingu rychlost."
+    ],
+    "D": [
+      "Vyberte 2–3 opakovatelné úlohy a udělejte z nich standardní AI postup.",
+      "Vytvořte si knihovnu šablon pro nejčastější výstupy (email, shrnutí, návrh)."
+    ],
+    "E": [
+      "Začněte prompt packem (5 šablon) a jedním asistentem pro opakující se styl.",
+      "Pokud dává smysl, přidejte 1 jednoduchou automatizaci (trigger → AI → výstup)."
+    ],
+    "F": [
+      "Definujte tone-of-voice a kontrolní kritéria kvality pro obsah.",
+      "Vytvořte proces: draft → iterace → finální editace (ne jen jednorázové generování)."
+    ]
+  },
+  "market_context": {
+    "title": "Tržní kontext (profil nástrojů a adopce)",
+    "note": "Následující část slouží jako kontext trhu a profilu nástrojů. Neovlivňuje kompetenční skóre A–F ani Level.",
+    "fields": [
+      {
+        "question_id": "Q1_2",
+        "label": "Frekvence používání"
+      },
+      {
+        "question_id": "Q1_5",
+        "label": "Top používané nástroje"
+      },
+      {
+        "question_id": "Q1_7",
+        "label": "Vnímaný dopad na práci"
+      }
+    ]
+  },
+  "barrier_copy": {
+    "title": "Největší překážka pro systematičtější využití",
+    "question_id": "QX3",
+    "mapping": {
+      "accuracy": {
+        "summary": "Překážkou je důvěra ve správnost výstupů.",
+        "linked_area": "C",
+        "suggestions": [
+          "Zaveďte jednoduchý ověřovací postup pro fakta (primární zdroj + rychlá kontrola).",
+          "Používejte AI na návrhy a strukturu, ale fakta validujte mimo AI."
+        ]
+      },
+      "prompting": {
+        "summary": "Překážkou je nejistota v zadávání (promptování).",
+        "linked_area": "B",
+        "suggestions": [
+          "Používejte šablonu zadání: cíl → kontext → formát → kritéria kvality.",
+          "Pro nejčastější úlohy si připravte 3–5 uložených promptů."
+        ]
+      },
+      "time": {
+        "summary": "Překážkou je nedostatek času zavést AI do workflow.",
+        "linked_area": "D",
+        "suggestions": [
+          "Vyberte 2 opakovatelné úlohy s největší úsporou času a zaveďte je jako standard.",
+          "Použijte šablony výstupů (email, shrnutí, checklist) pro rychlé nasazení."
+        ]
+      },
+      "security": {
+        "summary": "Překážkou jsou obavy o bezpečnost, citlivá data nebo compliance.",
+        "linked_area": "C",
+        "suggestions": [
+          "Definujte, jaká data do AI patří a jaká ne (jednoduchá interní pravidla).",
+          "Používejte anonymizaci a práci se zdroji mimo citlivá data."
+        ]
+      },
+      "licenses": {
+        "summary": "Překážkou jsou licence / přístup k vhodným nástrojům.",
+        "linked_area": "A",
+        "suggestions": [
+          "Zvolte 1–2 nástroje, které pokryjí 80 % potřeb (LLM + případně zdroje).",
+          "Vyhodnoťte ROI: které use-casy ušetří nejvíc času a ospravedlní licenci."
+        ]
+      },
+      "it_limits": {
+        "summary": "Překážkou jsou IT omezení nebo interní pravidla.",
+        "linked_area": "D",
+        "suggestions": [
+          "Zmapujte povolené nástroje a začněte s bezpečnými use-casy (bez citlivých dat).",
+          "Navrhněte interní pilot (1 tým, 2 use-casy, měření dopadu)."
+        ]
+      },
+      "none": {
+        "summary": "Žádná výrazná překážka – můžete optimalizovat a škálovat.",
+        "linked_area": "E",
+        "suggestions": [
+          "Standardizujte workflow a zaveďte kontrolní kritéria kvality pro klíčové výstupy.",
+          "Zvažte asistenty/automatizace pro opakovatelné procesy."
+        ]
+      },
+      "other": {
+        "summary": "Překážka je specifická – vyplatí se ji pojmenovat a cíleně odstranit.",
+        "linked_area": null,
+        "suggestions": [
+          "Upřesněte překážku do 1 věty a navrhněte 1 konkrétní experiment na 7 dní."
+        ]
+      }
+    }
+  }
+}

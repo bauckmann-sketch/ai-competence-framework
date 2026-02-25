@@ -1,0 +1,207 @@
+{
+  "schema_version": "3.0",
+  "framework": {
+    "areas": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "area_max_points": 20,
+    "total_max_points": 120
+  },
+  "area_questions": {
+    "A": {
+      "behavior": [
+        "QA2"
+      ]
+    },
+    "B": {
+      "behavior": [
+        "QB2"
+      ]
+    },
+    "C": {
+      "behavior": [
+        "QC2"
+      ]
+    },
+    "D": {
+      "behavior": [
+        "QD2"
+      ]
+    },
+    "E": {
+      "behavior": [
+        "QE2"
+      ]
+    },
+    "F": {
+      "behavior": [
+        "QF2"
+      ]
+    }
+  },
+  "behavior_scoring": {
+    "QA2": {
+      "max_points": 20,
+      "map": {
+        "clarify_context": 20,
+        "add_examples": 18,
+        "change_format": 15,
+        "switch_tool": 12,
+        "retry_same": 5,
+        "give_up": 0
+      }
+    },
+    "QB2": {
+      "max_points": 20,
+      "mode": "count_selected",
+      "points_per_item": 4,
+      "eligible_values": [
+        "context",
+        "audience",
+        "tone",
+        "format",
+        "quality_criteria",
+        "example"
+      ],
+      "exclusive_zero": "none",
+      "cap": 20
+    },
+    "QC2": {
+      "max_points": 20,
+      "map": {
+        "primary_source": 20,
+        "multi_sources": 18,
+        "ai_sources_then_check": 15,
+        "dont_use_for_facts": 10,
+        "no_check": 0
+      }
+    },
+    "QD2": {
+      "max_points": 20,
+      "map": {
+        "0": 0,
+        "1_2": 6,
+        "3_5": 12,
+        "6_10": 16,
+        "10_plus": 20
+      }
+    },
+    "QE2": {
+      "max_points": 20,
+      "map": {
+        "none": 0,
+        "prompt_pack": 10,
+        "assistant": 14,
+        "simple_automation": 18,
+        "multi_step_qc": 20
+      }
+    },
+    "QF2": {
+      "max_points": 20,
+      "mode": "count_selected",
+      "points_per_item": 4,
+      "eligible_values": [
+        "text",
+        "presentations",
+        "graphics",
+        "video",
+        "scripts",
+        "voice"
+      ],
+      "exclusive_zero": "none",
+      "cap": 20
+    }
+  },
+  "extensions": {
+    "E": {
+      "questions": [
+        "QE3",
+        "QE4"
+      ],
+      "affects_total_score": false
+    },
+    "F": {
+      "questions": [
+        "QF3",
+        "QF4"
+      ],
+      "affects_total_score": false
+    }
+  },
+  "total_score": {
+    "compute": "sum_areas_then_percent",
+    "percent": {
+      "numerator": "sum_area_points",
+      "denominator": 120,
+      "rounding": "nearest_int"
+    }
+  },
+  "leveling": {
+    "levels": [
+      {
+        "name": "Explorer",
+        "min_percent": 0,
+        "max_percent": 20
+      },
+      {
+        "name": "User",
+        "min_percent": 21,
+        "max_percent": 40
+      },
+      {
+        "name": "Power User",
+        "min_percent": 41,
+        "max_percent": 60
+      },
+      {
+        "name": "Builder",
+        "min_percent": 61,
+        "max_percent": 80
+      },
+      {
+        "name": "Architect",
+        "min_percent": 81,
+        "max_percent": 100
+      }
+    ],
+    "brakes": [
+      {
+        "type": "cap_level_by_area_score",
+        "area": "C",
+        "rules": [
+          {
+            "max_area_points_exclusive": 8,
+            "cap_level": "User"
+          },
+          {
+            "min_area_points": 8,
+            "max_area_points_exclusive": 12,
+            "cap_level": "Power User"
+          },
+          {
+            "min_area_points": 12,
+            "max_area_points_exclusive": 16,
+            "cap_level": "Builder"
+          },
+          {
+            "min_area_points": 16,
+            "cap_level": null
+          }
+        ],
+        "explanation_key": "brake_C"
+      }
+    ]
+  },
+  "normalization": {
+    "area_points_range": [
+      0,
+      20
+    ],
+    "clamp": true
+  }
+}

@@ -1,0 +1,586 @@
+{
+    "schema_version": "FINAL_2026-02-25_v4_softC_dualaxis",
+    "framework": {
+        "name": "AI Competence Framework by Inovatix",
+        "areas": [
+            {
+                "code": "A",
+                "name": "AI základy a orientace"
+            },
+            {
+                "code": "B",
+                "name": "Promptování a práce s kontextem"
+            },
+            {
+                "code": "C",
+                "name": "Kritické myšlení, ověřování, AI literacy"
+            },
+            {
+                "code": "D",
+                "name": "Workflow a produktivita"
+            },
+            {
+                "code": "E",
+                "name": "Asistenti a automatizace"
+            },
+            {
+                "code": "F",
+                "name": "Tvorba a komunikace"
+            }
+        ]
+    },
+    "ui": {
+        "likert_0_4": {
+            "labels": {
+                "0": "Ne / nikdy",
+                "1": "Základy",
+                "2": "Prakticky",
+                "3": "Pokročile",
+                "4": "Systematicky"
+            },
+            "anchors": {
+                "0": "prakticky to nepoužívám",
+                "1": "zkoušel/a jsem, ale bez jistoty a bez konzistence",
+                "2": "zvládám běžné situace, výsledky jsou proměnlivé",
+                "3": "mám postup, dělám to pravidelně, výsledky jsou konzistentní",
+                "4": "mám systém/šablony, používám napříč úlohami a průběžně zlepšuji"
+            }
+        }
+    },
+    "sections": [
+        {
+            "id": "S0",
+            "title": "Úvodní kontext",
+            "scored": false
+        },
+        {
+            "id": "S1",
+            "title": "Nástrojový profil",
+            "scored": false
+        },
+        {
+            "id": "SA",
+            "title": "A – AI základy a orientace",
+            "scored": true,
+            "area": "A"
+        },
+        {
+            "id": "SB",
+            "title": "B – Promptování a práce s kontextem",
+            "scored": true,
+            "area": "B"
+        },
+        {
+            "id": "SC",
+            "title": "C – Kritické myšlení, ověřování, AI literacy",
+            "scored": true,
+            "area": "C"
+        },
+        {
+            "id": "SD",
+            "title": "D – Workflow a produktivita",
+            "scored": true,
+            "area": "D"
+        },
+        {
+            "id": "SE",
+            "title": "E – Asistenti a automatizace",
+            "scored": true,
+            "area": "E"
+        },
+        {
+            "id": "SF",
+            "title": "F – Tvorba a komunikace",
+            "scored": true,
+            "area": "F"
+        },
+        {
+            "id": "SX",
+            "title": "Ukončení",
+            "scored": false
+        }
+    ],
+    "questions": [
+        {
+            "id": "Q0_1",
+            "section": "S0",
+            "type": "single_choice",
+            "required": true,
+            "text": "Jaká je vaše primární role?",
+            "options": [
+                {
+                    "value": "admin",
+                    "label": "Administrativa / office"
+                },
+                {
+                    "value": "mkt",
+                    "label": "Marketing / obsah"
+                },
+                {
+                    "value": "sales",
+                    "label": "Obchod / account"
+                },
+                {
+                    "value": "hr",
+                    "label": "HR / vzdělávání"
+                },
+                {
+                    "value": "mgmt",
+                    "label": "Management / strategie"
+                },
+                {
+                    "value": "analytics",
+                    "label": "Analytika / finance"
+                },
+                {
+                    "value": "it",
+                    "label": "IT / produkt / vývoj"
+                },
+                {
+                    "value": "other",
+                    "label": "Jiné"
+                }
+            ],
+            "ui": {
+                "other_text_if": "other",
+                "other_text_label": "Upřesněte (volitelné)",
+                "other_text_required": false
+            }
+        },
+        {
+            "id": "Q0_2",
+            "section": "S0",
+            "type": "multi_select",
+            "required": true,
+            "max_select": 3,
+            "text": "Které 3 cíle u vás v práci AI nejčastěji řeší (nebo si je vybavíte jako první)? Vyberte max. 3.",
+            "options": [
+                {
+                    "value": "save_time",
+                    "label": "Ušetřit čas v rutinních úkolech"
+                },
+                {
+                    "value": "better_text",
+                    "label": "Zlepšit kvalitu textů/komunikace"
+                },
+                {
+                    "value": "analysis",
+                    "label": "Analýzy a podklady pro rozhodování"
+                },
+                {
+                    "value": "content",
+                    "label": "Tvorba obsahu (prezentace/grafika/video)"
+                },
+                {
+                    "value": "automation",
+                    "label": "Automatizace workflow"
+                },
+                {
+                    "value": "learning",
+                    "label": "Učení a rozvoj (learning)"
+                }
+            ]
+        },
+        {
+            "id": "Q1_2",
+            "section": "S1",
+            "type": "single_choice",
+            "required": true,
+            "text": "Jak často AI používáte v práci?",
+            "options": [
+                {
+                    "value": "never",
+                    "label": "Nikdy"
+                },
+                {
+                    "value": "lt_weekly",
+                    "label": "Méně než 1× týdně"
+                },
+                {
+                    "value": "weekly",
+                    "label": "1–2× týdně"
+                },
+                {
+                    "value": "almost_daily",
+                    "label": "Skoro denně"
+                },
+                {
+                    "value": "multi_daily",
+                    "label": "Denně vícekrát"
+                }
+            ]
+        },
+        {
+            "id": "Q1_2b",
+            "section": "S1",
+            "type": "single_choice",
+            "required": true,
+            "text": "Kolik AI nástrojů používáte v placené verzi?",
+            "options": [
+                {
+                    "value": "0",
+                    "label": "Žádné – využívám jen bezplatné verze"
+                },
+                {
+                    "value": "1",
+                    "label": "Jeden"
+                },
+                {
+                    "value": "2_3",
+                    "label": "Dva až tři"
+                },
+                {
+                    "value": "up_to_6",
+                    "label": "Do šesti"
+                },
+                {
+                    "value": "up_to_10",
+                    "label": "Do deseti"
+                },
+                {
+                    "value": "gt_10",
+                    "label": "Více než 10"
+                }
+            ]
+        },
+        {
+            "id": "Q1_3",
+            "section": "S1",
+            "type": "multi_select",
+            "required": true,
+            "text": "Které 3 typy nástrojů s AI používáte nejčastěji? Vyberte max. 3.",
+            "options": [
+                {
+                    "value": "chatbots",
+                    "label": "Chatboty"
+                },
+                {
+                    "value": "presentations",
+                    "label": "Prezentace"
+                },
+                {
+                    "value": "images",
+                    "label": "Tvorba obrázků"
+                },
+                {
+                    "value": "video",
+                    "label": "Tvorba videa"
+                },
+                {
+                    "value": "meeting_notes",
+                    "label": "Záznamy a přepisy schůzek"
+                },
+                {
+                    "value": "translation",
+                    "label": "Překladače"
+                },
+                {
+                    "value": "voice",
+                    "label": "Hlas, tvorba zvuků, avatary"
+                },
+                {
+                    "value": "none",
+                    "label": "Nic z výše uvedeného"
+                }
+            ],
+            "max_select": 3,
+            "ui": {
+                "exclusive_options": [
+                    "none"
+                ]
+            }
+        },
+        {
+            "id": "QA2",
+            "section": "SA",
+            "area": "A",
+            "type": "single_choice",
+            "required": true,
+            "text": "Když výstup AI nesedí, co obvykle uděláte jako první?",
+            "options": [
+                {
+                    "value": "clarify_context",
+                    "label": "Upřesním cíl a doplním kontext"
+                },
+                {
+                    "value": "change_format",
+                    "label": "Změním formát výstupu (tabulka, body, checklist…)"
+                },
+                {
+                    "value": "add_examples",
+                    "label": "Doplním příklady / data / podklady"
+                },
+                {
+                    "value": "switch_tool",
+                    "label": "Zkusím jiný nástroj / model"
+                },
+                {
+                    "value": "retry_same",
+                    "label": "Zkusím to znovu bez změn"
+                },
+                {
+                    "value": "give_up",
+                    "label": "Většinou AI nepoužiju / vzdám to"
+                }
+            ]
+        },
+        {
+            "id": "QB2",
+            "section": "SB",
+            "area": "B",
+            "type": "multi_select",
+            "required": true,
+            "max_select": 3,
+            "text": "Co považujete za tři nejdůležitější věci pro kvalitní prompt pro asistenta? (vyberte max. 3)",
+            "options": [
+                {
+                    "value": "context",
+                    "label": "Kontext / podklady (informace, data, odkazy, výchozí text)"
+                },
+                {
+                    "value": "audience",
+                    "label": "Cílovou skupinu / účel"
+                },
+                {
+                    "value": "tone",
+                    "label": "Tón a styl (např. formální, stručné, 'jako pro CFO')"
+                },
+                {
+                    "value": "format",
+                    "label": "Požadovaný formát (tabulka, body, JSON, email…)"
+                },
+                {
+                    "value": "quality_criteria",
+                    "label": "Kritéria kvality ('výstup musí obsahovat...', 'nesmí obsahovat...')"
+                },
+                {
+                    "value": "example",
+                    "label": "Ukázku (example)"
+                },
+                {
+                    "value": "none",
+                    "label": "Nevím / nic z toho běžně nepoužívám"
+                }
+            ],
+            "ui": {
+                "exclusive_options": [
+                    "none"
+                ]
+            }
+        },
+        {
+            "id": "QC2",
+            "section": "SC",
+            "area": "C",
+            "type": "single_choice",
+            "required": true,
+            "text": "Jak nejčastěji ověřujete?",
+            "options": [
+                {
+                    "value": "primary_source",
+                    "label": "Najdu primární zdroj (oficiální web, dokument, legislativa, interní data)"
+                },
+                {
+                    "value": "multi_sources",
+                    "label": "Porovnám více nezávislých zdrojů"
+                },
+                {
+                    "value": "ai_sources_then_check",
+                    "label": "Nechám AI navrhnout zdroje a pak je ručně kontroluji"
+                },
+                {
+                    "value": "no_check",
+                    "label": "Spoléhám na AI bez ověření"
+                },
+                {
+                    "value": "dont_use_for_facts",
+                    "label": "AI na fakta typicky nepoužívám"
+                }
+            ]
+        },
+        {
+            "id": "QD3",
+            "section": "SD",
+            "area": "D",
+            "type": "single_choice",
+            "required": true,
+            "text": "Co by se stalo, kdyby vám dnes AI přestala fungovat?",
+            "options": [
+                {
+                    "value": "no_impact",
+                    "label": "Nic zásadního – jen bych si občas pomohl jinak."
+                },
+                {
+                    "value": "slower",
+                    "label": "Práce by byla pomalejší, ale zvládnu ji."
+                },
+                {
+                    "value": "reorganize",
+                    "label": "Některé úkoly bych musel výrazně přeorganizovat."
+                },
+                {
+                    "value": "dependent",
+                    "label": "Výrazná část mojí práce je dnes na AI závislá."
+                },
+                {
+                    "value": "fundamental_change",
+                    "label": "Musel bych zásadně změnit způsob práce."
+                }
+            ]
+        },
+        {
+            "id": "QE2",
+            "section": "SE",
+            "area": "E",
+            "type": "single_choice",
+            "required": true,
+            "text": "Co považujete za svůj nejvyšší reálně dosažený milník v AI?",
+            "options": [
+                {
+                    "value": "prompt_templates",
+                    "label": "Mám uložené prompty / šablony pro opakované úkoly."
+                },
+                {
+                    "value": "paid_chatbot",
+                    "label": "Používám chatbot v placené verzi."
+                },
+                {
+                    "value": "assistant",
+                    "label": "Používám asistenta s nastaveným kontextem nebo instrukcemi."
+                },
+                {
+                    "value": "simple_automation",
+                    "label": "Mám jednoduché propojení nástrojů (např. formulář → AI → dokument / e-mail)."
+                },
+                {
+                    "value": "workflow",
+                    "label": "Používám vícekrokový workflow s kontrolou kvality výstupu."
+                },
+                {
+                    "value": "agent",
+                    "label": "Vytvořil/a jsem autonomního agenta, který funguje samostatně."
+                }
+            ]
+        },
+        {
+            "id": "QF2",
+            "section": "SF",
+            "area": "F",
+            "type": "multi_select",
+            "required": true,
+            "text": "Které 3 typy výstupů s AI děláte nejčastěji (nebo jsou pro vás nejtypičtější)? Vyberte max. 3.",
+            "options": [
+                {
+                    "value": "text",
+                    "label": "Texty (emaily, články, posty, nabídky)"
+                },
+                {
+                    "value": "presentations",
+                    "label": "Prezentace"
+                },
+                {
+                    "value": "graphics",
+                    "label": "Grafika / obrázky"
+                },
+                {
+                    "value": "video",
+                    "label": "Video"
+                },
+                {
+                    "value": "voice",
+                    "label": "Hlas / zvuk / avatary"
+                },
+                {
+                    "value": "code",
+                    "label": "Kód (programy)"
+                },
+                {
+                    "value": "none",
+                    "label": "Netvořím obsah s AI"
+                }
+            ],
+            "max_select": 3,
+            "ui": {
+                "exclusive_options": [
+                    "none"
+                ]
+            }
+        },
+        {
+            "id": "QX3",
+            "section": "SX",
+            "type": "single_choice",
+            "required": true,
+            "text": "Co vám nejvíc brání používat AI více systematicky?",
+            "options": [
+                {
+                    "value": "accuracy",
+                    "label": "Nevěřím přesnosti / bojím se chyb"
+                },
+                {
+                    "value": "prompting",
+                    "label": "Nevím, jak správně zadávat úkoly (promptování)"
+                },
+                {
+                    "value": "time",
+                    "label": "Nemám čas to zavádět do workflow"
+                },
+                {
+                    "value": "security",
+                    "label": "Bezpečnost / citlivá data / compliance"
+                },
+                {
+                    "value": "licenses",
+                    "label": "Nemám vhodné nástroje / licence"
+                },
+                {
+                    "value": "it_limits",
+                    "label": "V práci to nemáme povolené / IT omezení"
+                },
+                {
+                    "value": "none",
+                    "label": "Nic mi nebrání, používám naplno"
+                },
+                {
+                    "value": "other",
+                    "label": "Jiné"
+                }
+            ],
+            "ui": {
+                "other_text_if": "other",
+                "other_text_label": "Jaké? (volitelné)",
+                "other_text_required": false
+            }
+        },
+        {
+            "id": "QX1",
+            "section": "SX",
+            "type": "single_choice",
+            "required": true,
+            "text": "Pokud chcete zaslat report na email a (v budoucnu) sledovat svůj vývoj dlouhodobě, zadejte svůj email. Chcete report zaslat?",
+            "options": [
+                {
+                    "value": "yes",
+                    "label": "Ano"
+                },
+                {
+                    "value": "no",
+                    "label": "Ne"
+                }
+            ],
+            "ui": {
+                "page_id": "final_contact"
+            }
+        },
+        {
+            "id": "QX2",
+            "section": "SX",
+            "type": "email_optional",
+            "required": false,
+            "text": "Email (volitelné – pro zaslání reportu)",
+            "ui": {
+                "page_id": "final_contact"
+            }
+        }
+    ]
+}

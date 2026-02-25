@@ -1,0 +1,310 @@
+{
+    "schema_version": "FINAL_2026-02-25_v4_softC_dualaxis",
+    "framework_name": "AI Competence Framework by Inovatix",
+    "area_copy": {
+        "A": {
+            "title": "A - AI zaklady a orientace",
+            "what_it_measures": "Volba nastroje a schopnost reagovat, kdyz AI nedava dobre vysledky.",
+            "score_bands": [
+                {
+                    "range": [
+                        0,
+                        7
+                    ],
+                    "summary": "Zakladni orientace je spis nahodna. Casto chybi systematicky postup pri zlepsovani vystupu."
+                },
+                {
+                    "range": [
+                        8,
+                        13
+                    ],
+                    "summary": "Zvladate bezne situace a umite delat prvni kroky k vylepseni vystupu."
+                },
+                {
+                    "range": [
+                        14,
+                        20
+                    ],
+                    "summary": "Volite nastroj ucelne a umite efektivne debugovat zadani i postup."
+                }
+            ]
+        },
+        "B": {
+            "title": "B - Promptovani a kontext",
+            "what_it_measures": "Struktura zadani, prace s kontextem, formatem a kriterii kvality.",
+            "score_bands": [
+                {
+                    "range": [
+                        0,
+                        7
+                    ],
+                    "summary": "Zadani byva kratke a bez struktury; vysledky jsou promenlive."
+                },
+                {
+                    "range": [
+                        8,
+                        13
+                    ],
+                    "summary": "Mate zakladni strukturu, ale obcas chybi kriteria kvality nebo konkretni vstupy."
+                },
+                {
+                    "range": [
+                        14,
+                        20
+                    ],
+                    "summary": "Zadavate systematicky, umite specifikovat format i kontrolni kriteria."
+                }
+            ]
+        },
+        "C": {
+            "title": "C - Overovani a AI literacy",
+            "what_it_measures": "Overovani faktu, prace se zdroji, prevence halucinaci a rizik.",
+            "score_bands": [
+                {
+                    "range": [
+                        0,
+                        7
+                    ],
+                    "summary": "Overovani je spis vyjimecne; roste riziko nepresnosti."
+                },
+                {
+                    "range": [
+                        8,
+                        13
+                    ],
+                    "summary": "Overujete selektivne; vhodne posilit systematiku a praci s primarnimi zdroji."
+                },
+                {
+                    "range": [
+                        14,
+                        20
+                    ],
+                    "summary": "Overujete konzistentne a pouzivate postupy, ktere zvysuji spolehlivost vystupu."
+                }
+            ]
+        },
+        "D": {
+            "title": "D - Workflow a produktivita",
+            "what_it_measures": "Realne pouzivani AI v rutinnich ulohach a sire vyuziti napric praci.",
+            "score_bands": [
+                {
+                    "range": [
+                        0,
+                        7
+                    ],
+                    "summary": "AI zatim neprinas stabilni usporu casu nebo se pouziva jen zridka."
+                },
+                {
+                    "range": [
+                        8,
+                        13
+                    ],
+                    "summary": "AI pomaha v nekolika ulohach; dalsi rust je hlavne o sablonach a opakovatelnosti."
+                },
+                {
+                    "range": [
+                        14,
+                        20
+                    ],
+                    "summary": "AI je pevna soucast workflow a vyrazne zrychluje vice typu uloh."
+                }
+            ]
+        },
+        "E": {
+            "title": "E - Asistenti a automatizace",
+            "what_it_measures": "Sablony, asistenti a automatizace pro konzistenci a skaloavani.",
+            "score_bands": [
+                {
+                    "range": [
+                        0,
+                        7
+                    ],
+                    "summary": "Zatim chybi sablony/asistenti; prace je casto od nuly."
+                },
+                {
+                    "range": [
+                        8,
+                        13
+                    ],
+                    "summary": "Mate sablony nebo asistenta; dalsi krok je opakovatelne workflow nebo jednoducha automatizace."
+                },
+                {
+                    "range": [
+                        14,
+                        20
+                    ],
+                    "summary": "Pracujete s asistenty a automatizacemi tak, aby vysledky byly konzistentni a skalovateln."
+                }
+            ]
+        },
+        "F": {
+            "title": "F - Tvorba a komunikace",
+            "what_it_measures": "Tvorba obsahu (texty/prezentace/vizualy) a konzistence stylu/brandu.",
+            "score_bands": [
+                {
+                    "range": [
+                        0,
+                        7
+                    ],
+                    "summary": "AI se v tvorbe obsahu pouziva minimalne nebo bez stabilniho procesu."
+                },
+                {
+                    "range": [
+                        8,
+                        13
+                    ],
+                    "summary": "AI pomaha v casti tvorby; smysl da sjednotit tone-of-voice a postup iteraci."
+                },
+                {
+                    "range": [
+                        14,
+                        20
+                    ],
+                    "summary": "Mate proces tvorby a udrzujete konzistenci stylu i kvality vystupu."
+                }
+            ]
+        }
+    },
+    "level_copy": {
+        "Explorer": {
+            "headline": "Explorer",
+            "description": "AI spis zkousIte. Nejvetsi prinos prinese jednoduchy system prace a 2-3 stabilni use-casy.",
+            "next_steps": [
+                "Vyberte 2 opakovatelne ulohy, kde AI usetrI cas (napr. emaily, shrnuti, navrhy textu).",
+                "Pouzivejte jednu sablonu zadani (cil, kontext, format, kontrolni kriteria).",
+                "Zaveste jednoduche overovani faktu (min. 1 primarni zdroj u faktickych tvrzeni)."
+            ]
+        },
+        "User": {
+            "headline": "User",
+            "description": "AI pouzivate pravidelne, ale casto ad-hoc. Zisk je v konzistenci, sablonach a overovani.",
+            "next_steps": [
+                "Vytvorte si 3-5 ulozenych prompt sablon pro nejcastejsi ulohy.",
+                "U faktickych vystupu zaveste kontrolni krok (zdroje + rychla verifikace).",
+                "Zkuste 1 asistent / system instrukce pro opakujici se styl a format vystupu."
+            ]
+        },
+        "Power User": {
+            "headline": "Power User",
+            "description": "Mate postupy a umite iterovat. Dalsi rust je v integraci do workflow a prvnich automatizacich.",
+            "next_steps": [
+                "Standardizujte 1 pracovni proces (SOP) s AI: vstupy, prompt, kontrola, vystup.",
+                "Zvazted praci se zdroji (napr. NotebookLM) pro spolehlivejsi odpovedi nad podklady.",
+                "Nastavte 1 jednoduchou automatizaci nebo asistenta pro opakujici se vystupy."
+            ]
+        },
+        "Builder": {
+            "headline": "Builder",
+            "description": "Stavite systemy a skalujete. Klicove je rizeni kvality a bezpecne rozsIrovani use-casu.",
+            "next_steps": [
+                "Zaveste kontrolni kriteria kvality (checklist) pro klicove typy vystupu.",
+                "Vybudujte knihovnu sablon/asistenty pro tym (konzistentni styl i struktura).",
+                "Rozsirte automatizace o monitoring a lidskou kontrolu tam, kde je riziko."
+            ]
+        },
+        "Architect": {
+            "headline": "Architect",
+            "description": "AI pouzivate systemove a skalujete napric ulohami. Da smysl merit dopad a nastavovat governance.",
+            "next_steps": [
+                "Definujte metriky dopadu (cas, kvalita, chybovost) pro klicove AI workflow.",
+                "Zaveste pravidla prace se zdroji a citlivymi daty (role-based pristupy).",
+                "Navrhujte roadmapu: kde AI prida nejvetsi hodnotu v pristich 90 dnech."
+            ]
+        }
+    },
+    "barrier_copy": {
+        "title": "Nejvetsi prekazka pro systematictejsi vyuziti",
+        "question_id": "QX3",
+        "mapping": {
+            "accuracy": {
+                "summary": "Prekazkou je duvera ve spravnost vystupu.",
+                "linked_area": "C",
+                "suggestions": [
+                    "Zaveste jednoduchy overovaci postup pro fakta (primarni zdroj + rychla kontrola).",
+                    "Pouzivejte AI na navrhy a strukturu, ale fakta validujte mimo AI."
+                ]
+            },
+            "prompting": {
+                "summary": "Prekazkou je nejistota v zadavani (promptovani).",
+                "linked_area": "B",
+                "suggestions": [
+                    "Pouzivejte sablonu zadani: cil, kontext, format, kriteria kvality.",
+                    "Pro nejcastejsi ulohy si pripravte 3-5 ulozenych promptu."
+                ]
+            },
+            "time": {
+                "summary": "Prekazkou je nedostatek casu zavest AI do workflow.",
+                "linked_area": "D",
+                "suggestions": [
+                    "Vyberte 2 opakovatelne ulohy s nejvetsi usporou casu a zaveste je jako standard.",
+                    "Pouzijte sablony vystupu (email, shrnuti, checklist) pro rychle nasazeni."
+                ]
+            },
+            "security": {
+                "summary": "Prekazkou jsou obavy o bezpecnost, citliva data nebo compliance.",
+                "linked_area": "C",
+                "suggestions": [
+                    "Definujte, jaka data do AI patri a jaka ne (jednoducha interni pravidla).",
+                    "Pouzivejte anonymizaci a praci se zdroji mimo citliva data."
+                ]
+            },
+            "licenses": {
+                "summary": "Prekazkou jsou licence / pristup k vhodnym nastrojum.",
+                "linked_area": "A",
+                "suggestions": [
+                    "Zvolte 1-2 nastroje, ktere pokryji 80 % potreba (LLM + pripadne zdroje).",
+                    "Vyhodnodte ROI: ktere use-casy usetrI nejvice casu a ospravedlni licenci."
+                ]
+            },
+            "it_limits": {
+                "summary": "Prekazkou jsou IT omezeni nebo interni pravidla.",
+                "linked_area": "D",
+                "suggestions": [
+                    "Zmapujte povolene nastroje a zacnte s bezpecnymi use-casy (bez citlivych dat).",
+                    "Navrhnte interni pilot (1 tym, 2 use-casy, mereni dopadu)."
+                ]
+            },
+            "none": {
+                "summary": "Zadna vyznamna prekazka - muzete optimalizovat a skalovat.",
+                "linked_area": "E",
+                "suggestions": [
+                    "Standardizujte workflow a zaveste kontrolni kriteria kvality pro klicove vystupy.",
+                    "Zvazted asistenty/automatizace pro opakovatelne procesy."
+                ]
+            },
+            "other": {
+                "summary": "Prekazka je specificka - vyplati se ji pojmenovat a cilene odstranit.",
+                "linked_area": null,
+                "suggestions": [
+                    "Upresnete prekazku do 1 vety a navrhnte 1 konkretni experiment na 7 dni."
+                ]
+            }
+        }
+    },
+    "recommendations_by_area_low": {
+        "A": [
+            "Udelejte si kratky rozcestnik nastroju: ktery nastroj na ktery typ ukolu.",
+            "Zaveste jeden standardni postup, kdyz vystup nesedi: kontext, format, priklady, zmena nastroje."
+        ],
+        "B": [
+            "Pouzivejte jednu sablonu zadani: cil, kontext, publikum, format, kriteria kvality.",
+            "U klicovych uloh pridavejte ukazku (example) pozadovaneho vystupu."
+        ],
+        "C": [
+            "U faktickych vystupu vyzadujte zdroje a overte minimalne jeden primarni zdroj.",
+            "Oddelete napady od faktu: u faktu vzdy kontrola, u brainstormingu rychlost."
+        ],
+        "D": [
+            "Vyberte 2-3 opakovatelne ulohy a udelejte z nich standardni AI postup.",
+            "Vytvorte si knihovnu sablon pro nejcastejsi vystupy (email, shrnuti, navrh)."
+        ],
+        "E": [
+            "Zacnte prompt packem (5 sablon) a jednim asistentem pro opakujici se styl.",
+            "Pokud da smysl, pridejte 1 jednoduchou automatizaci (trigger, AI, vystup)."
+        ],
+        "F": [
+            "Definujte tone-of-voice a kontrolni kriteria kvality pro obsah.",
+            "Vytvorte proces: draft, iterace, finalni editace (ne jen jednorate generovani)."
+        ]
+    }
+}

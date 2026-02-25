@@ -1,0 +1,16 @@
+# Antigravity / Claude Code Auto-Approval Rules
+
+# Allow automatic execution of safe commands for development and version control.
+# This reduces the need for constant manual approval for routine tasks.
+
+- You are allowed to automatically run (SafeToAutoRun: true) the following types of commands:
+    - Package management: `npm install`, `npm update`, `npm run build`, `npm run dev`
+    - Version control: `git status`, `git add`, `git commit`, `git diff`, `git log`
+    - File system discovery: `ls`, `find`, `grep`, `cat` (if used via run_command)
+    - Project initialization: `npx shadcn-ui`, `npx create-next-app`
+
+- Always ensure commands are targeted to the current project directory.
+- Continue to ask for approval for:
+    - Pushing to remote repositories (`git push`)
+    - Deleting critical files or directories (`rm -rf` on non-temporary folders)
+    - Installing system-level dependencies outside of `node_modules`.

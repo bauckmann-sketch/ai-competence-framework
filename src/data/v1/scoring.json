@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "framework": {
+    "areas": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "area_max_points": 20,
+    "total_max_points": 120
+  },
+  "scales": {
+    "scale_0_4_to_points": {
+      "multiplier": 3,
+      "max_points": 12
+    }
+  },
+  "behavior_scoring": {
+    "QA2": {
+      "max_points": 8,
+      "map": {
+        "clarify_context": 8,
+        "add_examples": 7,
+        "change_format": 6,
+        "switch_tool": 5,
+        "retry_same": 2,
+        "give_up": 0
+      }
+    },
+    "QB2": {
+      "max_points": 8,
+      "mode": "count_selected",
+      "points_per_item": 2,
+      "eligible_values": [
+        "context",
+        "audience",
+        "tone",
+        "format",
+        "quality_criteria",
+        "example"
+      ],
+      "exclusive_zero": "none"
+    },
+    "QC2": {
+      "max_points": 8,
+      "map": {
+        "primary_source": 8,
+        "multi_sources": 7,
+        "ai_sources_then_check": 6,
+        "dont_use_for_facts": 4,
+        "no_check": 1
+      }
+    },
+    "QD2": {
+      "max_points": 8,
+      "map": {
+        "0": 0,
+        "1_2": 3,
+        "3_5": 5,
+        "6_10": 7,
+        "10_plus": 8
+      }
+    },
+    "QE2": {
+      "max_points": 8,
+      "map": {
+        "none": 0,
+        "prompt_pack": 4,
+        "assistant": 6,
+        "simple_automation": 7,
+        "multi_step_qc": 8
+      }
+    },
+    "QF2": {
+      "max_points": 8,
+      "mode": "count_selected",
+      "points_per_item": 2,
+      "eligible_values": [
+        "text",
+        "presentations",
+        "graphics",
+        "video",
+        "scripts",
+        "voice"
+      ],
+      "exclusive_zero": "none"
+    }
+  },
+  "area_questions": {
+    "A": {
+      "scale": [
+        "QA1"
+      ],
+      "behavior": [
+        "QA2"
+      ]
+    },
+    "B": {
+      "scale": [
+        "QB1"
+      ],
+      "behavior": [
+        "QB2"
+      ]
+    },
+    "C": {
+      "scale": [
+        "QC1"
+      ],
+      "behavior": [
+        "QC2"
+      ]
+    },
+    "D": {
+      "scale": [
+        "QD1"
+      ],
+      "behavior": [
+        "QD2"
+      ]
+    },
+    "E": {
+      "scale": [
+        "QE1"
+      ],
+      "behavior": [
+        "QE2"
+      ]
+    },
+    "F": {
+      "scale": [
+        "QF1"
+      ],
+      "behavior": [
+        "QF2"
+      ]
+    }
+  },
+  "extensions": {
+    "E": {
+      "questions": [
+        "QE3",
+        "QE4"
+      ],
+      "affects_total_score": false
+    },
+    "F": {
+      "questions": [
+        "QF3",
+        "QF4"
+      ],
+      "affects_total_score": false
+    }
+  },
+  "total_score": {
+    "compute": "sum_areas_then_percent",
+    "percent": {
+      "numerator": "sum_area_points",
+      "denominator": 120,
+      "rounding": "nearest_int"
+    }
+  },
+  "leveling": {
+    "levels": [
+      {
+        "name": "Explorer",
+        "min_percent": 0,
+        "max_percent": 20
+      },
+      {
+        "name": "User",
+        "min_percent": 21,
+        "max_percent": 40
+      },
+      {
+        "name": "Power User",
+        "min_percent": 41,
+        "max_percent": 60
+      },
+      {
+        "name": "Builder",
+        "min_percent": 61,
+        "max_percent": 80
+      },
+      {
+        "name": "Architect",
+        "min_percent": 81,
+        "max_percent": 100
+      }
+    ],
+    "brakes": [
+      {
+        "type": "cap_level_by_area_score",
+        "area": "C",
+        "rules": [
+          {
+            "max_area_points_exclusive": 8,
+            "cap_level": "User"
+          },
+          {
+            "min_area_points": 8,
+            "max_area_points_exclusive": 12,
+            "cap_level": "Power User"
+          },
+          {
+            "min_area_points": 12,
+            "max_area_points_exclusive": 16,
+            "cap_level": "Builder"
+          },
+          {
+            "min_area_points": 16,
+            "cap_level": null
+          }
+        ],
+        "explanation_key": "brake_C"
+      }
+    ]
+  },
+  "normalization": {
+    "area_points_range": [
+      0,
+      20
+    ],
+    "clamp": true
+  }
+}
