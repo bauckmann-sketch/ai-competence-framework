@@ -7,20 +7,20 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-competence-framew
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AI Competence Framework <onboarding@resend.dev>';
 
 function levelCzech(level: string): string {
-    const map: Record<string, string> = {
-        'Observer': 'Pozorovatel',
-        'Explorer': 'Průzkumník',
-        'Implementer': 'Implementátor',
-        'Practitioner': 'Praktik',
-        'Amplifier': 'Amplifikátor',
-        'Transformer': 'Transformátor',
-    };
-    return map[level] || level;
+  const map: Record<string, string> = {
+    'Observer': 'Pozorovatel',
+    'Explorer': 'Průzkumník',
+    'Implementer': 'Implementátor',
+    'Practitioner': 'Praktik',
+    'Amplifier': 'Amplifikátor',
+    'Transformer': 'Transformátor',
+  };
+  return map[level] || level;
 }
 
 function areaRow(area: string, data: { raw: number; max: number; percent: number }): string {
-    const barWidth = Math.round(data.percent);
-    return `
+  const barWidth = Math.round(data.percent);
+  return `
         <tr>
             <td style="padding: 10px 0; font-weight: 700; font-size: 14px; color: #0f172a; width: 40px;">${area}</td>
             <td style="padding: 10px 0 10px 16px;">
@@ -33,28 +33,47 @@ function areaRow(area: string, data: { raw: number; max: number; percent: number
 }
 
 export async function sendResultsEmail(
-    to: string,
-    result: CalculationResult,
-    airtableRecordId: string
+  to: string,
+  result: CalculationResult,
+  airtableRecordId: string
 ): Promise<void> {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-        console.warn('RESEND_API_KEY not set — skipping email');
-        return;
-    }
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY not set — skipping email');
+    return;
+  }
 
-    // Don't send to placeholder values
-    if (!to || to === '__skip__' || !to.includes('@')) {
-        return;
-    }
+  // Don't send to placeholder values
+  if (!to || to === '__skip__' || !to.includes('@')) {
+    return;
+  }
 
-    const resultUrl = `${APP_URL}/r/${airtableRecordId}`;
-    const levelCz = levelCzech(result.level);
-    const areaRows = Object.entries(result.areaScores)
-        .map(([area, data]) => areaRow(area, data as any))
-        .join('');
+  // Without a verified domain, Resend only delivers to the account owner email.
+  // Set RESEND_TO_OVERRIDE to redirect all emails there (testing mode).
+  // Once domain is verified, remove RESEND_TO_OVERRIDE and set RESEND_FROM_EMAIL.
+  const toOverride = process.env.RESEND_TO_OVERRIDE;
+  const actualTo = toOverride || to;
+  const isOverride = !!toOverride && toOverride !== to;
 
-    const html = `<!DOCTYPE html>
+  const resultUrl = `${APP_URL}/r/${airtableRecordId}`;
+  const levelCz = levelCzech(result.level);
+  const areaRows = Object.entries(result.areaScores)
+    .map(([area, data]) => areaRow(area, data as any))
+    .join('');
+
+  // When redirected, show a notice banner in the email
+  const overrideBanner = isOverride ? `
+          <!-- Override Notice -->
+          <tr>
+            <td style="background: #fef3c7; border: 1px solid #fcd34d; padding: 12px 40px;">
+              <p style="margin: 0; font-size: 12px; font-weight: 700; color: #92400e;">
+                📧 TESTOVACÍ PŘESMĚROVÁNÍ — původně určeno pro: <strong>${to}</strong><br>
+                Sdílený report: <a href="${resultUrl}" style="color: #DC2626;">${resultUrl}</a>
+              </p>
+            </td>
+          </tr>` : '';
+
+  const html = `<!DOCTYPE html>
 <html lang="cs">
 <head>
   <meta charset="UTF-8">
@@ -139,20 +158,25 @@ export async function sendResultsEmail(
 </body>
 </html>`;
 
-    try {
-        const { error } = await resend.emails.send({
-            from: FROM_EMAIL,
-            to,
-            subject: `Váš AI Competence Report — ${result.level} (${result.totalPercent}%)`,
-            html,
-        });
-        if (error) {
-            console.error('Resend email error:', error);
-        } else {
-            console.log(`Email sent to ${to} for level ${result.level}`);
-        }
-    } catch (err) {
-        console.error('Failed to send email:', err);
-        // Don't throw — email failure should never block the user from seeing results
+  // Insert the override banner into the HTML after the opening table
+  const finalHtml = html.replace('<!-- Score Hero -->', `${overrideBanner}\n          <!-- Score Hero -->`);
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: actualTo,
+      subject: isOverride
+        ? `[PRE: ${to}] AI Report — ${result.level} (${result.totalPercent}%)`
+        : `Váš AI Competence Report — ${result.level} (${result.totalPercent}%)`,
+      html: finalHtml,
+    });
+    if (error) {
+      console.error('Resend email error:', error);
+    } else {
+      console.log(`Email sent to ${actualTo} (intended: ${to}) for level ${result.level}`);
     }
+  } catch (err) {
+    console.error('Failed to send email:', err);
+    // Don't throw — email failure should never block the user from seeing results
+  }
 }
