@@ -393,8 +393,8 @@ function WhatsAppBlock() {
                         </svg>
                         <span className="text-[10px] font-black uppercase tracking-widest text-green-400">WhatsApp skupina</span>
                     </div>
-                    <h3 className="text-2xl font-black text-white leading-tight">AI v kostce</h3>
-                    <p className="text-green-200 text-sm leading-relaxed">AI novinky 1–2× týdně, bez spamu.<br />Praktické tipy + co funguje v praxi.</p>
+                    <h3 className="text-2xl font-black text-white leading-tight">Novinky ze světa AI</h3>
+                    <p className="text-green-200 text-sm leading-relaxed">AI novinky několikrát týdně, bez spamu.</p>
 
                     {/* Mobile: big button (hidden on desktop) */}
                     <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
@@ -415,7 +415,7 @@ function WhatsAppBlock() {
                 <div className="hidden md:flex items-center justify-center p-8">
                     <div className="bg-white rounded-2xl p-3 shadow-xl">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={WHATSAPP_QR} alt="QR kód pro WhatsApp skupinu AI v kostce" width={180} height={180} className="block" />
+                        <img src={WHATSAPP_QR} alt="QR kód pro WhatsApp skupinu Novinky ze světa AI" width={180} height={180} className="block" />
                         <p className="text-center text-[10px] font-bold text-slate-500 mt-2">Naskenujte a přidejte se</p>
                     </div>
                 </div>
