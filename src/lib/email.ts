@@ -1,8 +1,6 @@
-import { Resend } from 'resend';
 import { CalculationResult } from '@/types';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
+// Uses Resend REST API directly (no SDK dependency — avoids build issues)
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-competence-framework-wfrx.vercel.app';
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AI Competence Framework <onboarding@resend.dev>';
 
@@ -50,7 +48,6 @@ export async function sendResultsEmail(
 
   // Without a verified domain, Resend only delivers to the account owner email.
   // Set RESEND_TO_OVERRIDE to redirect all emails there (testing mode).
-  // Once domain is verified, remove RESEND_TO_OVERRIDE and set RESEND_FROM_EMAIL.
   const toOverride = process.env.RESEND_TO_OVERRIDE;
   const actualTo = toOverride || to;
   const isOverride = !!toOverride && toOverride !== to;
@@ -61,7 +58,6 @@ export async function sendResultsEmail(
     .map(([area, data]) => areaRow(area, data as any))
     .join('');
 
-  // When redirected, show a notice banner in the email
   const overrideBanner = isOverride ? `
           <!-- Override Notice -->
           <tr>
@@ -95,6 +91,7 @@ export async function sendResultsEmail(
           </tr>
 
           <!-- Score Hero -->
+          ${overrideBanner}
           <tr>
             <td style="padding: 40px 40px 24px;">
               <p style="margin: 0 0 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #94a3b8;">Váš výsledek</p>
@@ -158,20 +155,25 @@ export async function sendResultsEmail(
 </body>
 </html>`;
 
-  // Insert the override banner into the HTML after the opening table
-  const finalHtml = html.replace('<!-- Score Hero -->', `${overrideBanner}\n          <!-- Score Hero -->`);
-
   try {
-    const { error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: actualTo,
-      subject: isOverride
-        ? `[PRE: ${to}] AI Report — ${result.level} (${result.totalPercent}%)`
-        : `Váš AI Competence Report — ${result.level} (${result.totalPercent}%)`,
-      html: finalHtml,
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: actualTo,
+        subject: isOverride
+          ? `[PRE: ${to}] AI Report — ${result.level} (${result.totalPercent}%)`
+          : `Váš AI Competence Report — ${result.level} (${result.totalPercent}%)`,
+        html,
+      }),
     });
-    if (error) {
-      console.error('Resend email error:', error);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      console.error('Resend email error:', err);
     } else {
       console.log(`Email sent to ${actualTo} (intended: ${to}) for level ${result.level}`);
     }
