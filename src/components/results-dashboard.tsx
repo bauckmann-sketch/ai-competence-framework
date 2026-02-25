@@ -289,24 +289,6 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                                 }}
                             />
                             <CommunityBarCard
-                                title="Kategorie AI nástrojů"
-                                subtitle="Nejčastěji volené kategorie (max. 3)"
-                                questionId="Q1_3"
-                                userAnswers={result.answers}
-                                distributions={aggregates.questionDistributions}
-                                totalRespondents={aggregates.count}
-                                optionLabels={{
-                                    chatbots: 'Chatboty',
-                                    presentations: 'Prezentace',
-                                    images: 'Tvorba obrázků',
-                                    video: 'Tvorba videa',
-                                    meeting_notes: 'Záznamy schůzek',
-                                    translation: 'Překladace',
-                                    voice: 'Hlas / zvuč',
-                                    none: 'Žádné',
-                                }}
-                            />
-                            <CommunityBarCard
                                 title="Placené AI nástroje"
                                 subtitle="Kolik nástrojů používáte v placené verzi"
                                 questionId="Q1_2b"
@@ -357,6 +339,26 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                                 }}
                             />
                         </div>
+                        <div className="mt-8">
+                            <CommunityBarCard
+                                title="Jaké kategorie nástrojů používáte nejčastěji"
+                                subtitle="Nejčastěji volené kategorie (max. 3)"
+                                questionId="Q1_3"
+                                userAnswers={result.answers}
+                                distributions={aggregates.questionDistributions}
+                                totalRespondents={aggregates.count}
+                                optionLabels={{
+                                    chatbots: 'Chatboty',
+                                    presentations: 'Prezentace',
+                                    images: 'Tvorba obrázků',
+                                    video: 'Tvorba videa',
+                                    meeting_notes: 'Záznamy schůzek',
+                                    translation: 'Překladače',
+                                    voice: 'Hlas / zvuk',
+                                    none: 'Žádné',
+                                }}
+                            />
+                        </div>
                     </section>
                 )}
 
@@ -383,45 +385,7 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                     </section>
                 )}
 
-                {/* SECTION 5: Největší překážka + personalizace */}
-                {barrierInfo && (
-                    <section className="pt-8">
-                        <div className="flex flex-col items-center text-center space-y-4 mb-10">
-                            <Badge className="bg-orange-100 text-orange-700 border-orange-200 px-4 py-1.5 rounded-full uppercase text-[10px] font-black tracking-widest ring-4 ring-orange-50 text-xs">
-                                Personalizace
-                            </Badge>
-                            <h2 className="text-4xl font-black tracking-tight text-slate-900">{copyData.barrier_copy?.title || 'Vaše překážky'}</h2>
-                        </div>
 
-                        <Card className="bg-card border-primary/20 overflow-hidden shadow-xl ring-1 ring-primary/5 border-2">
-                            <div className="grid grid-cols-1 md:grid-cols-3">
-                                <div className="p-8 md:p-12 bg-gradient-to-br from-primary/5 to-transparent flex flex-col justify-center gap-2">
-                                    <span className="text-[10px] uppercase font-black text-primary tracking-widest leading-none">Váš profil bariér</span>
-                                    <h3 className="text-2xl font-black leading-tight text-slate-900 mb-4">{barrierInfo.summary}</h3>
-                                    {barrierInfo.linked_area && (
-                                        <div className="flex items-center gap-2 text-slate-400">
-                                            <BarChart3 className="h-4 w-4" />
-                                            <span className="text-xs">Souvisí s oblastí {barrierInfo.linked_area}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="md:col-span-2 p-8 md:p-12 space-y-6">
-                                    <h4 className="text-sm font-black uppercase tracking-widest text-primary">Doporučení na míru</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {barrierInfo.suggestions.map((s, i) => (
-                                            <div key={i} className="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors flex gap-4">
-                                                <div className="bg-primary/10 h-8 w-8 rounded-lg flex items-center justify-center shrink-0">
-                                                    <Zap className="h-4 w-4 text-primary" />
-                                                </div>
-                                                <p className="text-sm font-medium leading-relaxed text-slate-700">{s}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-                    </section>
-                )}
 
                 {/* SECTION 6: Inovatix services CTA + WhatsApp */}
                 <CtaSection result={result} onReset={onReset} />
