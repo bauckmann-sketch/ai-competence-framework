@@ -111,7 +111,7 @@ export async function getAggregates(): Promise<AggregateStats> {
 
         let totalScoreSum = 0;
         // Track all multi-select (TOP3) and key single-choice questions
-        const profilingIds = ['Q0_1', 'Q0_2', 'Q1_2', 'Q1_3', 'Q1_5', 'QB2', 'QF2'];
+        const profilingIds = ['Q0_1', 'Q0_2', 'Q1_2', 'Q1_2b', 'Q1_3', 'Q1_5', 'QB2', 'QF2'];
 
         records.forEach((record: any) => {
             const fields = record.fields;
