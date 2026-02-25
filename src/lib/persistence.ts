@@ -12,15 +12,17 @@ export interface AggregateStats {
 const CACHE_TTL = 60 * 1000; // 1 minute cache
 let cachedAggregates: { data: any, timestamp: number } | null = null;
 
-export async function saveSubmission(submission: any) {
+export async function saveSubmission(submission: any): Promise<string> {
     // Save to Airtable (Remote storage - Source of truth)
-    await saveToAirtable(submission);
+    const recordId = await saveToAirtable(submission);
 
     // Invalidate cache after new submission
     cachedAggregates = null;
+
+    return recordId;
 }
 
-async function saveToAirtable(submission: any) {
+async function saveToAirtable(submission: any): Promise<string> {
     const apiKey = process.env.AIRTABLE_API_KEY;
     const baseId = process.env.AIRTABLE_BASE_ID;
     const tableName = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
@@ -64,7 +66,11 @@ async function saveToAirtable(submission: any) {
         console.error(msg);
         throw new Error(msg);
     }
-    console.log('Airtable save OK');
+
+    const data = await response.json();
+    const recordId: string = data.id;
+    console.log('Airtable save OK, record ID:', recordId);
+    return recordId;
 }
 
 export async function getAggregates(): Promise<AggregateStats> {
