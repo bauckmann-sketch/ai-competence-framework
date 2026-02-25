@@ -103,7 +103,10 @@ export function QuestionnaireWizard({ data, onComplete }: WizardProps) {
                         )}
                         <CardHeader className="space-y-6 pt-10">
                             <CardTitle className="text-2xl md:text-3xl leading-[1.15] font-black tracking-tight text-slate-900 text-center px-4">
-                                {currentQuestion.text}
+                                {/* Strip trailing "Vyberte max. X." from multi-select question titles */}
+                                {currentQuestion.type === 'multi_select'
+                                    ? currentQuestion.text.replace(/\s*Vyberte max\.\s*\d+\.?\s*$/i, '').replace(/\s*\(vyberte max\.\s*\d+\)\.?\s*$/i, '').trim()
+                                    : currentQuestion.text}
                             </CardTitle>
 
                             <div className="flex justify-center gap-3">
@@ -122,7 +125,9 @@ export function QuestionnaireWizard({ data, onComplete }: WizardProps) {
                                         <div className="flex flex-col items-start leading-none gap-1">
                                             <span className="text-[10px] uppercase font-black text-cyan-600 tracking-wider">Metoda výběru</span>
                                             <span className="text-xs font-bold text-cyan-700/60">
-                                                Vyberte {currentQuestion.max_select ? `max. ${currentQuestion.max_select}` : 'jednu nebo více'} možností
+                                                {currentQuestion.max_select
+                                                    ? `Vyberte max. ${currentQuestion.max_select} možnosti`
+                                                    : 'Vyberte jednu nebo více možností'}
                                             </span>
                                         </div>
                                     </div>
@@ -243,10 +248,12 @@ function renderQuestionInput(
                                     {option.label}
                                 </span>
                                 <div className={cn(
-                                    "h-8 w-8 rounded-full border-2 flex items-center justify-center transition-all shadow-inner z-10",
-                                    isSelected ? "border-orange-500 bg-orange-500 ring-4 ring-orange-100" : "border-slate-200 group-hover:border-slate-300"
+                                    "border-2 flex items-center justify-center transition-all shadow-inner z-10",
+                                    isSelected
+                                        ? "h-5 w-10 rounded-full border-orange-500 bg-orange-500 ring-4 ring-orange-100"
+                                        : "h-8 w-8 rounded-full border-slate-200 group-hover:border-slate-300"
                                 )}>
-                                    {isSelected ? <Dot className="h-6 w-6 text-white stroke-[4px]" /> : <Circle className="h-4 w-4 text-transparent" />}
+                                    {isSelected && <Check className="h-3 w-3 text-white stroke-[4px]" />}
                                 </div>
                                 {isSelected && <div className="absolute left-0 top-0 bottom-0 w-2 bg-orange-500" />}
                             </button>
@@ -327,26 +334,49 @@ function renderQuestionInput(
                 </div>
             );
 
-        case 'email_optional':
+        case 'email_optional': {
+            const skipEmail = value === '__skip__';
+            const emailValue = skipEmail ? '' : (value || '');
             return (
-                <div className="space-y-4">
+                <div className="space-y-5">
+                    {/* Email input */}
                     <div className="relative group">
                         <input
                             type="email"
-                            value={value || ''}
+                            value={emailValue}
+                            disabled={skipEmail}
                             onChange={(e) => onChange(question.id, e.target.value)}
                             placeholder="vas@email.cz"
-                            className="w-full bg-slate-50 border-2 border-slate-200 p-6 rounded-3xl focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all text-xl font-black text-center text-slate-900 placeholder:text-slate-300"
+                            className={cn(
+                                "w-full border-2 p-6 rounded-3xl outline-none transition-all text-xl font-black text-center placeholder:text-slate-300",
+                                skipEmail
+                                    ? "bg-slate-100 border-slate-100 text-slate-400 cursor-not-allowed"
+                                    : "bg-slate-50 border-slate-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 text-slate-900"
+                            )}
                         />
-                        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity" />
+                        {!skipEmail && <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity" />}
                     </div>
-                    <div className="bg-slate-100/50 p-6 rounded-3xl border border-slate-100">
-                        <p className="text-xs text-slate-500 text-center font-medium leading-relaxed">
-                            💡 <span className="text-slate-900 font-bold">Tip:</span> Email slouží pouze pro zaslání podrobného reportu v PDF a doporučení do vaší schránky. <span className="italic font-bold">Není vyžadován pro zobrazení výsledků zde na webu.</span>
-                        </p>
-                    </div>
+
+                    {/* Skip checkbox */}
+                    <button
+                        onClick={() => onChange(question.id, skipEmail ? '' : '__skip__')}
+                        className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl border-2 border-slate-100 hover:border-slate-200 bg-white transition-all group"
+                    >
+                        <div className={cn(
+                            "h-5 w-5 rounded border-2 flex items-center justify-center transition-all shrink-0",
+                            skipEmail ? "bg-slate-600 border-slate-600" : "border-slate-300 group-hover:border-slate-400"
+                        )}>
+                            {skipEmail && <Check className="h-3 w-3 text-white stroke-[3px]" />}
+                        </div>
+                        <span className="text-sm font-semibold text-slate-600">Email nezadám</span>
+                    </button>
+
+                    <p className="text-xs text-slate-400 text-center font-medium leading-relaxed px-2">
+                        Email slouží pro zaslání reportu. Výsledky se zobrazí ihned po kliknutí na tlačítko.
+                    </p>
                 </div>
             );
+        }
 
         default:
             return <div className="p-8 bg-red-50 border border-red-100 rounded-3xl text-center font-bold text-red-500 text-sm italic">Chyba: Typ otázky "{question.type}" není implementován.</div>;
