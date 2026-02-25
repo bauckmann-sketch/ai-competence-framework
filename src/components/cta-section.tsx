@@ -456,14 +456,10 @@ export function CtaSection({ result, onReset }: { result: CalculationResult; onR
                         <p className="text-[10px] font-black uppercase tracking-widest text-primary">Pro firmy</p>
                         <h3 className="text-xl font-black text-slate-900 leading-tight">Zavést AI do celého týmu</h3>
                         <p className="text-slate-500 text-sm leading-relaxed">
-                            Workshop nebo program na míru pro 5–200+ lidí. Měřitelná úspora času od prvního dne.
+                            Workshop nebo program na míru pro více jak 5 lidí. Měřitelná úspora času od prvního dne.<br />Analýza vašich firemních procesů a návrh vhodných AI řešení.
                         </p>
                     </div>
                     <div className="space-y-3">
-                        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5">
-                            <span className="text-amber-700 font-black text-sm">od 20 000 Kč</span>
-                            <span className="text-amber-600 text-xs">· orientační cena</span>
-                        </div>
                         <Button onClick={() => setShowImpl(true)}
                             className="w-full bg-primary hover:bg-primary/90 text-white font-black rounded-2xl py-3.5 h-auto gap-2 shadow-md shadow-primary/20">
                             Poptat implementaci <ChevronRight className="h-4 w-4" />
@@ -478,16 +474,12 @@ export function CtaSection({ result, onReset }: { result: CalculationResult; onR
                     </div>
                     <div className="space-y-2 flex-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Pro jednotlivce</p>
-                        <h3 className="text-xl font-black text-slate-900 leading-tight">Individuální školení 1:1</h3>
+                        <h3 className="text-xl font-black text-slate-900 leading-tight">Vzdělání pro jednotlivce</h3>
                         <p className="text-slate-500 text-sm leading-relaxed">
                             Konzultace nebo workshop zaměřený přesně na oblasti, kde ztrácíte čas a potenciál.
                         </p>
                     </div>
                     <div className="space-y-3">
-                        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5">
-                            <span className="text-slate-700 font-black text-sm">60 min – 4 h</span>
-                            <span className="text-slate-500 text-xs">· dostanete nabídku e-mailem</span>
-                        </div>
                         <Button onClick={() => setShowTraining(true)} variant="outline"
                             className="w-full border-2 border-slate-200 hover:border-slate-400 text-slate-700 font-black rounded-2xl py-3.5 h-auto gap-2">
                             Zjistit možnosti <ChevronRight className="h-4 w-4" />
