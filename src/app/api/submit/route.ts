@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         if (email && email !== '__skip__' && email.includes('@') && recordId) {
             console.log(`[Email] Attempting to send result to: ${email} for record: ${recordId}`);
             // Fire-and-forget — don't block response on email
-            sendResultsEmail(email, result, recordId, aggregates)
+            sendResultsEmail(email, result, recordId)
                 .then(() => console.log(`[Email] sendResultsEmail triggered successfully for ${email}`))
                 .catch((err) => {
                     console.error('[Email] sendResultsEmail error (non-blocking):', err);

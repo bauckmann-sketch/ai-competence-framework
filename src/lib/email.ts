@@ -1,4 +1,4 @@
-import { CalculationResult, AggregateStats } from '@/types';
+import { CalculationResult } from '@/types';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-competence-framework-wfrx.vercel.app';
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AI Competence Framework <onboarding@resend.dev>';
