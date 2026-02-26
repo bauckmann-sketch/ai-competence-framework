@@ -42,6 +42,22 @@ export function calculateScore(
                             areaPoints += eligibleCount * (behaviorConfig.points_per_item || 0);
                         }
                     }
+                } else if (behaviorConfig.mode === 'weighted_sum_selected') {
+                    if (Array.isArray(val)) {
+                        // Exclusive zero check
+                        if (behaviorConfig.exclusive_zero && val.includes(behaviorConfig.exclusive_zero)) {
+                            areaPoints += 0;
+                        } else {
+                            const bc = behaviorConfig as any;
+                            const weights: Record<string, number> = bc.weights || {};
+                            let sum = 0;
+                            for (const selected of val) {
+                                sum += weights[selected] || 0;
+                            }
+                            const capped = bc.cap ? Math.min(sum, bc.cap) : sum;
+                            areaPoints += capped;
+                        }
+                    }
                 } else if (behaviorConfig.map) {
                     const points = behaviorConfig.map[val] || 0;
                     areaPoints += points;
