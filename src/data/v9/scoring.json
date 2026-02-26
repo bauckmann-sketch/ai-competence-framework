@@ -1,0 +1,244 @@
+{
+  "schema_version": "FINAL_2026-02-25_v7_ranked_top3",
+  "framework": {
+    "areas": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "area_max_points": 20,
+    "total_max_points": 120
+  },
+  "area_questions": {
+    "A": {
+      "behavior": [
+        "QA2"
+      ]
+    },
+    "B": {
+      "behavior": [
+        "QB2"
+      ]
+    },
+    "C": {
+      "behavior": [
+        "QC2"
+      ]
+    },
+    "D": {
+      "behavior": [
+        "QD3"
+      ]
+    },
+    "E": {
+      "behavior": [
+        "QE2"
+      ]
+    },
+    "F": {
+      "behavior": [
+        "QF2"
+      ]
+    }
+  },
+  "behavior_scoring": {
+    "QA2": {
+      "max_points": 20,
+      "map": {
+        "clarify_context": 20,
+        "add_examples": 18,
+        "change_format": 15,
+        "switch_tool": 12,
+        "retry_same": 5,
+        "give_up": 0
+      }
+    },
+    "QB2": {
+      "max_points": 20,
+      "mode": "weighted_sum_selected",
+      "weights": {
+        "quality_criteria": 8,
+        "context": 7,
+        "audience": 5,
+        "format": 4,
+        "example": 3,
+        "tone": 2
+      },
+      "exclusive_zero": "none",
+      "cap": 20
+    },
+    "QC2": {
+      "max_points": 20,
+      "map": {
+        "primary_source": 20,
+        "multi_sources": 18,
+        "ai_sources_then_check": 15,
+        "dont_use_for_facts": 10,
+        "no_check": 0
+      }
+    },
+    "QD3": {
+      "max_points": 20,
+      "map": {
+        "no_impact": 0,
+        "slower": 6,
+        "reorganize": 12,
+        "dependent": 17,
+        "fundamental_change": 20
+      }
+    },
+    "QE2": {
+      "max_points": 20,
+      "map": {
+        "prompt_templates": 8,
+        "paid_chatbot": 5,
+        "assistant": 13,
+        "simple_automation": 17,
+        "workflow": 19,
+        "agent": 20
+      }
+    },
+    "QF2": {
+      "max_points": 20,
+      "mode": "weighted_sum_selected",
+      "exclusive_zero": "none",
+      "cap": 20,
+      "weights": {
+        "code": 8,
+        "text": 6,
+        "video": 6,
+        "presentations": 5,
+        "graphics": 5,
+        "voice": 4
+      }
+    }
+  },
+  "total_score": {
+    "compute": "sum_areas_then_percent",
+    "percent": {
+      "numerator": "sum_area_points",
+      "denominator": 120,
+      "rounding": "nearest_int"
+    }
+  },
+  "leveling": {
+    "levels": [
+      {
+        "name": "Explorer",
+        "min_percent": 0,
+        "max_percent": 20
+      },
+      {
+        "name": "User",
+        "min_percent": 21,
+        "max_percent": 40
+      },
+      {
+        "name": "Power User",
+        "min_percent": 41,
+        "max_percent": 60
+      },
+      {
+        "name": "Builder",
+        "min_percent": 61,
+        "max_percent": 80
+      },
+      {
+        "name": "Architect",
+        "min_percent": 81,
+        "max_percent": 100
+      }
+    ],
+    "brakes": []
+  },
+  "normalization": {
+    "area_points_range": [
+      0,
+      20
+    ],
+    "clamp": true
+  },
+  "notes": {
+    "final_changes": "QF2 scoring adjusted for TOP3 (points_per_item=7, cap=20). Other scoring unchanged.",
+    "change_2026-02-24": "QB2 now max 3; scoring adjusted points_per_item=7 cap=20. QF2 scripts removed from options.",
+    "changes": "Updated QE2 scoring map and QF2 eligible_values; added secondary metric paid_tools_index.",
+    "changes_v4": "Removed hard brake C (no level cap). Added adoption_index (frequency + paid tools) and reliability_badge based on QC2.",
+    "changes_v5": "No scoring changes. QX1 removed from questionnaire; contact handled via QX2 optional email.",
+    "changes_v6": "Multi-select scoring changed to weighted_sum_selected for QB2 and QF2 (top: quality_criteria, context, audience).",
+    "changes_v7": "No scoring changes; ranked TOP3 is for aggregation in community comparison. QB2/QF2 remain weighted_sum_selected."
+  },
+  "secondary_metrics": {
+    "paid_tools_index": {
+      "question_id": "Q1_2b",
+      "description": "Index investice do placených AI nástrojů (pro segmentaci; defaultně neovlivňuje A–F skóre).",
+      "map": {
+        "0": 0,
+        "1": 1,
+        "2_3": 2,
+        "up_to_6": 3,
+        "up_to_10": 4,
+        "gt_10": 5
+      }
+    },
+    "usage_frequency_index": {
+      "question_id": "Q1_2",
+      "description": "Index frekvence používání AI (0–5).",
+      "map": {
+        "never": 0,
+        "lt_weekly": 1,
+        "weekly": 2,
+        "almost_daily": 4,
+        "multi_daily": 5
+      }
+    },
+    "adoption_investment_index": {
+      "type": "derived_sum",
+      "components": [
+        "usage_frequency_index",
+        "paid_tools_index"
+      ],
+      "range": [
+        0,
+        10
+      ],
+      "bands": [
+        {
+          "range": [
+            0,
+            2
+          ],
+          "label": "Nízká"
+        },
+        {
+          "range": [
+            3,
+            6
+          ],
+          "label": "Střední"
+        },
+        {
+          "range": [
+            7,
+            10
+          ],
+          "label": "Vysoká"
+        }
+      ],
+      "description": "Kombinovaný index adopce & investice (frekvence + placené nástroje). Neovlivňuje Skill skóre."
+    },
+    "reliability_badge": {
+      "question_id": "QC2",
+      "description": "Spolehlivost práce s fakty (měkký signál, nenahrazuje Skill skóre).",
+      "map": {
+        "primary_source": "Vysoká",
+        "multi_sources": "Vysoká",
+        "ai_sources_then_check": "Střední",
+        "dont_use_for_facts": "Střední",
+        "no_check": "Nízká"
+      }
+    }
+  }
+}

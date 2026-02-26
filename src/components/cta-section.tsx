@@ -8,20 +8,6 @@ import { Button } from '@/components/ui/button';
 const WHATSAPP_URL = 'https://chat.whatsapp.com/GQDdu5fvzSn5XYis1MkvWb';
 const WHATSAPP_QR = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(WHATSAPP_URL)}&format=png&margin=12&color=000000&bgcolor=ffffff`;
 
-// ─── Pricing matrix ──────────────────────────────────────────────────────────
-const PRICES: Record<string, Record<string, string>> = {
-    '1-10': { start: 'od 20 000 Kč', practical: 'od 40 000 Kč', advanced: 'od 60 000 Kč' },
-    '11-30': { start: 'od 40 000 Kč', practical: 'od 80 000 Kč', advanced: 'od 120 000 Kč' },
-    '31-80': { start: 'od 80 000 Kč', practical: 'od 150 000 Kč', advanced: 'od 250 000 Kč' },
-    '81-200': { start: 'individuální nabídka', practical: 'individuální nabídka', advanced: 'individuální nabídka' },
-    '200+': { start: 'projektová nabídka', practical: 'projektová nabídka', advanced: 'projektová nabídka' },
-};
-
-function getPriceHint(people: string, depth: string): string | null {
-    if (!people || !depth) return null;
-    return PRICES[people]?.[depth] ?? null;
-}
-
 // ─── Small helpers ────────────────────────────────────────────────────────────
 function Checkbox({ checked, onChange, label, required }: { checked: boolean; onChange: (v: boolean) => void; label: string; required?: boolean }) {
     return (
@@ -152,8 +138,6 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    const priceHint = useMemo(() => getPriceHint(people, depth), [people, depth]);
-    const priceRange = priceHint ? `${priceHint}${depth === 'advanced' && ['1-10', '11-30', '31-80'].includes(people) ? ' + návrh use-casů + governance' : ''}` : undefined;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -168,7 +152,7 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     email, phone, company,
                     role: result.answers?.['Q0_1'],
                     people_count: people, program_depth: depth, speed, format,
-                    priority_areas: areas, price_range: priceRange,
+                    priority_areas: areas,
                     consent_marketing: consentContact, consent_newsletter: consentNewsletter,
                     // Snapshot
                     skill_score_total: result.totalPercent,
@@ -217,16 +201,6 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                         <SelectPills options={DEPTH_OPTS} value={depth} onChange={setDepth} />
                     </Field>
 
-                    {priceHint && (
-                        <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-                            <span className="text-xl">💡</span>
-                            <div>
-                                <p className="text-xs font-black uppercase tracking-widest text-amber-700 mb-0.5">Orientační cena</p>
-                                <p className="text-lg font-black text-amber-900">{priceHint}</p>
-                                <p className="text-xs text-amber-600 mt-0.5">Konečná cena závisí na délce, formátu a dalších parametrech.</p>
-                            </div>
-                        </div>
-                    )}
 
                     <Field label="Jak rychle chcete výsledky?">
                         <SelectPills options={SPEED_OPTS} value={speed} onChange={setSpeed} />
@@ -279,9 +253,9 @@ const IMPROVE_OPTS = [
     { value: 'Bezpečnost a citlivá data', label: 'Bezpečnost a data' },
 ];
 const PREF_FORMAT_OPTS = [
-    { value: '60 min konzultace', label: '60 min konzultace' },
-    { value: '2–3 h workshop', label: '2–3 h workshop' },
-    { value: '4 h školení', label: '4 h školení' },
+    { value: 'Konzultace', label: 'Konzultace' },
+    { value: 'Workshop', label: 'Workshop' },
+    { value: 'Školení', label: 'Školení' },
 ];
 
 function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () => void; result: CalculationResult }) {
@@ -341,10 +315,10 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     <div className="space-y-1 pr-8">
                         <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1">
                             <GraduationCap className="h-3.5 w-3.5 text-slate-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Individuální školení 1:1</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Školení pro jednotlivce</span>
                         </div>
                         <h2 className="text-2xl font-black text-slate-900 leading-tight">Školení na míru</h2>
-                        <p className="text-sm text-slate-500">Zadejte email a my vám pošleme možnosti a ceník — odpovídáme do 24 h.</p>
+                        <p className="text-sm text-slate-500">Školení základů i pokročilých technik a nástrojů. Konzultace nebo workshop zaměřený přesně na oblasti, kde ztrácíte čas a potenciál.</p>
                     </div>
 
                     <Field label="Co chcete zlepšit? (max 3)">
@@ -456,7 +430,7 @@ export function CtaSection({ result, onReset }: { result: CalculationResult; onR
                         <p className="text-[10px] font-black uppercase tracking-widest text-primary">Pro firmy</p>
                         <h3 className="text-xl font-black text-slate-900 leading-tight">Zavést AI do celého týmu</h3>
                         <p className="text-slate-500 text-sm leading-relaxed">
-                            Workshop nebo program na míru pro více jak 5 lidí. Měřitelná úspora času od prvního dne.<br />Analýza vašich firemních procesů a návrh vhodných AI řešení.
+                            Workshop nebo program na míru pro 5–200+ lidí. Mapování firemního workflow a návrhy využití AI. Měřitelná úspora času od prvního dne.
                         </p>
                     </div>
                     <div className="space-y-3">
@@ -474,9 +448,9 @@ export function CtaSection({ result, onReset }: { result: CalculationResult; onR
                     </div>
                     <div className="space-y-2 flex-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Pro jednotlivce</p>
-                        <h3 className="text-xl font-black text-slate-900 leading-tight">Vzdělání pro jednotlivce</h3>
+                        <h3 className="text-xl font-black text-slate-900 leading-tight">Školení pro jednotlivce</h3>
                         <p className="text-slate-500 text-sm leading-relaxed">
-                            Konzultace nebo workshop zaměřený přesně na oblasti, kde ztrácíte čas a potenciál.
+                            Školení základů i pokročilých technik a nástrojů. Konzultace nebo workshop zaměřený přesně na oblasti, kde ztrácíte čas a potenciál.
                         </p>
                     </div>
                     <div className="space-y-3">

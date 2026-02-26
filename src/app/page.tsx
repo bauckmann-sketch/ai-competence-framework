@@ -14,13 +14,14 @@ import questionsV4 from '@/data/v4/questions.json';
 import questionsV6 from '@/data/v6/questions.json';
 import questionsV7 from '@/data/v7/questions.json';
 import questionsV8 from '@/data/v8/questions.json';
+import questionsV9 from '@/data/v9/questions.json';
 
 type AppState = 'intro' | 'wizard' | 'results';
-type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8';
+type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9';
 
 export default function Home() {
   const [state, setState] = useState<AppState>('wizard');
-  const [selectedVersion, setSelectedVersion] = useState<Version>('v8');
+  const [selectedVersion, setSelectedVersion] = useState<Version>('v9');
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [aggregates, setAggregates] = useState<any>(null);
 
@@ -67,8 +68,9 @@ export default function Home() {
     v4: questionsV4,
     v6: questionsV6,
     v7: questionsV7,
-    v8: questionsV8
-  }[selectedVersion] || questionsV8;
+    v8: questionsV8,
+    v9: questionsV9
+  }[selectedVersion] || questionsV9;
 
   return (
     <main className="min-h-screen p-4 md:p-8 lg:p-12">

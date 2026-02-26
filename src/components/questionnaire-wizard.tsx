@@ -156,19 +156,46 @@ export function QuestionnaireWizard({ data, onComplete }: WizardProps) {
                 >
                     <ChevronLeft className="mr-2 h-4 w-4" /> Zpět
                 </Button>
-                <Button
-                    onClick={handleNext}
-                    disabled={!isValid}
-                    className={cn(
-                        "font-black text-sm tracking-widest uppercase px-12 py-7 rounded-2xl transition-all shadow-lg",
-                        isValid
-                            ? "bg-primary text-white hover:scale-[1.03] hover:shadow-primary/20 active:scale-95 translate-y-0"
-                            : "bg-slate-200 text-slate-400 translate-y-1"
-                    )}
-                >
-                    {wizard.isLast ? 'Dokončit měření' : 'Pokračovat'}
-                    {!wizard.isLast && <ChevronRight className="ml-2 h-4 w-4" />}
-                </Button>
+
+                {currentQuestion.type === 'email_optional' ? (
+                    <div className="flex gap-3">
+                        <Button
+                            onClick={() => {
+                                handleAnswer(currentQuestion.id, '__skip__');
+                                setTimeout(() => onComplete({ ...answers, [currentQuestion.id]: '__skip__' }), 100);
+                            }}
+                            className="bg-slate-200 text-slate-600 hover:bg-slate-300 font-bold px-8 py-7 rounded-2xl transition-all uppercase tracking-widest text-xs"
+                        >
+                            {currentQuestion.ui?.cta_secondary_label || 'Přeskočit'}
+                        </Button>
+                        <Button
+                            onClick={handleNext}
+                            disabled={!currentAnswer || currentAnswer === '' || currentAnswer === '__skip__'}
+                            className={cn(
+                                "font-black text-sm tracking-widest uppercase px-12 py-7 rounded-2xl transition-all shadow-lg",
+                                currentAnswer && currentAnswer !== '' && currentAnswer !== '__skip__'
+                                    ? "bg-primary text-white hover:scale-[1.03] hover:shadow-primary/20 active:scale-95 translate-y-0"
+                                    : "bg-slate-200 text-slate-400 cursor-not-allowed opacity-50"
+                            )}
+                        >
+                            {currentQuestion.ui?.cta_primary_label || 'Odeslat'}
+                        </Button>
+                    </div>
+                ) : (
+                    <Button
+                        onClick={handleNext}
+                        disabled={!isValid}
+                        className={cn(
+                            "font-black text-sm tracking-widest uppercase px-12 py-7 rounded-2xl transition-all shadow-lg",
+                            isValid
+                                ? "bg-primary text-white hover:scale-[1.03] hover:shadow-primary/20 active:scale-95 translate-y-0"
+                                : "bg-slate-200 text-slate-400 translate-y-1"
+                        )}
+                    >
+                        {wizard.isLast ? 'Dokončit měření' : 'Pokračovat'}
+                        {!wizard.isLast && <ChevronRight className="ml-2 h-4 w-4" />}
+                    </Button>
+                )}
             </div>
         </div>
     );
@@ -335,44 +362,23 @@ function renderQuestionInput(
             );
 
         case 'email_optional': {
-            const skipEmail = value === '__skip__';
-            const emailValue = skipEmail ? '' : (value || '');
+            const emailValue = value === '__skip__' ? '' : (value || '');
             return (
-                <div className="space-y-5">
-                    {/* Email input */}
-                    <div className="relative group">
+                <div className="space-y-6 py-4">
+                    <div className="relative group max-w-md mx-auto">
                         <input
                             type="email"
                             value={emailValue}
-                            disabled={skipEmail}
                             onChange={(e) => onChange(question.id, e.target.value)}
                             placeholder="vas@email.cz"
-                            className={cn(
-                                "w-full border-2 p-6 rounded-3xl outline-none transition-all text-xl font-black text-center placeholder:text-slate-300",
-                                skipEmail
-                                    ? "bg-slate-100 border-slate-100 text-slate-400 cursor-not-allowed"
-                                    : "bg-slate-50 border-slate-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 text-slate-900"
-                            )}
+                            className="w-full border-2 p-6 rounded-3xl outline-none transition-all text-xl font-black text-center placeholder:text-slate-300 bg-slate-50 border-slate-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 text-slate-900 shadow-inner"
+                            autoFocus
                         />
-                        {!skipEmail && <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity" />}
+                        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/5 to-transparent pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity" />
                     </div>
 
-                    {/* Skip checkbox */}
-                    <button
-                        onClick={() => onChange(question.id, skipEmail ? '' : '__skip__')}
-                        className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl border-2 border-slate-100 hover:border-slate-200 bg-white transition-all group"
-                    >
-                        <div className={cn(
-                            "h-5 w-5 rounded border-2 flex items-center justify-center transition-all shrink-0",
-                            skipEmail ? "bg-slate-600 border-slate-600" : "border-slate-300 group-hover:border-slate-400"
-                        )}>
-                            {skipEmail && <Check className="h-3 w-3 text-white stroke-[3px]" />}
-                        </div>
-                        <span className="text-sm font-semibold text-slate-600">Email nezadám</span>
-                    </button>
-
-                    <p className="text-xs text-slate-400 text-center font-medium leading-relaxed px-2">
-                        Email slouží pro zaslání reportu. Výsledky se zobrazí ihned po kliknutí na tlačítko.
+                    <p className="text-sm text-slate-400 text-center font-medium leading-relaxed max-w-sm mx-auto">
+                        Zadejte svůj e-mail, pokud chcete obdržet podrobný report s doporučeními a srovnáním.
                     </p>
                 </div>
             );

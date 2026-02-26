@@ -24,6 +24,10 @@ export interface Question {
         other_text_required?: boolean;
         exclusive_options?: string[];
         page_id?: string;
+        cta_primary_label?: string;
+        cta_secondary_label?: string;
+        cta_secondary_style?: string;
+        submit_behavior?: string;
     };
 }
 
