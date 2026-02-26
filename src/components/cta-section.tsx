@@ -105,31 +105,36 @@ const DEPTH_OPTS = [
     { value: 'advanced', label: '🔴 Pokročilá implementace — automatizace + governance' },
 ];
 const SPEED_OPTS = [
-    { value: '1 den (rychlý start)', label: '1 den – rychlý start' },
-    { value: '2–3 dny (reálný posun)', label: '2–3 dny – reálný posun' },
-    { value: '4–8 týdnů (implementace)', label: '4–8 týdnů – implementace + změna procesů' },
+    { value: '1', label: '1 den – rychlý start' },
+    { value: '2', label: '2–3 dny – reálný posun' },
+    { value: '8', label: '4–8 týdnů – implementace + změna procesů' },
 ];
 const FORMAT_OPTS = [
     { value: 'Online', label: 'Online' },
     { value: 'Onsite', label: 'Na místě' },
     { value: 'Kombinace', label: 'Kombinace' },
 ];
-const AREA_OPTS = [
-    { value: 'Promptování a šablony', label: 'Promptování a šablony' },
-    { value: 'Ověřování a práce se zdroji', label: 'Ověřování a zdroje' },
-    { value: 'Workflow (emaily, dokumenty)', label: 'Workflow' },
-    { value: 'Automatizace (Make/Zapier/n8n)', label: 'Automatizace' },
-    { value: 'Multimédia (prezentace/video)', label: 'Multimédia' },
-    { value: 'Bezpečnost a citlivá data', label: 'Bezpečnost a data' },
-];
+
+// Dynamic price calc: 40k per group (15 people) per day
+function calcImplementationPrice(peopleVal: string, daysVal: string): string | null {
+    const peopleMap: Record<string, number> = { '1-10': 8, '11-30': 22, '31-80': 55, '81-200': 140, '200+': 250 };
+    const peopleMid = peopleMap[peopleVal];
+    if (!peopleMid || !daysVal) return null;
+    const days = parseInt(daysVal, 10) || 1;
+    const groups = Math.ceil(peopleMid / 15);
+    const price = groups * days * 40000;
+    return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(price);
+}
 
 function ImplementationModal({ open, onClose, result }: { open: boolean; onClose: () => void; result: CalculationResult }) {
     const [people, setPeople] = useState('');
     const [depth, setDepth] = useState('');
     const [speed, setSpeed] = useState('');
     const [format, setFormat] = useState('');
-    const [areas, setAreas] = useState<string[]>([]);
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(() => {
+        const a = result.answers?.['QX2'] || result.answers?.['Q0_EMAIL'] || '';
+        return a === '__skip__' ? '' : a;
+    });
     const [phone, setPhone] = useState('');
     const [company, setCompany] = useState('');
     const [consentContact, setConsentContact] = useState(false);
@@ -138,8 +143,10 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
+    const estimatedPrice = useMemo(() => calcImplementationPrice(people, speed), [people, speed]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+
+    const handleSubmitImpl = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!consentContact) { setError('Souhlas s kontaktováním je povinný.'); return; }
         setError(''); setSubmitting(true);
@@ -152,15 +159,13 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     email, phone, company,
                     role: result.answers?.['Q0_1'],
                     people_count: people, program_depth: depth, speed, format,
-                    priority_areas: areas,
+                    estimated_price: estimatedPrice,
                     consent_marketing: consentContact, consent_newsletter: consentNewsletter,
-                    // Snapshot
                     skill_score_total: result.totalPercent,
                     level: result.level,
                     area_scores: result.areaScores,
                     usage_frequency: result.answers?.['Q1_2'],
                     paid_tools_count: result.answers?.['Q1_2b'],
-                    tool_categories: result.answers?.['Q1_3'],
                     barrier: result.answers?.['QX3'],
                     instrument_version: result.version,
                 }),
@@ -182,15 +187,14 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     <Button onClick={onClose} className="bg-primary text-white rounded-full px-8 font-black mt-4">Zpět na výsledky</Button>
                 </div>
             ) : (
-                <form onSubmit={handleSubmit} className="p-8 space-y-7">
-                    {/* Header */}
+                <form onSubmit={handleSubmitImpl} className="p-8 space-y-7">
                     <div className="space-y-1 pr-8">
                         <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1">
                             <Building2 className="h-3.5 w-3.5 text-slate-500" />
                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Firemní implementace</span>
                         </div>
                         <h2 className="text-2xl font-black text-slate-900 leading-tight">Zavést AI do vaší firmy</h2>
-                        <p className="text-sm text-slate-500">Vyplňte pár otázek (60 s) a dostanete orientační nabídku a odpověď do 24 h.</p>
+                        <p className="text-sm text-slate-500">Vyplňte pár otázek (60 s) a dostanete orientační nabídku do 24 h.</p>
                     </div>
 
                     <Field label="Počet lidí k vyškolení">
@@ -201,20 +205,22 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                         <SelectPills options={DEPTH_OPTS} value={depth} onChange={setDepth} />
                     </Field>
 
-
-                    <Field label="Jak rychle chcete výsledky?">
+                    <Field label="Délka programu">
                         <SelectPills options={SPEED_OPTS} value={speed} onChange={setSpeed} />
                     </Field>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <Field label="Formát školení">
-                            <SelectPills options={FORMAT_OPTS} value={format} onChange={setFormat} />
-                        </Field>
-                    </div>
-
-                    <Field label="Prioritní oblasti (max 3)">
-                        <MultiPills options={AREA_OPTS} value={areas} onChange={setAreas} max={3} />
+                    <Field label="Formát školení">
+                        <SelectPills options={FORMAT_OPTS} value={format} onChange={setFormat} />
                     </Field>
+
+                    {/* Dynamic price estimate */}
+                    {estimatedPrice && (
+                        <div className="bg-primary/5 border border-primary/20 rounded-2xl px-5 py-4">
+                            <p className="text-xs font-black uppercase tracking-widest text-primary mb-1">Orientační cena</p>
+                            <p className="text-2xl font-black text-primary">{estimatedPrice}</p>
+                            <p className="text-xs text-slate-400 mt-1">Kalkulace: skupiny po 15 lidech × 40 000 Kč / školící den. Přesná nabídka po upřesnění.</p>
+                        </div>
+                    )}
 
                     <div className="border-t border-slate-100 pt-6 space-y-4">
                         <p className="text-xs font-black uppercase tracking-widest text-slate-500">Kontakt</p>
@@ -244,31 +250,28 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
 }
 
 // ─── Training modal ───────────────────────────────────────────────────────────
-const IMPROVE_OPTS = [
-    { value: 'Promptování a šablony', label: 'Promptování a šablony' },
-    { value: 'Workflow a produktivita', label: 'Workflow a produktivita' },
-    { value: 'Ověřování informací', label: 'Ověřování informací' },
-    { value: 'Automatizace', label: 'Automatizace' },
-    { value: 'Tvorba obsahu a prezentace', label: 'Obsah a prezentace' },
-    { value: 'Bezpečnost a citlivá data', label: 'Bezpečnost a data' },
-];
-const PREF_FORMAT_OPTS = [
-    { value: 'Konzultace', label: 'Konzultace' },
-    { value: 'Workshop', label: 'Workshop' },
-    { value: 'Školení', label: 'Školení' },
+const DEPTH_INDIVIDUAL_OPTS = [
+    { value: 'start', label: '🟢 Chci začít — online kurz ~16h', price: 'cca 8 000 Kč' },
+    { value: 'intensive', label: '🟡 Naučit se rychle — 40h za 3 měsíce', price: 'cca 15 000 Kč' },
+    { value: 'select', label: '🔵 Vyberu si kurzy — 1 200 Kč / kurz', price: 'od 1 200 Kč' },
+    { value: 'coaching', label: '🔴 Individuální lekce a konzultace', price: 'na dotaz' },
 ];
 
 function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () => void; result: CalculationResult }) {
-    const [improveAreas, setImproveAreas] = useState<string[]>([]);
-    const [preferredFormat, setPreferredFormat] = useState('');
-    const [email, setEmail] = useState('');
+    const [selectedDepth, setSelectedDepth] = useState('');
+    const [email, setEmail] = useState(() => {
+        const a = result.answers?.['QX2'] || result.answers?.['Q0_EMAIL'] || '';
+        return a === '__skip__' ? '' : a;
+    });
     const [consentContact, setConsentContact] = useState(false);
     const [consentNewsletter, setConsentNewsletter] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const selectedDepthInfo = DEPTH_INDIVIDUAL_OPTS.find(o => o.value === selectedDepth);
+
+    const handleSubmitTraining = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!consentContact) { setError('Souhlas s kontaktováním je povinný.'); return; }
         setError(''); setSubmitting(true);
@@ -279,12 +282,11 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                 body: JSON.stringify({
                     lead_type: 'training_1to1',
                     email,
-                    improve_areas: improveAreas,
-                    preferred_format: preferredFormat,
+                    depth: selectedDepth,
+                    estimated_price: selectedDepthInfo?.price,
                     role: result.answers?.['Q0_1'],
                     consent_marketing: consentContact,
                     consent_newsletter: consentNewsletter,
-                    // Snapshot
                     skill_score_total: result.totalPercent,
                     level: result.level,
                     area_scores: result.areaScores,
@@ -311,22 +313,30 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     <Button onClick={onClose} className="bg-primary text-white rounded-full px-8 font-black mt-4">Zpět na výsledky</Button>
                 </div>
             ) : (
-                <form onSubmit={handleSubmit} className="p-8 space-y-7">
+                <form onSubmit={handleSubmitTraining} className="p-8 space-y-7">
                     <div className="space-y-1 pr-8">
                         <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1">
                             <GraduationCap className="h-3.5 w-3.5 text-slate-500" />
                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Školení pro jednotlivce</span>
                         </div>
                         <h2 className="text-2xl font-black text-slate-900 leading-tight">Školení na míru</h2>
-                        <p className="text-sm text-slate-500">Školení základů i pokročilých technik a nástrojů. Konzultace nebo workshop zaměřený přesně na oblasti, kde ztrácíte čas a potenciál.</p>
+                        <p className="text-sm text-slate-500">Vyberte, jak hluboko se chcete ponořit. Poskytneme vám konkrétní nabídku termínů do 24 h.</p>
                     </div>
 
-                    <Field label="Co chcete zlepšit? (max 3)">
-                        <MultiPills options={IMPROVE_OPTS} value={improveAreas} onChange={setImproveAreas} max={3} />
-                    </Field>
-
-                    <Field label="Preferovaný formát">
-                        <SelectPills options={PREF_FORMAT_OPTS} value={preferredFormat} onChange={setPreferredFormat} />
+                    <Field label="Jak hluboké znalosti chcete získat?">
+                        <div className="space-y-2">
+                            {DEPTH_INDIVIDUAL_OPTS.map(opt => (
+                                <button key={opt.value} type="button" onClick={() => setSelectedDepth(opt.value)}
+                                    className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all flex justify-between items-center ${selectedDepth === opt.value
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-slate-200 hover:border-primary/40'
+                                        }`}>
+                                    <span className="text-sm font-semibold">{opt.label}</span>
+                                    <span className={`text-sm font-black whitespace-nowrap ml-4 ${selectedDepth === opt.value ? 'text-primary' : 'text-slate-400'
+                                        }`}>{opt.price}</span>
+                                </button>
+                            ))}
+                        </div>
                     </Field>
 
                     <div className="border-t border-slate-100 pt-6 space-y-4">

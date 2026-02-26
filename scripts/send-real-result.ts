@@ -1,4 +1,13 @@
 import { sendResultsEmail } from '../src/lib/email';
+import { calculateScore } from '../src/lib/scoring-engine';
+import scoringV1 from '../src/data/v1/scoring.json';
+import scoringV3 from '../src/data/v3/scoring.json';
+import scoringV4 from '../src/data/v4/scoring.json';
+import scoringV6 from '../src/data/v6/scoring.json';
+import scoringV7 from '../src/data/v7/scoring.json';
+import scoringV8 from '../src/data/v8/scoring.json';
+import scoringV9 from '../src/data/v9/scoring.json';
+import scoringV10 from '../src/data/v10/scoring.json';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -37,21 +46,23 @@ async function sendLatest() {
     const recordId = record.id;
     const email = fields.Email;
 
-    console.log(`Found record ${recordId} for ${email}`);
-
     let answers = {};
     try {
         answers = JSON.parse(fields['Answers (JSON)'] || '{}');
     } catch (e) { }
 
-    // Reconstruct CalculationResult
-    const result: any = {
-        totalPercent: fields.Score,
-        level: fields.Level,
-        areaScores: (answers as any)._areaScores || {},
-        answers: answers,
-        version: fields.Version || 'v10'
+    const version: string = fields.Version || 'v10';
+    const scoringConfigs: Record<string, any> = {
+        v1: scoringV1, v3: scoringV3, v4: scoringV4, v6: scoringV6,
+        v7: scoringV7, v8: scoringV8, v9: scoringV9, v10: scoringV10
     };
+    const scoringConfig = scoringConfigs[version] || scoringV10;
+
+    // Recalculate result from answers (source of truth)
+    const result = calculateScore(answers, scoringConfig as any);
+    (result as any).version = version;
+
+    console.log(`Recalculated Score: ${result.totalPercent}%, Level: ${result.level}`);
 
     console.log('Sending email...');
     await sendResultsEmail(email, result, recordId);
