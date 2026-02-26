@@ -1,39 +1,76 @@
-import { CalculationResult } from '@/types';
+import { CalculationResult, AggregateStats } from '@/types';
 
-// Uses Resend REST API directly (no SDK dependency — avoids build issues)
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-competence-framework-wfrx.vercel.app';
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AI Competence Framework <onboarding@resend.dev>';
 
-function levelCzech(level: string): string {
-  const map: Record<string, string> = {
-    'Observer': 'Pozorovatel',
-    'Explorer': 'Průzkumník',
-    'Implementer': 'Implementátor',
-    'Practitioner': 'Praktik',
-    'Amplifier': 'Amplifikátor',
-    'Transformer': 'Transformátor',
-  };
-  return map[level] || level;
+// Labels for Q1_2 (Frequency)
+const FREQUENCY_LABELS: Record<string, string> = {
+  never: 'Nikdy',
+  lt_weekly: 'Méně než 1× týdně',
+  weekly: '1–2× týdně',
+  almost_daily: 'Skoro denně',
+  multi_daily: 'Denně vícekrát'
+};
+
+// Labels for Q1_2b (Paid tools)
+const PAID_TOOLS_LABELS: Record<string, string> = {
+  '0': 'Žádné',
+  '1': 'Jeden',
+  '2_3': 'Dva až tři',
+  'up_to_6': 'Do šesti',
+  'up_to_10': 'Do deseti',
+  'gt_10': 'Více než 10'
+};
+
+// Labels for QF2 (Tool types)
+const TOOL_TYPES_LABELS: Record<string, string> = {
+  text: 'Texty',
+  code: 'Programování',
+  graphics: 'Grafika',
+  video: 'Video',
+  voice: 'Hlas / Audio',
+  presentations: 'Prezentace'
+};
+
+function getAverageLabel(dist: Record<string, number> | undefined, labelMap: Record<string, string>, indexMap: Record<string, number>): string {
+  if (!dist) return 'Nezadáno';
+  let totalWeight = 0;
+  let totalCount = 0;
+  for (const [val, count] of Object.entries(dist)) {
+    const weight = indexMap[val] ?? 0;
+    totalWeight += weight * count;
+    totalCount += count;
+  }
+  if (totalCount === 0) return 'Nezadáno';
+  const avgIndex = totalWeight / totalCount;
+
+  // Find closest index
+  let closestKey = Object.keys(indexMap)[0];
+  let minDiff = Infinity;
+  for (const [key, weight] of Object.entries(indexMap)) {
+    const diff = Math.abs(avgIndex - weight);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestKey = key;
+    }
+  }
+  return labelMap[closestKey] || 'Nezadáno';
 }
 
-function areaRow(area: string, data: { raw: number; max: number; percent: number }): string {
-  const barWidth = Math.round(data.percent);
-  return `
-        <tr>
-            <td style="padding: 10px 0; font-weight: 700; font-size: 14px; color: #0f172a; width: 40px;">${area}</td>
-            <td style="padding: 10px 0 10px 16px;">
-                <div style="background: #f1f5f9; border-radius: 6px; overflow: hidden; height: 8px; width: 100%;">
-                    <div style="background: #DD3C20; height: 8px; width: ${barWidth}%; border-radius: 6px;"></div>
-                </div>
-            </td>
-            <td style="padding: 10px 0 10px 12px; font-size: 13px; font-weight: 700; color: #DD3C20; white-space: nowrap; width: 50px;">${data.percent}%</td>
-        </tr>`;
+function getTop3Labels(dist: Record<string, number> | undefined, labelMap: Record<string, string>): string {
+  if (!dist) return 'Nezadáno';
+  return Object.entries(dist)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([val]) => labelMap[val] || val)
+    .join(', ');
 }
 
 export async function sendResultsEmail(
   to: string,
   result: CalculationResult,
-  airtableRecordId: string
+  airtableRecordId: string,
+  aggregates: AggregateStats | null = null
 ): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -41,117 +78,90 @@ export async function sendResultsEmail(
     return;
   }
 
-  // Don't send to placeholder values
-  if (!to || to === '__skip__' || !to.includes('@')) {
-    return;
-  }
+  if (!to || to === '__skip__' || !to.includes('@')) return;
 
-  // Without a verified domain, Resend only delivers to the account owner email.
-  // Set RESEND_TO_OVERRIDE to redirect all emails there (testing mode).
-  const toOverride = process.env.RESEND_TO_OVERRIDE;
-  const actualTo = toOverride || to;
-  const isOverride = !!toOverride && toOverride !== to;
-
+  const actualTo = process.env.RESEND_TO_OVERRIDE || to;
   const resultUrl = `${APP_URL}/r/${airtableRecordId}`;
-  const levelCz = levelCzech(result.level);
-  const areaRows = Object.entries(result.areaScores)
-    .map(([area, data]) => areaRow(area, data as any))
-    .join('');
 
-  const overrideBanner = isOverride ? `
-          <!-- Override Notice -->
-          <tr>
-            <td style="background: #fef3c7; border: 1px solid #fcd34d; padding: 12px 40px;">
-              <p style="margin: 0; font-size: 12px; font-weight: 700; color: #92400e;">
-                📧 TESTOVACÍ PŘESMĚROVÁNÍ — původně určeno pro: <strong>${to}</strong><br>
-                Sdílený report: <a href="${resultUrl}" style="color: #DC2626;">${resultUrl}</a>
-              </p>
-            </td>
-          </tr>` : '';
+  // Data for template
+  const adoptionIndex = result.secondaryMetrics?.adoption_investment_index?.value ?? '-';
+  const adoptionBand = result.secondaryMetrics?.adoption_investment_index?.label ?? 'Nezadáno';
+  const reliabilityBadge = result.secondaryMetrics?.reliability_badge ?? 'Nezadáno';
+
+  // Competence Profile A-F
+  const profile = ['A', 'B', 'C', 'D', 'E', 'F'].map(area => {
+    const score = result.areaScores[area]?.raw ?? 0;
+    const labels: Record<string, string> = {
+      A: 'Základy', B: 'Promptování', C: 'Ověřování',
+      D: 'Workflow', E: 'Systémy', F: 'Tvorba'
+    };
+    return `${area} ${labels[area]}: ${score}/20`;
+  }).join('<br>');
+
+  // Comparison data
+  const freqYou = FREQUENCY_LABELS[result.answers.Q1_2] || 'Nezadáno';
+  const freqAvg = getAverageLabel(aggregates?.questionDistributions?.['Q1_2'], FREQUENCY_LABELS, { never: 0, lt_weekly: 1, weekly: 2, almost_daily: 4, multi_daily: 5 });
+
+  const paidYou = PAID_TOOLS_LABELS[result.answers.Q1_2b] || 'Nezadáno';
+  const paidAvg = getAverageLabel(aggregates?.questionDistributions?.['Q1_2b'], PAID_TOOLS_LABELS, { '0': 0, '1': 1, '2_3': 2, 'up_to_6': 3, 'up_to_10': 4, 'gt_10': 5 });
+
+  const toolsYou = (result.answers.QF2 || []).map((v: string) => TOOL_TYPES_LABELS[v] || v).join(', ') || 'Žádné';
+  const toolsAvg = getTop3Labels(aggregates?.questionDistributions?.['QF2'], TOOL_TYPES_LABELS);
 
   const html = `<!DOCTYPE html>
 <html lang="cs">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Váš AI Competence Report</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; }
+    .header { border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+    .section { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+    .section-title { font-weight: bold; margin-bottom: 10px; text-decoration: underline; }
+    .item { margin-bottom: 5px; }
+    .footer { font-size: 14px; margin-top: 30px; color: #666; }
+    .btn { display: inline-block; background: #DD3C20; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 10px; }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8fafc; padding: 40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+<body>
+  <div class="container">
+    <div class="header">
+      <p>Dobrý den / Ahoj,</p>
+      <p>tady jsou vaše výsledky z diagnostiky: <strong>AI competence framework by Inovatix</strong>.<br>
+      Výsledek berte jako orientační diagnostiku, ne audit – cílem je rychle ukázat, co vám přinese největší posun v praxi.</p>
+    </div>
 
-          <!-- Header -->
-          <tr>
-            <td style="background: #DD3C20; padding: 32px 40px;">
-              <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;">Metodika Inovatix</p>
-              <h1 style="margin: 8px 0 0; color: #ffffff; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">AI Competence Framework</h1>
-            </td>
-          </tr>
+    <div class="section">
+      <div class="section-title">Rychlé shrnutí</div>
+      <div class="item"><strong>Kompetence (Skill):</strong> ${result.totalPercent}% – ${result.level}</div>
+      <div class="item"><strong>Adopce & investice:</strong> ${adoptionIndex}/10 (${adoptionBand})</div>
+      <div class="item"><strong>Spolehlivost práce s fakty:</strong> ${reliabilityBadge}</div>
+    </div>
 
-          <!-- Score Hero -->
-          ${overrideBanner}
-          <tr>
-            <td style="padding: 40px 40px 24px;">
-              <p style="margin: 0 0 8px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #94a3b8;">Váš výsledek</p>
-              <table cellpadding="0" cellspacing="0">
-                <tr>
-                  <td>
-                    <div style="display: inline-block; background: #fff7f5; border: 2px solid #fecaca; border-radius: 12px; padding: 20px 28px; text-align: center;">
-                      <div style="font-size: 48px; font-weight: 900; color: #DD3C20; line-height: 1;">${result.totalPercent}%</div>
-                      <div style="font-size: 13px; font-weight: 700; color: #64748b; margin-top: 4px;">celkové skóre</div>
-                    </div>
-                  </td>
-                  <td style="padding-left: 20px;">
-                    <div style="font-size: 22px; font-weight: 900; color: #0f172a;">${result.level}</div>
-                    <div style="font-size: 15px; color: #64748b; font-weight: 600; margin-top: 2px;">${levelCz}</div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+    <div class="section">
+      <div class="section-title">Profil kompetencí A–F (0–20)</div>
+      <div class="item">${profile}</div>
+    </div>
 
-          <!-- Area Scores -->
-          <tr>
-            <td style="padding: 0 40px 32px;">
-              <p style="margin: 0 0 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #94a3b8;">Kompetenční profil A–F</p>
-              <table width="100%" cellpadding="0" cellspacing="0">
-                ${areaRows}
-              </table>
-            </td>
-          </tr>
+    <div class="section">
+      <div class="section-title">Srovnání s komunitou (anonymní benchmark)</div>
+      <div class="item"><strong>Frekvence používání AI:</strong> vy ${freqYou} • průměr komunity ${freqAvg}</div>
+      <div class="item"><strong>Placené AI nástroje:</strong> vy ${paidYou} • průměr komunity ${paidAvg}</div>
+      <div class="item"><strong>TOP 3 typy nástrojů, které používáte:</strong> ${toolsYou}</div>
+      <div class="item"><strong>Nejčastější TOP 3 v komunitě:</strong> ${toolsAvg}</div>
+    </div>
 
-          <!-- CTA -->
-          <tr>
-            <td style="padding: 0 40px 40px;">
-              <p style="margin: 0 0 20px; font-size: 15px; color: #475569; line-height: 1.6;">
-                Váš kompletní report s doporučeními, srovnáním s komunitou a detailní analýzou je dostupný online.
-              </p>
-              <a href="${resultUrl}"
-                 style="display: inline-block; background: #DD3C20; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-size: 15px; font-weight: 900; letter-spacing: 0.02em;">
-                Zobrazit plný report →
-              </a>
-              <p style="margin: 16px 0 0; font-size: 12px; color: #94a3b8;">
-                Nebo zkopírujte odkaz: <a href="${resultUrl}" style="color: #DD3C20;">${resultUrl}</a>
-              </p>
-            </td>
-          </tr>
+    <div class="section" style="border-bottom: none;">
+      <p>Plný report najdete zde:</p>
+      <a href="${resultUrl}" class="btn">Zobrazit plný report →</a>
+      <p style="font-size: 12px; color: #999; margin-top: 10px;">${resultUrl}</p>
+    </div>
 
-          <!-- Footer -->
-          <tr>
-            <td style="background: #f8fafc; padding: 24px 40px; border-top: 1px solid #e2e8f0;">
-              <p style="margin: 0; font-size: 12px; color: #94a3b8; line-height: 1.6;">
-                Tento email byl odeslán na základě vašeho vyplnění dotazníku AI Competence Framework od Inovatix.<br>
-                Pokud jste si nepřáli obdržet email, omluvte se — příště zaškrtněte políčko „Email nezadám".
-              </p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
-  </table>
+    <div class="footer">
+      Díky a ať vám AI šetří čas i nervy 🙂<br>
+      <strong>Tým Inovatix</strong>
+    </div>
+  </div>
 </body>
 </html>`;
 
@@ -165,9 +175,7 @@ export async function sendResultsEmail(
       body: JSON.stringify({
         from: FROM_EMAIL,
         to: actualTo,
-        subject: isOverride
-          ? `[PRE: ${to}] AI Report — ${result.level} (${result.totalPercent}%)`
-          : `Váš AI Competence Report — ${result.level} (${result.totalPercent}%)`,
+        subject: `Vaše výsledky AI diagnostiky: ${result.totalPercent}% • ${result.level}`,
         html,
       }),
     });
@@ -175,10 +183,9 @@ export async function sendResultsEmail(
       const err = await response.json().catch(() => ({}));
       console.error('Resend email error:', err);
     } else {
-      console.log(`Email sent to ${actualTo} (intended: ${to}) for level ${result.level}`);
+      console.log(`Email sent to ${actualTo} for level ${result.level}`);
     }
   } catch (err) {
     console.error('Failed to send email:', err);
-    // Don't throw — email failure should never block the user from seeing results
   }
 }

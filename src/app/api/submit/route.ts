@@ -51,12 +51,15 @@ export async function POST(request: Request) {
             }, { status: 200 }); // still 200 so the UI shows results
         }
 
+        // Fetch current aggregates for benchmarking
+        const aggregates = await getAggregates().catch(() => null);
+
         // Send results email if user provided their email (not skipped)
         const email = answers.QX2 || answers.Q0_EMAIL;
         if (email && email !== '__skip__' && email.includes('@') && recordId) {
             console.log(`[Email] Attempting to send result to: ${email} for record: ${recordId}`);
             // Fire-and-forget — don't block response on email
-            sendResultsEmail(email, result, recordId)
+            sendResultsEmail(email, result, recordId, aggregates)
                 .then(() => console.log(`[Email] sendResultsEmail triggered successfully for ${email}`))
                 .catch((err) => {
                     console.error('[Email] sendResultsEmail error (non-blocking):', err);
@@ -64,9 +67,6 @@ export async function POST(request: Request) {
         } else {
             console.log('[Email] conditions not met, skipping (email:', email, 'recordId:', recordId, ')');
         }
-
-        // Fetch current aggregates for benchmarking
-        const aggregates = await getAggregates();
 
         return NextResponse.json({ success: true, result, aggregates, recordId });
     } catch (error) {
