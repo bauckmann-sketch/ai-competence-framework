@@ -53,25 +53,8 @@ async function sendLatest() {
         version: fields.Version || 'v10'
     };
 
-    console.log('Fetching aggregates for comparison...');
-    const aggUrl = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(tableName)}`; // This is not quite right for getAggregates, but good enough for mock or I can use the existing function if I import it
-    // Actually, let's just use a simplified fetch here since getAggregates is complex
-    const aggRes = await fetch(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(tableName)}`, {
-        headers: { Authorization: `Bearer ${apiKey}` }
-    });
-    const aggData = await aggRes.json();
-
-    // Simple mock aggregates for test if actual fetch is too complex here
-    const aggregates: any = {
-        questionDistributions: {
-            'Q1_2': { 'almost_daily': 10, 'weekly': 5 },
-            'Q1_2b': { '1': 10, '0': 5 },
-            'QF2': { 'text': 20, 'code': 15, 'graphics': 10 }
-        }
-    };
-
     console.log('Sending email...');
-    await sendResultsEmail(email, result, recordId, aggregates);
+    await sendResultsEmail(email, result, recordId);
     console.log('Done.');
 }
 
