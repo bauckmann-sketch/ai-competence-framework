@@ -1,0 +1,44 @@
+{
+    "schema_version": "1.0",
+    "title": "Market Benchmark (V9)",
+    "note": "Reference benchmark data for V9 methodology (Czech corporate audience).",
+    "benchmarks": {
+        "usage_frequency": {
+            "question_id": "Q1_2",
+            "values": {
+                "never": 5,
+                "lt_weekly": 15,
+                "weekly": 25,
+                "almost_daily": 35,
+                "multi_daily": 20
+            }
+        },
+        "tool_categories_used": {
+            "question_id": "Q1_3",
+            "values": {
+                "chatbots": 90,
+                "translation": 60,
+                "automation": 12,
+                "presentations": 20,
+                "images": 25,
+                "video": 10,
+                "meeting_notes": 15,
+                "voice": 5,
+                "none": 2
+            }
+        },
+        "job_function": {
+            "question_id": "Q0_1",
+            "values": {
+                "mgmt": 22,
+                "mkt": 18,
+                "sales": 14,
+                "analytics": 10,
+                "hr": 8,
+                "it": 12,
+                "admin": 9,
+                "other": 7
+            }
+        }
+    }
+}

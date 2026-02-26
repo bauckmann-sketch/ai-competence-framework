@@ -10,11 +10,12 @@ import scoringV6 from '@/data/v6/scoring.json';
 import scoringV7 from '@/data/v7/scoring.json';
 import scoringV8 from '@/data/v8/scoring.json';
 import scoringV9 from '@/data/v9/scoring.json';
+import scoringV10 from '@/data/v10/scoring.json';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { answers, version = 'v9' } = body;
+        const { answers, version = 'v10' } = body;
 
         if (!answers) {
             return NextResponse.json({ error: 'Answers are required' }, { status: 400 });
@@ -27,10 +28,11 @@ export async function POST(request: Request) {
             v6: scoringV6,
             v7: scoringV7,
             v8: scoringV8,
-            v9: scoringV9
+            v9: scoringV9,
+            v10: scoringV10
         };
 
-        const scoringConfig = scoringConfigs[version] || scoringV9;
+        const scoringConfig = scoringConfigs[version] || scoringV10;
         const result = calculateScore(answers, scoringConfig as any);
 
         // Save anonymized submission with version tag

@@ -15,13 +15,16 @@ import questionsV6 from '@/data/v6/questions.json';
 import questionsV7 from '@/data/v7/questions.json';
 import questionsV8 from '@/data/v8/questions.json';
 import questionsV9 from '@/data/v9/questions.json';
+import questionsV10 from '@/data/v10/questions.json';
+import { LandingPage } from '@/components/landing-page';
+import copyDataV10 from '@/data/v10/copy.json';
 
-type AppState = 'intro' | 'wizard' | 'results';
-type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9';
+type AppState = 'landing' | 'intro' | 'wizard' | 'results';
+type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9' | 'v10';
 
 export default function Home() {
-  const [state, setState] = useState<AppState>('wizard');
-  const [selectedVersion, setSelectedVersion] = useState<Version>('v9');
+  const [state, setState] = useState<AppState>('landing');
+  const [selectedVersion, setSelectedVersion] = useState<Version>('v10');
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [aggregates, setAggregates] = useState<any>(null);
 
@@ -57,8 +60,8 @@ export default function Home() {
 
   const reset = () => {
     setResult(null);
-    setState('wizard');
-    setSelectedVersion('v8');
+    setState('landing');
+    setSelectedVersion('v10');
     localStorage.removeItem('ai-survey-state');
   };
 
@@ -69,13 +72,25 @@ export default function Home() {
     v6: questionsV6,
     v7: questionsV7,
     v8: questionsV8,
-    v9: questionsV9
-  }[selectedVersion] || questionsV9;
+    v9: questionsV9,
+    v10: questionsV10
+  }[selectedVersion] || questionsV10;
 
   return (
     <main className="min-h-screen p-4 md:p-8 lg:p-12">
       <div className="max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
+          {state === 'landing' && (
+            <motion.div
+              key="landing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <LandingPage data={copyDataV10 as any} onStart={() => startSurvey('v10')} />
+            </motion.div>
+          )}
+
           {state === 'intro' && (
             <motion.div
               key="intro"
