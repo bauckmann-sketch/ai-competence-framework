@@ -48,8 +48,8 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
     const isV10 = result.version === 'v10';
     const isV11 = result.version === 'v11';
 
-    // Data selection logic
-    const copyData = (isV11 ? copyDataV11 : (isV10 ? copyDataV10 : (isV9 ? copyDataV9 : (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1))))))) as unknown as CopyData;
+    // Data selection logic — v11 uses v10 copy for display (v11 copy has different schema)
+    const copyData = (isV11 || isV10 ? copyDataV10 : (isV9 ? copyDataV9 : (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1)))))) as unknown as CopyData;
     const marketBenchmark = (isV11 || isV10 ? marketBenchmarkV10 : (isV9 ? marketBenchmarkV9 : (isV8 || isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))))) as unknown as MarketBenchmark;
 
     const marketComparison = useMemo(() => {

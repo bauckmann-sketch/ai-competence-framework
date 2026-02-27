@@ -90,7 +90,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <LandingPage data={copyDataV11 as any} onStart={() => startSurvey('v11')} />
+              <LandingPage data={copyDataV10 as any} onStart={() => startSurvey('v11')} />
             </motion.div>
           )}
 
