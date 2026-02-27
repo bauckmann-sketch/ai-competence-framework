@@ -12,27 +12,35 @@ interface FitnessReportProps {
 export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
     const { level, totalPercent, areaScores } = result;
 
-    // Fitness Personas based on Level
+    // Fitness Personas based on Level — exact match to avoid 'user' matching 'power user'
     const getPersona = (level: string) => {
-        const l = level.toLowerCase();
-        if (l.includes('architect')) return {
-            title: "AI Terminátor / Kulturista",
-            desc: "Tvůj AI benchmark je v oblasti absolutní špičky. Ovládáš nástroje jako profík a tvůj digitální svalový růst už v podstatě nemá kam jít. Jsi připraven na olympiádu!",
+        const l = level.toLowerCase().trim();
+        // v12 archetypy (technical keys from scoring.json)
+        if (l === 'architect') return {
+            title: "AI Architekt",
+            desc: "Tvůj AI benchmark je v oblasti absolutní špičky. Ovládáš nástroje jako profík, máš systémy, agenty i workflow na míru. Jsi připraven na olympiádu!",
             image: "/images/personas/architect.jpg",
             status: "Max Power Mode"
         };
-        if (l.includes('power user')) return {
-            title: "AI Gym Rat / Nadšenec",
-            desc: "V digitální posilovně jsi pečený vařený. Používáš AI efektivně, máš skvělou techniku, ale pár sérií k dokonalosti ti ještě chybí. Tvůj objem je působivý!",
+        if (l === 'builder') return {
+            title: "AI Builder",
+            desc: "Máš solidní systémy a workflow. AI aktivně zapracováváš do práce — nad rámec chatbotů. Jsi blízko vrcholu, pár kroků chybí k mistrovství.",
+            image: "/images/personas/gym-rat.jpg",
+            status: "Ve výstavbě"
+        };
+        if (l === 'power user') return {
+            title: "AI Operátor",
+            desc: "V digitální posilovně jsi doma. Používáš AI efektivně, máš dobrou techniku, ale pár sérií k dokonalosti ještě zbývá. Tvůj objem je působivý!",
             image: "/images/personas/gym-rat.jpg",
             status: "V objemu"
         };
-        if (l.includes('user')) return {
-            title: "AI Víkendový Jogger",
-            desc: "AI občas provětráš, ale většinou jen tak na kochačku. Máš dobrou základní fyzičku, ale pro skutečný digitální svalový nárůst by to chtělo přidat na intenzitě transformace.",
+        if (l === 'user') return {
+            title: "AI Nadšenec",
+            desc: "AI občas provětráš, ale ještě nenaplno. Máš dobrou základní fyzičku — pro skutečný nárůst by to chtělo přidat na intenzitě a systematičnosti.",
             image: "/images/personas/jogger.jpg",
             status: "Rekreační režim"
         };
+        // explorer nebo neznámý level → Gaučový povaleč (0-20%)
         return {
             title: "AI Gaučový povaleč",
             desc: "Zatím jen pozoruješ ty fit lidi z dálky. Nevadí! Každý velký sval začal jako sen. Dneska je tvůj první den v posilovně, tak pojďme zvednout první prompt!",

@@ -395,45 +395,46 @@
     },
     "archetype_logic": {
       "title": "Archetyp",
-      "rule": "Archetyp odvozujte pouze z kompetenčního skóre (skill_score_total, 0–100). Neodvozovat z osy Adopce & investice.",
+      "rule": "Archetyp odvozujte pouze z kompetenčního skóre (skill_score_total, 0–100).",
       "bands": [
         {
           "range": [
             0,
             20
           ],
-          "label": "band_1"
+          "archetype_name": "AI Gaučový povaleč"
         },
         {
           "range": [
             21,
             40
           ],
-          "label": "band_2"
+          "archetype_name": "AI Nadšenec"
         },
         {
           "range": [
             41,
             60
           ],
-          "label": "band_3"
+          "archetype_name": "AI Operátor"
         },
         {
           "range": [
             61,
             80
           ],
-          "label": "band_4"
+          "archetype_name": "AI Builder"
         },
         {
           "range": [
             81,
             100
           ],
-          "label": "band_5"
+          "archetype_name": "AI Architekt"
         }
       ],
-      "ui_note": "Ve výsledku zobrazte vysvětlení: Archetyp = skill, Adopce & investice = samostatná metrika."
+      "ui_note": "Archetyp = kompetence (skill). Adopce & investice zobrazujte zvlášť jako kontext.",
+      "source_metric": "skill_score_total"
     }
   }
 }

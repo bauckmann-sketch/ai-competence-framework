@@ -557,10 +557,9 @@
       "section": "SX",
       "type": "email_optional",
       "required": false,
-      "text": "Chcete dostat výsledky na email? Zadejte svou adresu.",
+      "text": "Pokud chcete zaslat report na email a (v budoucnu) sledovat svůj vývoj dlouhodobě, vložte svůj email. (volitelné)",
       "ui": {
-        "page_id": "final_contact",
-        "skip_label": "Nechci, přeskočit"
+        "page_id": "final_contact"
       }
     }
   ],
@@ -572,6 +571,7 @@
     "change_2026-02-24": "QB2 max_select 3; QF2 removed scripts option",
     "changes_v4": "No question wording changes; output now uses Q1_2b and Q1_3 for community comparison; C brake removed from leveling.",
     "changes_v5": "Q1_3: 'Překladače' nahrazeno volbou 'AI pro kódování (IDE)' (value ide_tools).",
-    "changes_v_12": "Archetype derivation moved to skill_score_total (configured in copy_v_12). No question changes."
+    "changes_v_12": "Archetype derivation moved to skill_score_total (configured in copy_v_12). No question changes.",
+    "fix_qx": "QX1 removed; QX2 is single email_optional with hint."
   }
 }
