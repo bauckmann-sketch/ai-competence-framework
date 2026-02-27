@@ -141,7 +141,7 @@ export function QuestionnaireWizard({ data, onComplete }: WizardProps) {
                             )}
                         </CardHeader>
                         <CardContent className="space-y-4 p-8 pt-0">
-                            {renderQuestionInput(currentQuestion, data, currentAnswer, handleAnswerAndAdvance)}
+                            {renderQuestionInput(currentQuestion, data, currentAnswer, handleAnswerAndAdvance, handleNext)}
                         </CardContent>
                     </Card>
                 </motion.div>
@@ -205,7 +205,8 @@ function renderQuestionInput(
     question: Question,
     data: QuestionnaireData,
     value: any,
-    onChange: (id: string, val: any) => void
+    onChange: (id: string, val: any) => void,
+    onSubmit?: () => void
 ) {
     switch (question.type) {
         case 'scale_0_4':
@@ -370,6 +371,14 @@ function renderQuestionInput(
                             type="email"
                             value={emailValue}
                             onChange={(e) => onChange(question.id, e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    if (emailValue && emailValue.includes('@')) {
+                                        onSubmit?.();
+                                    }
+                                }
+                            }}
                             placeholder="vas@email.cz"
                             className="w-full border-2 p-6 rounded-3xl outline-none transition-all text-xl font-black text-center placeholder:text-slate-300 bg-slate-50 border-slate-200 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 text-slate-900 shadow-inner"
                             autoFocus
