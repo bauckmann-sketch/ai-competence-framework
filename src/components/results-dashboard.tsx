@@ -18,6 +18,7 @@ import copyDataV6 from '@/data/v6/copy.json';
 import copyDataV7 from '@/data/v7/copy.json';
 import copyDataV9 from '@/data/v9/copy.json';
 import copyDataV10 from '@/data/v10/copy.json';
+import copyDataV11 from '@/data/v11/copy.json';
 import marketBenchmarkV1 from '@/data/v1/market_benchmark.json';
 import marketBenchmarkV3 from '@/data/v3/market_benchmark.json';
 import marketBenchmarkV4 from '@/data/v4/market_benchmark.json';
@@ -45,10 +46,11 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
     const isV8 = result.version === 'v8';
     const isV9 = result.version === 'v9';
     const isV10 = result.version === 'v10';
+    const isV11 = result.version === 'v11';
 
     // Data selection logic
-    const copyData = (isV10 ? copyDataV10 : (isV9 ? copyDataV9 : (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1)))))) as unknown as CopyData;
-    const marketBenchmark = (isV10 ? marketBenchmarkV10 : (isV9 ? marketBenchmarkV9 : (isV8 || isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))))) as unknown as MarketBenchmark;
+    const copyData = (isV11 ? copyDataV11 : (isV10 ? copyDataV10 : (isV9 ? copyDataV9 : (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1))))))) as unknown as CopyData;
+    const marketBenchmark = (isV11 || isV10 ? marketBenchmarkV10 : (isV9 ? marketBenchmarkV9 : (isV8 || isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))))) as unknown as MarketBenchmark;
 
     const marketComparison = useMemo(() => {
         if (!aggregates) return null;

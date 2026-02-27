@@ -1,4 +1,4 @@
-// v8 - final_v4 data: secondary_metrics, no C brake, dual-axis
+// v11 - latest version
 import { NextResponse } from 'next/server';
 import { saveSubmission, getAggregates } from '@/lib/persistence';
 import { calculateScore } from '@/lib/scoring-engine';
@@ -11,11 +11,12 @@ import scoringV7 from '@/data/v7/scoring.json';
 import scoringV8 from '@/data/v8/scoring.json';
 import scoringV9 from '@/data/v9/scoring.json';
 import scoringV10 from '@/data/v10/scoring.json';
+import scoringV11 from '@/data/v11/scoring.json';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { answers, version = 'v10' } = body;
+        const { answers, version = 'v11' } = body;
 
         if (!answers) {
             return NextResponse.json({ error: 'Answers are required' }, { status: 400 });
@@ -29,10 +30,11 @@ export async function POST(request: Request) {
             v7: scoringV7,
             v8: scoringV8,
             v9: scoringV9,
-            v10: scoringV10
+            v10: scoringV10,
+            v11: scoringV11,
         };
 
-        const scoringConfig = scoringConfigs[version] || scoringV10;
+        const scoringConfig = scoringConfigs[version] || scoringV11;
         const result = calculateScore(answers, scoringConfig as any);
 
         // Save anonymized submission with version tag
