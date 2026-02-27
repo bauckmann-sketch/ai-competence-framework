@@ -17,16 +17,18 @@ import questionsV8 from '@/data/v8/questions.json';
 import questionsV9 from '@/data/v9/questions.json';
 import questionsV10 from '@/data/v10/questions.json';
 import questionsV11 from '@/data/v11/questions.json';
+import questionsV12 from '@/data/v12/questions.json';
 import { LandingPage } from '@/components/landing-page';
 import copyDataV10 from '@/data/v10/copy.json';
 import copyDataV11 from '@/data/v11/copy.json';
+import copyDataV12 from '@/data/v12/copy.json';
 
 type AppState = 'landing' | 'intro' | 'wizard' | 'results';
-type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9' | 'v10' | 'v11';
+type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9' | 'v10' | 'v11' | 'v12';
 
 export default function Home() {
   const [state, setState] = useState<AppState>('landing');
-  const [selectedVersion, setSelectedVersion] = useState<Version>('v11');
+  const [selectedVersion, setSelectedVersion] = useState<Version>('v12');
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [aggregates, setAggregates] = useState<any>(null);
 
@@ -63,7 +65,7 @@ export default function Home() {
   const reset = () => {
     setResult(null);
     setState('landing');
-    setSelectedVersion('v11');
+    setSelectedVersion('v12');
     localStorage.removeItem('ai-survey-state');
   };
 
@@ -77,7 +79,8 @@ export default function Home() {
     v9: questionsV9,
     v10: questionsV10,
     v11: questionsV11,
-  }[selectedVersion] || questionsV11;
+    v12: questionsV12,
+  }[selectedVersion] || questionsV12;
 
   return (
     <main className="min-h-screen p-4 md:p-8 lg:p-12">
@@ -90,7 +93,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <LandingPage data={copyDataV10 as any} onStart={() => startSurvey('v11')} />
+              <LandingPage data={copyDataV12 as any} onStart={() => startSurvey('v12')} />
             </motion.div>
           )}
 
