@@ -553,33 +553,14 @@
       }
     },
     {
-      "id": "QX1",
-      "section": "SX",
-      "type": "single_choice",
-      "required": true,
-      "text": "Pokud chcete zaslat report na email a (v budoucnu) sledovat svůj vývoj dlouhodobě, zadejte svůj email. Chcete report zaslat?",
-      "options": [
-        {
-          "value": "yes",
-          "label": "Ano"
-        },
-        {
-          "value": "no",
-          "label": "Ne"
-        }
-      ],
-      "ui": {
-        "page_id": "final_contact"
-      }
-    },
-    {
       "id": "QX2",
       "section": "SX",
       "type": "email_optional",
       "required": false,
-      "text": "Email (volitelné – pro zaslání reportu)",
+      "text": "Chcete dostat výsledky na email? Zadejte svou adresu.",
       "ui": {
-        "page_id": "final_contact"
+        "page_id": "final_contact",
+        "skip_label": "Nechci, přeskočit"
       }
     }
   ],
