@@ -1,0 +1,312 @@
+{
+    "_note": "=== UI STRINGS — texty uživatelského rozhraní ===",
+    "_note2": "JSON nepodporuje komentáře, proto jsou vysvětlivky jako '_note' klíče (začínají podtržítkem).",
+    "_note3": "Jak používat: změňte text u libovolného klíče a uložte. Kód soubor načítá automaticky.",
+    "_note4": "Pro překlad: zkopírujte celý soubor jako ui_strings.en.json a přeložte hodnoty (ne klíče!).",
+    "wizard": {
+        "_note": "--- Texty v průběhu dotazníku ---",
+        "progress": {
+            "_note": "Lišta postupu nahoře",
+            "section_prefix": "Sekce",
+            "question_counter": "{current} / {total}",
+            "classified_question_badge": "KLASIFIKAČNÍ OTÁZKA — NEPOČÍTÁ SE DO VÝSLEDKU"
+        },
+        "navigation": {
+            "_note": "Tlačítka pro pohyb mezi otázkami",
+            "back": "Zpět",
+            "next": "Dále",
+            "submit": "Zobrazit výsledky",
+            "submitting": "Počítám výsledky…"
+        },
+        "email_step": {
+            "_note": "Poslední krok — zadání emailu (nepovinné)",
+            "skip_button": "Přeskočit",
+            "submit_button": "Odeslat a zobrazit výsledky",
+            "placeholder": "vas@email.cz"
+        },
+        "multi_select": {
+            "_note": "Pokyny pro otázky s více výběry",
+            "instruction_prefix": "Vyberte max.",
+            "instruction_suffix": "možnosti",
+            "instruction_exactly": "Vyberte právě jednu možnost"
+        },
+        "scale": {
+            "_note": "Popisky škály 0–4",
+            "labels": {
+                "0": "Ne / nikdy",
+                "1": "Základy",
+                "2": "Prakticky",
+                "3": "Pokročile",
+                "4": "Systematicky"
+            }
+        }
+    },
+    "results": {
+        "_note": "--- Texty na stránce s výsledky ---",
+        "sticky_header": {
+            "_note": "Fixní hlavička při scrollování",
+            "report_label": "Report",
+            "score_label": "Skóre"
+        },
+        "kpi_cards": {
+            "_note": "Čtyři karty s klíčovými čísly",
+            "total_score": "Celkové skóre",
+            "ai_level": "AI Level",
+            "improving_hint": "Průběžně se zlepšujete",
+            "community": "Komunita (vzorek)",
+            "community_hint": "Počet lidí v databázi pro srovnání",
+            "vs_average": "Vs. Průměr",
+            "vs_average_unit": "bodů",
+            "vs_average_hint": "Oproti průměru komunity"
+        },
+        "competence_section": {
+            "_note": "Graf kompetencí A–F",
+            "badge": "Klíčový výsledek",
+            "title": "Kompetenční profil A–F",
+            "subtitle": "Váš výsledek napříč 6 klíčovými oblastmi metodiky Inovatix.",
+            "guide_title": "Průvodce oblastmi",
+            "radar_legend_user": "Vaše skóre",
+            "radar_legend_avg": "Průměr komunity",
+            "area_prefix": "Co tato oblast měří:",
+            "recommendations_label": "Doporučené kroky"
+        },
+        "community_section": {
+            "_note": "Grafy srovnání s komunitou",
+            "badge": "Srovnání s komunitou",
+            "title": "Jak odpovídali ostatní?",
+            "subtitle_prefix": "Vaše volby ve srovnání s",
+            "subtitle_suffix": "dalšími účastníky.",
+            "user_marker": "= vaše volba",
+            "no_data": "Zatím žádná data"
+        },
+        "brake_section": {
+            "_note": "Sekce 'metodická brzda' — zobrazí se jen když brzda platí",
+            "prefix": "Metodická brzda:",
+            "effect_label": "Efekt na výsledek:"
+        },
+        "reset_button": "Resetovat a začít znovu"
+    },
+    "fitness_report": {
+        "_note": "--- AI Fitness profil (karta na začátku výsledků) ---",
+        "_note2": "Každý archetype odpovídá úrovni ze scoring.json → leveling.levels[].name",
+        "section_badge": "AI Fitness Profil",
+        "muscle_section_title": "Tréninkový plán svalových skupin",
+        "max_power_label": "Max Power",
+        "archetypes": {
+            "_note": "Klíče musí odpovídat hodnotám 'name' v scoring.json → leveling.levels (lowercase)",
+            "architect": {
+                "title": "AI Architekt",
+                "desc": "Tvůj AI benchmark je v oblasti absolutní špičky. Ovládáš nástroje jako profík, máš systémy, agenty i workflow na míru. Jsi připraven na olympiádu!",
+                "status": "Max Power Mode"
+            },
+            "builder": {
+                "title": "AI Builder",
+                "desc": "Máš solidní systémy a workflow. AI aktivně zapracováváš do práce — nad rámec chatbotů. Jsi blízko vrcholu, pár kroků chybí k mistrovství.",
+                "status": "Ve výstavbě"
+            },
+            "power user": {
+                "title": "AI Operátor",
+                "desc": "V digitální posilovně jsi doma. Používáš AI efektivně, máš dobrou techniku, ale pár sérií k dokonalosti ještě zbývá. Tvůj objem je působivý!",
+                "status": "V objemu"
+            },
+            "user": {
+                "title": "AI Nadšenec",
+                "desc": "AI občas provětráš, ale ještě nenaplno. Máš dobrou základní fyzičku — pro skutečný nárůst by to chtělo přidat na intenzitě a systematičnosti.",
+                "status": "Rekreační režim"
+            },
+            "explorer": {
+                "_note": "Fallback — zobrazí se pro nejnižší level (Explorer) nebo neznámý level",
+                "title": "AI Gaučový povaleč",
+                "desc": "Zatím jen pozoruješ ty fit lidi z dálky. Nevadí! Každý velký sval začal jako sen. Dneska je tvůj první den v posilovně, tak pojďme zvednout první prompt!",
+                "status": "Zahřívání"
+            }
+        },
+        "muscle_groups": {
+            "_note": "Popisky 6 svalových skupin odpovídají oblastem A–F",
+            "A": "Základy & Core",
+            "B": "Bicepsy (Síla zadání)",
+            "C": "Balanční cvičení (Stabilita)",
+            "D": "Kardio (Denní rutina)",
+            "E": "Výdrž (Systémy a opakovatelnost)",
+            "F": "Mobilita (Kreativní rozsah)"
+        }
+    },
+    "cta_section": {
+        "_note": "--- Sekce výzvy k akci pod výsledky ---",
+        "heading": "Váš výsledek je výchozí bod",
+        "heading_highlight": "výchozí bod",
+        "subheading": "Víme, co umíte a kde máte rezervy. Vyberte, jak chcete pokračovat.",
+        "for_companies": {
+            "_note": "Levá karta — firmy",
+            "badge": "Pro firmy",
+            "title": "Zavést AI do celého týmu",
+            "description": "Workshop nebo program na míru pro 5–200+ lidí. Mapování firemního workflow a návrhy využití AI. Měřitelná úspora času od prvního dne.",
+            "button": "Poptat implementaci"
+        },
+        "for_individuals": {
+            "_note": "Pravá karta — jednotlivci",
+            "badge": "Pro jednotlivce",
+            "title": "Školení pro jednotlivce",
+            "description": "Školení základů i pokročilých technik a nástrojů. Konzultace nebo workshop zaměřený přesně na oblasti, kde ztrácíte čas a potenciál.",
+            "button": "Zjistit možnosti"
+        },
+        "whatsapp": {
+            "_note": "WhatsApp blok pod kartami",
+            "badge": "WhatsApp skupina",
+            "title": "Novinky ze světa AI",
+            "subtitle": "AI novinky několikrát týdně, bez spamu.",
+            "button_mobile": "Přidat se do skupiny",
+            "button_desktop": "Otevřít odkaz (bez naskenování)",
+            "qr_caption": "Naskenujte a přidejte se",
+            "url": "https://chat.whatsapp.com/GQDdu5fvzSn5XYis1MkvWb"
+        }
+    },
+    "implementation_modal": {
+        "_note": "--- Formulář pro poptávku firemní implementace ---",
+        "badge": "Firemní implementace",
+        "title": "Zavést AI do vaší firmy",
+        "subtitle": "Vyplňte pár otázek (60 s) a dostanete orientační nabídku do 24 h.",
+        "fields": {
+            "people_label": "Počet lidí k vyškolení",
+            "depth_label": "Hloubka programu",
+            "depth_hint": "Čím hlubší program, tím větší a trvalejší dopad.",
+            "speed_label": "Délka programu",
+            "format_label": "Formát školení",
+            "contact_label": "Kontakt",
+            "email_placeholder": "Email *",
+            "phone_placeholder": "Telefon",
+            "company_placeholder": "Firma"
+        },
+        "price_estimate": {
+            "label": "Orientační cena",
+            "hint": "Kalkulace: skupiny po 15 lidech × 40 000 Kč / školící den. Přesná nabídka po upřesnění."
+        },
+        "consents": {
+            "contact": "Souhlasím s kontaktováním ohledně nabídky Inovatix",
+            "newsletter": "Chci dostávat newsletters a novinky (volitelné)"
+        },
+        "submit_button": "Odeslat poptávku",
+        "submitting": "Odesílám…",
+        "error_no_consent": "Souhlas s kontaktováním je povinný.",
+        "error_send": "Nepodařilo se odeslat. Zkuste znovu.",
+        "error_connection": "Chyba připojení. Zkuste znovu.",
+        "success": {
+            "title": "Poptávka odeslána!",
+            "message": "Ozveme se vám do 24 hodin s orientační nabídkou na míru. Připravíme ji na základě vašich výsledků.",
+            "close_button": "Zpět na výsledky"
+        },
+        "options": {
+            "_note": "Možnosti výběru v formuláři",
+            "people": [
+                {
+                    "value": "1-10",
+                    "label": "1–10 lidí"
+                },
+                {
+                    "value": "11-30",
+                    "label": "11–30 lidí"
+                },
+                {
+                    "value": "31-80",
+                    "label": "31–80 lidí"
+                },
+                {
+                    "value": "81-200",
+                    "label": "81–200 lidí"
+                },
+                {
+                    "value": "200+",
+                    "label": "200+ lidí"
+                }
+            ],
+            "depth": [
+                {
+                    "value": "start",
+                    "label": "🟢 Start — AI základy + bezpečný provoz"
+                },
+                {
+                    "value": "practical",
+                    "label": "🟡 Praktický výkon — workflow + šablony"
+                },
+                {
+                    "value": "advanced",
+                    "label": "🔴 Pokročilá implementace — automatizace + governance"
+                }
+            ],
+            "speed": [
+                {
+                    "value": "1",
+                    "label": "1 den – rychlý start"
+                },
+                {
+                    "value": "2",
+                    "label": "2–3 dny – reálný posun"
+                },
+                {
+                    "value": "8",
+                    "label": "4–8 týdnů – implementace + změna procesů"
+                }
+            ],
+            "format": [
+                {
+                    "value": "Online",
+                    "label": "Online"
+                },
+                {
+                    "value": "Onsite",
+                    "label": "Na místě"
+                },
+                {
+                    "value": "Kombinace",
+                    "label": "Kombinace"
+                }
+            ]
+        }
+    },
+    "training_modal": {
+        "_note": "--- Formulář pro poptávku školení pro jednotlivce ---",
+        "badge": "Školení pro jednotlivce",
+        "title": "Školení na míru",
+        "subtitle": "Vyberte, jak hluboko se chcete ponořit. Poskytneme vám konkrétní nabídku termínů do 24 h.",
+        "depth_label": "Jak hluboké znalosti chcete získat?",
+        "email_placeholder": "Email *",
+        "consents": {
+            "contact": "Souhlasím s kontaktováním ohledně nabídky Inovatix",
+            "newsletter": "Chci dostávat newsletters a novinky (volitelné)"
+        },
+        "submit_button": "Chci možnosti školení",
+        "submitting": "Odesílám…",
+        "error_no_consent": "Souhlas s kontaktováním je povinný.",
+        "error_send": "Nepodařilo se odeslat. Zkuste znovu.",
+        "error_connection": "Chyba připojení. Zkuste znovu.",
+        "success": {
+            "title": "Výborně!",
+            "message": "Do 24 hodin vám pošleme e-mail se 3 balíčky individuálního školení a možnostmi termínů.",
+            "close_button": "Zpět na výsledky"
+        },
+        "options": {
+            "depth": [
+                {
+                    "value": "start",
+                    "label": "🟢 Chci začít — online kurz ~16h",
+                    "price": "cca 8 000 Kč"
+                },
+                {
+                    "value": "intensive",
+                    "label": "🟡 Naučit se rychle — 40h za 3 měsíce",
+                    "price": "cca 15 000 Kč"
+                },
+                {
+                    "value": "select",
+                    "label": "🔵 Vyberu si kurzy — 1 200 Kč / kurz",
+                    "price": "od 1 200 Kč"
+                },
+                {
+                    "value": "coaching",
+                    "label": "🔴 Individuální lekce a konzultace",
+                    "price": "na dotaz"
+                }
+            ]
+        }
+    }
+}

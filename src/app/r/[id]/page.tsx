@@ -4,6 +4,7 @@ import { calculateScore } from '@/lib/scoring-engine';
 import scoringV10 from '@/data/v10/scoring.json';
 import scoringV11 from '@/data/v11/scoring.json';
 import scoringV12 from '@/data/v12/scoring.json';
+import scoringV13 from '@/data/v13/scoring.json';
 import scoringV9 from '@/data/v9/scoring.json';
 import scoringV8 from '@/data/v8/scoring.json';
 import scoringV7 from '@/data/v7/scoring.json';
@@ -62,7 +63,7 @@ export default async function SharedResultPage({ params }: PageProps) {
         // ignore parse error
     }
 
-    const version: string = fields.Version || 'v12';
+    const version: string = fields.Version || 'v13';
     const scoringConfigs: Record<string, any> = {
         v1: scoringV1,
         v3: scoringV3,
@@ -74,8 +75,9 @@ export default async function SharedResultPage({ params }: PageProps) {
         v10: scoringV10,
         v11: scoringV11,
         v12: scoringV12,
+        v13: scoringV13,
     };
-    const scoringConfig = scoringConfigs[version] || scoringV12;
+    const scoringConfig = scoringConfigs[version] || scoringV13;
 
     // Recalculate result from stored answers (source of truth)
     const result = calculateScore(answers, scoringConfig as any);

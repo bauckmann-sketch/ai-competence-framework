@@ -25,7 +25,6 @@ export async function POST(request: Request) {
             QC1: '2', QC2: '2', QC3: '2',
             QD1: '2', QD2: '2', QD3: '2',
             QE1: '2', QE2: '2', QE3: '2',
-            QF1: '2', QF2: '2', QF3: '2',
         };
 
         const result = calculateScore(fakeAnswers, scoringV8 as any);

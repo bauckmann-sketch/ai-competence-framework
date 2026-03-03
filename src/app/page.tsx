@@ -18,17 +18,19 @@ import questionsV9 from '@/data/v9/questions.json';
 import questionsV10 from '@/data/v10/questions.json';
 import questionsV11 from '@/data/v11/questions.json';
 import questionsV12 from '@/data/v12/questions.json';
+import questionsV13 from '@/data/v13/questions.json';
 import { LandingPage } from '@/components/landing-page';
 import copyDataV10 from '@/data/v10/copy.json';
 import copyDataV11 from '@/data/v11/copy.json';
 import copyDataV12 from '@/data/v12/copy.json';
+import copyDataV13 from '@/data/v13/copy.json';
 
 type AppState = 'landing' | 'intro' | 'wizard' | 'results';
-type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9' | 'v10' | 'v11' | 'v12';
+type Version = 'v1' | 'v3' | 'v4' | 'v6' | 'v7' | 'v8' | 'v9' | 'v10' | 'v11' | 'v12' | 'v13';
 
 export default function Home() {
   const [state, setState] = useState<AppState>('landing');
-  const [selectedVersion, setSelectedVersion] = useState<Version>('v12');
+  const [selectedVersion, setSelectedVersion] = useState<Version>('v13');
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [aggregates, setAggregates] = useState<any>(null);
 
@@ -65,7 +67,7 @@ export default function Home() {
   const reset = () => {
     setResult(null);
     setState('landing');
-    setSelectedVersion('v12');
+    setSelectedVersion('v13');
     localStorage.removeItem('ai-survey-state');
   };
 
@@ -80,7 +82,8 @@ export default function Home() {
     v10: questionsV10,
     v11: questionsV11,
     v12: questionsV12,
-  }[selectedVersion] || questionsV12;
+    v13: questionsV13,
+  }[selectedVersion] || questionsV13;
 
   return (
     <main className="min-h-screen p-4 md:p-8 lg:p-12">
@@ -93,7 +96,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <LandingPage data={copyDataV10 as any} onStart={() => startSurvey('v12')} />
+              <LandingPage data={copyDataV10 as any} onStart={() => startSurvey('v13')} />
             </motion.div>
           )}
 

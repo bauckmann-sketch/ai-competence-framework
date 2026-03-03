@@ -20,6 +20,7 @@ import copyDataV9 from '@/data/v9/copy.json';
 import copyDataV10 from '@/data/v10/copy.json';
 import copyDataV11 from '@/data/v11/copy.json';
 import copyDataV12 from '@/data/v12/copy.json';
+import copyDataV13 from '@/data/v13/copy.json';
 import marketBenchmarkV1 from '@/data/v1/market_benchmark.json';
 import marketBenchmarkV3 from '@/data/v3/market_benchmark.json';
 import marketBenchmarkV4 from '@/data/v4/market_benchmark.json';
@@ -49,10 +50,14 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
     const isV10 = result.version === 'v10';
     const isV11 = result.version === 'v11';
     const isV12 = result.version === 'v12';
+    const isV13 = result.version === 'v13';
 
-    // Data selection logic — v11 uses v10 copy for display (v11 copy has different schema)
-    const copyData = (isV12 ? copyDataV12 : (isV11 || isV10 ? copyDataV10 : (isV9 ? copyDataV9 : (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1))))))) as unknown as CopyData;
-    const marketBenchmark = (isV12 || isV11 || isV10 ? marketBenchmarkV10 : (isV9 ? marketBenchmarkV9 : (isV8 || isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))))) as unknown as MarketBenchmark;
+    // v13 has full copy.json (A-E areas), v11 uses v10 copy fallback
+    const copyData = (isV13 ? copyDataV13 : (isV12 ? copyDataV12 : (isV11 || isV10 ? copyDataV10 : (isV9 ? copyDataV9 : (isV8 || isV7 ? copyDataV7 : (isV6 ? copyDataV6 : (isV4 ? copyDataV4 : (isV3 ? copyDataV3 : copyDataV1)))))))) as unknown as CopyData;
+    const marketBenchmark = (isV13 || isV12 || isV11 || isV10 ? marketBenchmarkV10 : (isV9 ? marketBenchmarkV9 : (isV8 || isV7 ? marketBenchmarkV7 : (isV6 ? marketBenchmarkV6 : (isV4 ? marketBenchmarkV4 : (isV3 ? marketBenchmarkV3 : marketBenchmarkV1)))))) as unknown as MarketBenchmark;
+
+    // v13 areas: A-E only (F removed)
+    const activeAreas = (isV13) ? ['A', 'B', 'C', 'D', 'E'] : ['A', 'B', 'C', 'D', 'E', 'F'];
 
     const marketComparison = useMemo(() => {
         if (!aggregates) return null;
@@ -61,7 +66,8 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
 
     // avgAreaScores is stored as raw points (0–20), same scale as user.raw.
     // Guard: if avg values look like percent (>20), convert them to raw points.
-    const chartData = Object.entries(result.areaScores).map(([area, data]) => {
+    const chartData = activeAreas.map((area) => {
+        const data = result.areaScores[area] ?? { raw: 0, max: 20, percent: 0 };
         const rawAvg = aggregates?.avgAreaScores?.[area] || 0;
         const scaledAvg = rawAvg > 20 ? Math.round(rawAvg * 20 / 100) : rawAvg;
         return {
@@ -184,8 +190,8 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                         <Badge className="bg-primary/5 text-primary border-primary/20 px-4 py-1.5 rounded-full uppercase text-[10px] font-black tracking-widest ring-4 ring-primary/5 text-xs">
                             Klíčový výsledek
                         </Badge>
-                        <h2 className="text-4xl font-black tracking-tight text-slate-900">Kompetenční profil A–F</h2>
-                        <p className="text-slate-500 max-w-2xl mx-auto">Váš výsledek napříč 6 klíčovými oblastmi metodiky Inovatix.</p>
+                        <h2 className="text-4xl font-black tracking-tight text-slate-900">Kompetenční profil A–{activeAreas[activeAreas.length - 1]}</h2>
+                        <p className="text-slate-500 max-w-2xl mx-auto">Váš výsledek napříč {activeAreas.length} klíčovými oblastmi metodiky Inovatix.</p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -250,7 +256,10 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                                                 <div className="space-y-2 pt-2">
                                                     <span className="text-[10px] uppercase font-black text-slate-400 tracking-widest">Doporučené kroky</span>
                                                     <div className="space-y-2">
-                                                        {(data.raw < 14 ? copyData.recommendations_by_area_low[area] : levelInfo.next_steps.slice(0, 2)).map((rec, i) => (
+                                                        {(data.raw < 14
+                                                            ? (copyData.recommendations_by_area_low?.[area] ?? [])
+                                                            : (levelInfo?.next_steps ?? []).slice(0, 2)
+                                                        ).map((rec, i) => (
                                                             <div key={i} className="flex gap-2 items-start text-xs">
                                                                 <BarChart3 className="h-3 w-4 text-primary mt-1 shrink-0" />
                                                                 <span>{rec}</span>
@@ -268,7 +277,7 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                 </section>
 
                 {/* SECTION 3: Srovnání s komunitou – TOP3 distribuce */}
-                {aggregates && aggregates.count > 0 && (
+                {aggregates != null && (
                     <section className="space-y-10 pt-8">
                         <div className="flex flex-col items-center text-center space-y-4">
                             <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-4 py-1.5 rounded-full uppercase text-[10px] font-black tracking-widest ring-4 ring-blue-50">
@@ -331,23 +340,25 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                                     none: 'Nic z toho',
                                 }}
                             />
-                            <CommunityBarCard
-                                title="Jaké výstupy tvoříte s AI?"
-                                subtitle="Nejčastější typy tvorby (oblast F, max. 3)"
-                                questionId="QF2"
-                                userAnswers={result.answers}
-                                distributions={aggregates.questionDistributions}
-                                totalRespondents={aggregates.count}
-                                optionLabels={{
-                                    text: 'Texty',
-                                    presentations: 'Prezentace',
-                                    graphics: 'Grafika / obrázky',
-                                    video: 'Video',
-                                    code: 'Kód (programy)',
-                                    voice: 'Hlas / zvuk',
-                                    none: 'Netvořím obsah',
-                                }}
-                            />
+                            {!isV13 && (
+                                <CommunityBarCard
+                                    title="Jaké výstupy tvoříte s AI?"
+                                    subtitle="Nejčastější typy tvorby (oblast F, max. 3)"
+                                    questionId="QF2"
+                                    userAnswers={result.answers}
+                                    distributions={aggregates.questionDistributions}
+                                    totalRespondents={aggregates.count}
+                                    optionLabels={{
+                                        text: 'Texty',
+                                        presentations: 'Prezentace',
+                                        graphics: 'Grafika / obrázky',
+                                        video: 'Video',
+                                        code: 'Kód (programy)',
+                                        voice: 'Hlas / zvuk',
+                                        none: 'Netvořím obsah',
+                                    }}
+                                />
+                            )}
                         </div>
                         <div className="mt-8">
                             <CommunityBarCard

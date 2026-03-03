@@ -1,102 +1,70 @@
-// Fitness Report v2 - Updated with 6 muscle groups
+// Fitness Report — simplified for v13 (no archetype names, A-E areas)
 import React from 'react';
 import { Card, CardContent } from './ui/card';
-import { Progress } from './ui/progress';
-import { Anchor, Dumbbell, ShieldCheck, Activity, Settings, Palette, Zap, Target } from 'lucide-react';
+import { Anchor, Dumbbell, ShieldCheck, Activity, Settings, Palette } from 'lucide-react';
 import { CalculationResult } from '@/types';
 
 interface FitnessReportProps {
     result: CalculationResult;
 }
 
+const LEVEL_BG: Record<string, string> = {
+    explorer: 'from-slate-800 to-slate-900',
+    user: 'from-blue-900 to-slate-900',
+    'power user': 'from-indigo-900 to-slate-900',
+    builder: 'from-orange-900 to-slate-900',
+    architect: 'from-red-900 to-slate-900',
+};
+
+const LEVEL_STATUS: Record<string, string> = {
+    explorer: 'Začínáte',
+    user: 'Rekreační provoz',
+    'power user': 'V provozu',
+    builder: 'Ve výstavbě',
+    architect: 'Orchestrátor',
+};
+
+// Ordered muscle groups — F shown only for pre-v13 versions
+const ALL_MUSCLE_GROUPS = [
+    { id: 'A', name: 'Základy & orientace', icon: <Anchor className="w-4 h-4" /> },
+    { id: 'B', name: 'Promptování & kontext', icon: <Dumbbell className="w-4 h-4" /> },
+    { id: 'C', name: 'Ověřování & AI literacy', icon: <ShieldCheck className="w-4 h-4" /> },
+    { id: 'D', name: 'Workflow & produktivita', icon: <Activity className="w-4 h-4" /> },
+    { id: 'E', name: 'Systémy & automatizace', icon: <Settings className="w-4 h-4" /> },
+    { id: 'F', name: 'Tvorba & komunikace', icon: <Palette className="w-4 h-4" /> },
+];
+
 export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
-    const { level, totalPercent, areaScores } = result;
+    const { level, totalPercent, areaScores, version } = result;
 
-    // Fitness Personas based on Level — exact match to avoid 'user' matching 'power user'
-    const getPersona = (level: string) => {
-        const l = level.toLowerCase().trim();
-        // v12 archetypy (technical keys from scoring.json)
-        if (l === 'architect') return {
-            title: "AI Architekt",
-            desc: "Tvůj AI benchmark je v oblasti absolutní špičky. Ovládáš nástroje jako profík, máš systémy, agenty i workflow na míru. Jsi připraven na olympiádu!",
-            image: "/images/personas/architect.jpg",
-            status: "Max Power Mode"
-        };
-        if (l === 'builder') return {
-            title: "AI Builder",
-            desc: "Máš solidní systémy a workflow. AI aktivně zapracováváš do práce — nad rámec chatbotů. Jsi blízko vrcholu, pár kroků chybí k mistrovství.",
-            image: "/images/personas/gym-rat.jpg",
-            status: "Ve výstavbě"
-        };
-        if (l === 'power user') return {
-            title: "AI Operátor",
-            desc: "V digitální posilovně jsi doma. Používáš AI efektivně, máš dobrou techniku, ale pár sérií k dokonalosti ještě zbývá. Tvůj objem je působivý!",
-            image: "/images/personas/gym-rat.jpg",
-            status: "V objemu"
-        };
-        if (l === 'user') return {
-            title: "AI Nadšenec",
-            desc: "AI občas provětráš, ale ještě nenaplno. Máš dobrou základní fyzičku — pro skutečný nárůst by to chtělo přidat na intenzitě a systematičnosti.",
-            image: "/images/personas/jogger.jpg",
-            status: "Rekreační režim"
-        };
-        // explorer nebo neznámý level → Gaučový povaleč (0-20%)
-        return {
-            title: "AI Gaučový povaleč",
-            desc: "Zatím jen pozoruješ ty fit lidi z dálky. Nevadí! Každý velký sval začal jako sen. Dneska je tvůj první den v posilovně, tak pojďme zvednout první prompt!",
-            image: "/images/personas/couch-potato.jpg",
-            status: "Zahřívání"
-        };
-    };
+    const isV13 = version === 'v13';
+    const activeGroups = isV13
+        ? ALL_MUSCLE_GROUPS.filter(g => g.id !== 'F')
+        : ALL_MUSCLE_GROUPS;
 
-    const persona = getPersona(level);
-
-    // Mapping skill areas to "Muscle Groups" A-F
-    const muscleGroups = [
-        { id: 'A', name: 'Základy & Core', score: areaScores['A']?.percent || 0, icon: <Anchor className="w-4 h-4" /> },
-        { id: 'B', name: 'Bicepsy (Síla zadání)', score: areaScores['B']?.percent || 0, icon: <Dumbbell className="w-4 h-4" /> },
-        { id: 'C', name: 'Balanční cvičení (Stabilita)', score: areaScores['C']?.percent || 0, icon: <ShieldCheck className="w-4 h-4" /> },
-        { id: 'D', name: 'Kardio (Denní rutina)', score: areaScores['D']?.percent || 0, icon: <Activity className="w-4 h-4" /> },
-        { id: 'E', name: 'Výdrž (Systémy a opakovatelnost)', score: areaScores['E']?.percent || 0, icon: <Settings className="w-4 h-4" /> },
-        { id: 'F', name: 'Mobilita (Kreativní rozsah)', score: areaScores['F']?.percent || 0, icon: <Palette className="w-4 h-4" /> },
-    ];
+    const l = (level ?? '').toLowerCase().trim();
+    const bg = LEVEL_BG[l] ?? 'from-slate-800 to-slate-900';
+    const status = LEVEL_STATUS[l] ?? 'Vyhodnoceno';
 
     return (
         <Card className="border-2 border-primary/20 shadow-xl overflow-hidden mb-12 bg-white">
-            <div className="bg-slate-950 p-6 md:p-10 relative overflow-hidden">
-                {/* Decorative background elements for Dark UI feel */}
+            <div className={`bg-gradient-to-br ${bg} p-6 md:p-10 relative overflow-hidden`}>
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -ml-32 -mb-32" />
 
                 <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-                    <div className="flex-shrink-0 relative">
-                        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-slate-800 shadow-2xl overflow-hidden bg-slate-900">
-                            <img
-                                src={persona.image}
-                                alt={persona.title}
-                                className="w-full h-full object-cover opacity-90"
-                            />
-                        </div>
-                        <div className="absolute -bottom-2 right-4 bg-primary text-white text-xs font-black px-4 py-1.5 rounded-full shadow-lg z-10 uppercase tracking-wider">
-                            {persona.status}
-                        </div>
-                    </div>
-
                     <div className="text-center md:text-left space-y-4 flex-grow">
                         <div className="inline-block bg-primary/20 text-primary border border-primary/30 text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-[0.2em]">
-                            AI Fitness Profil
+                            AI Competence Report
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
-                            {persona.title}
+                            {level}
                         </h2>
-                        <p className="text-xl text-slate-400 max-w-2xl leading-relaxed font-medium">
-                            {persona.desc}
-                        </p>
                     </div>
 
                     <div className="flex-shrink-0 bg-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-800 flex flex-col items-center justify-center min-w-[180px]">
                         <span className="text-6xl font-black text-primary drop-shadow-[0_0_15px_rgba(221,60,32,0.4)]">{totalPercent}%</span>
-                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mt-2">Max Power</span>
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mt-2">Celkové skóre</span>
                     </div>
                 </div>
             </div>
@@ -104,35 +72,37 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
             <CardContent className="p-8 md:p-12">
                 <div className="flex items-center gap-4 mb-10">
                     <div className="h-px bg-slate-100 flex-grow" />
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Tréninkový plán svalových skupin</h3>
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">
+                        Kompetenční oblasti
+                    </h3>
                     <div className="h-px bg-slate-100 flex-grow" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
-                    {muscleGroups.map((group) => (
-                        <div key={group.id} className="space-y-4 group">
-                            <div className="flex justify-between items-end">
-                                <span className="flex items-center gap-3 font-black text-slate-800 text-sm">
-                                    <span className="bg-slate-950 p-2 rounded-xl text-primary shadow-lg group-hover:scale-110 transition-transform">
-                                        {group.icon}
+                    {activeGroups.map((group) => {
+                        const score = areaScores[group.id]?.percent || 0;
+                        return (
+                            <div key={group.id} className="space-y-4 group">
+                                <div className="flex justify-between items-end">
+                                    <span className="flex items-center gap-3 font-black text-slate-800 text-sm">
+                                        <span className="bg-slate-950 p-2 rounded-xl text-primary shadow-lg group-hover:scale-110 transition-transform">
+                                            {group.icon}
+                                        </span>
+                                        {group.name}
                                     </span>
-                                    {group.name}
-                                </span>
-                                <span className="text-sm font-black text-primary mb-1">
-                                    {group.score}%
-                                </span>
+                                    <span className="text-sm font-black text-primary mb-1">{score}%</span>
+                                </div>
+                                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-primary to-orange-500 transition-all duration-1000 ease-out rounded-full shadow-[0_0_10px_rgba(221,60,32,0.2)]"
+                                        style={{ width: `${score}%` }}
+                                    />
+                                </div>
                             </div>
-                            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                                <div
-                                    className="h-full bg-gradient-to-r from-primary to-orange-500 transition-all duration-1000 ease-out rounded-full shadow-[0_0_10px_rgba(221,60,32,0.2)]"
-                                    style={{ width: `${group.score}%` }}
-                                />
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </CardContent>
         </Card>
-
     );
 };

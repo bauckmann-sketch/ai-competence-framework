@@ -1,4 +1,4 @@
-// v12 - latest version
+// v13 - latest version
 import { NextResponse } from 'next/server';
 import { saveSubmission, getAggregates } from '@/lib/persistence';
 import { calculateScore } from '@/lib/scoring-engine';
@@ -13,11 +13,12 @@ import scoringV9 from '@/data/v9/scoring.json';
 import scoringV10 from '@/data/v10/scoring.json';
 import scoringV11 from '@/data/v11/scoring.json';
 import scoringV12 from '@/data/v12/scoring.json';
+import scoringV13 from '@/data/v13/scoring.json';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { answers, version = 'v12' } = body;
+        const { answers, version = 'v13' } = body;
 
         if (!answers) {
             return NextResponse.json({ error: 'Answers are required' }, { status: 400 });
@@ -34,9 +35,10 @@ export async function POST(request: Request) {
             v10: scoringV10,
             v11: scoringV11,
             v12: scoringV12,
+            v13: scoringV13,
         };
 
-        const scoringConfig = scoringConfigs[version] || scoringV12;
+        const scoringConfig = scoringConfigs[version] || scoringV13;
         const result = calculateScore(answers, scoringConfig as any);
 
         // Save anonymized submission with version tag
@@ -50,7 +52,7 @@ export async function POST(request: Request) {
             return NextResponse.json({
                 success: false,
                 saveError: saveError?.message || 'Unknown save error',
-                result,
+                result: { ...result, version },
                 aggregates
             }, { status: 200 }); // still 200 so the UI shows results
         }
@@ -72,7 +74,7 @@ export async function POST(request: Request) {
             console.log('[Email] conditions not met, skipping (email:', email, 'recordId:', recordId, ')');
         }
 
-        return NextResponse.json({ success: true, result, aggregates, recordId });
+        return NextResponse.json({ success: true, result: { ...result, version }, aggregates, recordId });
     } catch (error) {
         console.error('Submission error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
