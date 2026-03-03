@@ -43,17 +43,21 @@ export async function sendResultsEmail(
     D: 'Workflow', E: 'Systémy', F: 'Tvorba'
   };
 
-  const profileHtml = ['A', 'B', 'C', 'D', 'E', 'F'].map(area => {
+  // v13 has only areas A-E (F removed)
+  const isV13 = (result as any).version === 'v13';
+  const activeAreas = isV13 ? ['A', 'B', 'C', 'D', 'E'] : ['A', 'B', 'C', 'D', 'E', 'F'];
+
+  const profileHtml = activeAreas.map(area => {
     const score = result.areaScores[area]?.raw ?? 0;
     return areaRow(area, areaLabels[area], score);
   }).join('');
 
   // Radar Chart generation via QuickChart.io
-  const radarData = ['A', 'B', 'C', 'D', 'E', 'F'].map(a => result.areaScores[a]?.raw ?? 0);
+  const radarData = activeAreas.map(a => result.areaScores[a]?.raw ?? 0);
   const chartConfig = {
     type: 'radar',
     data: {
-      labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+      labels: activeAreas,
       datasets: [{
         label: 'Profil AI kompetencí',
         data: radarData,

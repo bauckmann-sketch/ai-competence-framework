@@ -141,7 +141,7 @@ export function QuestionnaireWizard({ data, onComplete }: WizardProps) {
                             )}
                         </CardHeader>
                         <CardContent className="space-y-4 p-8 pt-0">
-                            {renderQuestionInput(currentQuestion, data, currentAnswer, handleAnswerAndAdvance, handleNext)}
+                            {renderQuestionInput(currentQuestion, data, currentAnswer, handleAnswerAndAdvance, handleNext, handleAnswer)}
                         </CardContent>
                     </Card>
                 </motion.div>
@@ -206,7 +206,8 @@ function renderQuestionInput(
     data: QuestionnaireData,
     value: any,
     onChange: (id: string, val: any) => void,
-    onSubmit?: () => void
+    onSubmit?: () => void,
+    onChangeOnly?: (id: string, val: any) => void,
 ) {
     switch (question.type) {
         case 'scale_0_4':
@@ -294,7 +295,7 @@ function renderQuestionInput(
                                 type="text"
                                 placeholder="Vaše odpověď..."
                                 className="w-full bg-slate-50 border-2 border-slate-200 p-5 rounded-2xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all text-slate-900 font-bold"
-                                onChange={(e) => onChange(question.id + '_other', e.target.value)}
+                                onChange={(e) => (onChangeOnly ?? onChange)(question.id + '_other', e.target.value)}
                                 autoFocus
                             />
                         </motion.div>
