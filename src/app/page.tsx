@@ -33,6 +33,7 @@ export default function Home() {
   const [selectedVersion, setSelectedVersion] = useState<Version>('v13');
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [aggregates, setAggregates] = useState<any>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const startSurvey = (version: Version) => {
     setSelectedVersion(version);
@@ -40,6 +41,8 @@ export default function Home() {
   };
 
   const handleComplete = async (answers: Record<string, any>) => {
+    if (submitting) return; // guard against double-submit
+    setSubmitting(true);
     try {
       const res = await fetch('/api/submit', {
         method: 'POST',
@@ -48,7 +51,6 @@ export default function Home() {
       });
       const data = await res.json();
       if (data.result) {
-        // Show results whether or not there was a save error
         if (data.saveError) {
           console.warn('Save error (results still shown):', data.saveError);
         }
@@ -61,6 +63,8 @@ export default function Home() {
       }
     } catch (err) {
       console.error('Failed to submit survey', err);
+    } finally {
+      setSubmitting(false);
     }
   };
 

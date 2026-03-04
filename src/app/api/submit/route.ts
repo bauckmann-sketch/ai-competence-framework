@@ -15,6 +15,9 @@ import scoringV11 from '@/data/v11/scoring.json';
 import scoringV12 from '@/data/v12/scoring.json';
 import scoringV13 from '@/data/v13/scoring.json';
 
+// Guard against duplicate emails (e.g. React Strict Mode double-invoke, double-click)
+const emailsSent = new Set<string>();
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -62,16 +65,19 @@ export async function POST(request: Request) {
 
         // Send results email if user provided their email (not skipped)
         const email = answers.QX2 || answers.Q0_EMAIL;
-        if (email && email !== '__skip__' && email.includes('@') && recordId) {
-            console.log(`[Email] Attempting to send result to: ${email} for record: ${recordId}`);
+        const emailKey = `${recordId}:${email}`;
+        if (email && email !== '__skip__' && email.includes('@') && recordId && !emailsSent.has(emailKey)) {
+            emailsSent.add(emailKey);
+            console.log(`[Email] Sending to: ${email} for record: ${recordId}`);
             // Fire-and-forget — don't block response on email
-            sendResultsEmail(email, result, recordId)
-                .then(() => console.log(`[Email] sendResultsEmail triggered successfully for ${email}`))
+            sendResultsEmail(email, { ...result, version } as any, recordId)
+                .then(() => console.log(`[Email] Sent OK for ${email}`))
                 .catch((err) => {
-                    console.error('[Email] sendResultsEmail error (non-blocking):', err);
+                    emailsSent.delete(emailKey); // allow retry on error
+                    console.error('[Email] Error (non-blocking):', err);
                 });
         } else {
-            console.log('[Email] conditions not met, skipping (email:', email, 'recordId:', recordId, ')');
+            console.log('[Email] Skip — conditions not met or already sent (email:', email, 'recordId:', recordId, ')');
         }
 
         return NextResponse.json({ success: true, result: { ...result, version }, aggregates, recordId });
