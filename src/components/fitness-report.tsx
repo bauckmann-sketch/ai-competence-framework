@@ -3,10 +3,13 @@ import React from 'react';
 import { Card, CardContent } from './ui/card';
 import { Anchor, Dumbbell, ShieldCheck, Activity, Settings, Palette } from 'lucide-react';
 import { CalculationResult } from '@/types';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
 import copyData from '@/data/v10/copy.json';
+import type { AggregateStats } from '@/types';
 
 interface FitnessReportProps {
     result: CalculationResult;
+    aggregates?: AggregateStats | null;
 }
 
 const LEVEL_BG: Record<string, string> = {
@@ -42,7 +45,7 @@ function getLevelCopy(level: string): { tagline?: string; description?: string }
     return key ? lc[key] : {};
 }
 
-export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
+export const FitnessReport: React.FC<FitnessReportProps> = ({ result, aggregates }) => {
     const { level, totalPercent, areaScores, version } = result;
 
     const isV13 = version === 'v13';
@@ -94,38 +97,69 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
                 </div>
             </div>
 
-            <CardContent className="p-8 md:p-12">
-                <div className="flex items-center gap-4 mb-10">
+            <CardContent className="p-6 md:p-10">
+                <div className="flex items-center gap-4 mb-8">
                     <div className="h-px bg-slate-100 flex-grow" />
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">
-                        Kompetenční oblasti
-                    </h3>
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Kompetenční oblasti</h3>
                     <div className="h-px bg-slate-100 flex-grow" />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
-                    {activeGroups.map((group) => {
-                        const score = areaScores[group.id]?.percent || 0;
-                        return (
-                            <div key={group.id} className="space-y-4 group">
-                                <div className="flex justify-between items-end">
-                                    <span className="flex items-center gap-3 font-black text-slate-800 text-sm">
-                                        <span className="bg-slate-950 p-2 rounded-xl text-primary shadow-lg group-hover:scale-110 transition-transform">
-                                            {group.icon}
+                {/* 2-column: radar left, bars right */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    {/* Radar chart */}
+                    <div className="h-56 md:h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RadarChart data={activeGroups.map(g => {
+                                const avg = aggregates?.avgAreaScores?.[g.id] ?? 0;
+                                const rawAvg = avg > 20 ? Math.round(avg * 20 / 100) : avg;
+                                return {
+                                    area: g.id,
+                                    user: areaScores[g.id]?.raw ?? 0,
+                                    avg: rawAvg,
+                                    fullMark: 20,
+                                };
+                            })}>
+                                <PolarGrid stroke="#e2e8f0" strokeWidth={1} />
+                                <PolarAngleAxis dataKey="area" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 700 }} />
+                                <Radar name="Váš výsledek" dataKey="user" stroke="#DD3C20" fill="#DD3C20" fillOpacity={0.2} strokeWidth={2.5} dot={{ r: 3, fill: '#DD3C20' }} />
+                                {aggregates && (
+                                    <Radar name="Průměr komunity" dataKey="avg" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.07} strokeWidth={1.5} strokeDasharray="4 3" />
+                                )}
+                            </RadarChart>
+                        </ResponsiveContainer>
+                        {aggregates && (
+                            <p className="text-center text-[10px] text-slate-400 -mt-2">
+                                <span className="inline-block w-3 h-0.5 bg-primary rounded mr-1 align-middle" />Váš výsledek
+                                <span className="inline-block w-3 h-0.5 bg-slate-300 rounded mx-2 align-middle" />Průměr komunity
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Progress bars */}
+                    <div className="grid grid-cols-1 gap-5">
+                        {activeGroups.map((group) => {
+                            const score = areaScores[group.id]?.percent || 0;
+                            return (
+                                <div key={group.id} className="space-y-2 group">
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center gap-2 font-black text-slate-800 text-xs">
+                                            <span className="bg-slate-950 p-1.5 rounded-lg text-primary shadow group-hover:scale-110 transition-transform">
+                                                {group.icon}
+                                            </span>
+                                            {group.name}
                                         </span>
-                                        {group.name}
-                                    </span>
-                                    <span className="text-sm font-black text-primary mb-1">{score}%</span>
+                                        <span className="text-xs font-black text-primary">{score}%</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-gradient-to-r from-primary to-orange-500 transition-all duration-1000 ease-out rounded-full"
+                                            style={{ width: `${score}%` }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-primary to-orange-500 transition-all duration-1000 ease-out rounded-full shadow-[0_0_10px_rgba(221,60,32,0.2)]"
-                                        style={{ width: `${score}%` }}
-                                    />
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
             </CardContent>
         </Card>
