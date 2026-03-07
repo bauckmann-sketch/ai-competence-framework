@@ -434,15 +434,16 @@
     "sections": [
       {
         "id": "hero",
-        "headline": "AI Competence Framework by Inovatix",
-        "subheadline": "Zjistěte, jak jste na tom s AI ve srovnání s komunitou.",
+        "headline": "Zůstane vaše pozice v roce 2026 relevantní?",
+        "subheadline": "Nechte si vypracovat osobní diagnostiku 5 klíčových AI kompetencí, které dnes oddělují přetížené administrativní pracovníky od digitálních lídrů.",
         "bullets": [
-          "Okamžité vyhodnocení",
+          "2 minuty, anonymně",
           "Srovnání s komunitou",
-          "Anonymní bez e-mailu"
+          "Okamžitý výsledek zdarma"
         ],
         "disclaimer": "Výsledek je orientační diagnostika, ne audit.",
-        "cta": "Začít dotazník"
+        "cta": "Chci svou osobní diagnostiku (zdarma)",
+        "headline_accent": "Zjistěte svůj AI Index za 2 minuty."
       },
       {
         "id": "what_you_get",
