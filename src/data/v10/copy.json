@@ -173,7 +173,8 @@
         "Vyberte 2 opakovatelné úlohy, kde AI ušetří čas (např. emaily, shrnutí, návrhy textů).",
         "Používejte jednu šablonu zadání (cíl → kontext → formát → kontrolní kritéria).",
         "Zaveďte jednoduché ověřování faktů (min. 1 primární zdroj u faktických tvrzení)."
-      ]
+      ],
+      "tagline": "Jste na začátku cesty. Největší zisk přijde už ze 2–3 opakovatelných návyků."
     },
     "User": {
       "headline": "User",
@@ -182,7 +183,8 @@
         "Vytvořte si 3–5 uložených prompt šablon pro nejčastější úlohy.",
         "U faktických výstupů zaveďte kontrolní krok (zdroje + rychlá verifikace).",
         "Zkuste 1 asistent / system instrukce pro opakující se styl a formát výstupů."
-      ]
+      ],
+      "tagline": "AI máte v povědomí, ale ještě ne plně v systému. Čas stavět návyky."
     },
     "Power User": {
       "headline": "Power User",
@@ -191,7 +193,8 @@
         "Standardizujte 1 pracovní proces (SOP) s AI: vstupy → prompt → kontrola → výstup.",
         "Zvažte práci se zdroji (např. NotebookLM) pro spolehlivější odpovědi nad podklady.",
         "Nastavte 1 jednoduchou automatizaci nebo asistenta pro opakující se výstupy."
-      ]
+      ],
+      "tagline": "V provozu. Máte postup a umíte iterovat — teď to naložte do systému."
     },
     "Builder": {
       "headline": "Builder",
@@ -200,7 +203,8 @@
         "Zaveďte kontrolní kritéria kvality (checklist) pro klíčové typy výstupů.",
         "Vybudujte knihovnu šablon/asistentů pro tým (konzistentní styl i struktura).",
         "Rozšiřte automatizace o monitoring a lidskou kontrolu tam, kde je riziko."
-      ]
+      ],
+      "tagline": "Stavíte a škálujete. Jste v top 15 % — důraz nyní na kvalitu a governance."
     },
     "Architect": {
       "headline": "Architect",
@@ -209,7 +213,8 @@
         "Definujte metriky dopadu (čas, kvalita, chybovost) pro klíčové AI workflow.",
         "Zaveďte pravidla práce se zdroji a citlivými daty (role-based přístupy).",
         "Navrhněte roadmapu: kde AI přidá největší hodnotu v příštích 90 dnech."
-      ]
+      ],
+      "tagline": "Systémový hráč. AI máte jako součást DNA své práce — jste v top 5 %."
     }
   },
   "brakes_copy": {
@@ -551,5 +556,13 @@
         "cta": "Začít dotazník"
       }
     ]
+  },
+  "lead_confirmation_email": {
+    "subject": "Děkujeme za zájem o Inovatix — ozveme se do 24 hodin",
+    "greeting": "Dobrý den,",
+    "body_training": "děkujeme za vaši poptávku vzdělávání. Náš tým ji přijal a ozve se vám do 24 hodin s konkrétní nabídkou a možnými termíny.",
+    "body_implementation": "děkujeme za vaši poptávku firemní implementace AI. Náš tým ji přijal a ozve se vám do 24 hodin s orientační nabídkou na míru.",
+    "footer": "Tým Inovatix",
+    "ps": "P.S. Mezitím můžete sdílet váš AI Competence Report s kolegy."
   }
 }
