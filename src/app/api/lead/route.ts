@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         const isImpl = lead_type === 'implementation';
         const subject = isImpl
             ? `[LEAD – Implementace] ${email}${body.company ? ` · ${body.company}` : ''}`
-            : `[LEAD – Školení 1:1] ${email}`;
+            : `[LEAD – Vzdělání pro jednotlivce] ${email}`;
 
         const html = buildLeadEmail(body);
 
@@ -84,7 +84,7 @@ function buildLeadEmail(body: any): string {
     } = body;
 
     const isImpl = lead_type === 'implementation';
-    const typeLabel = isImpl ? '🏢 Firemní implementace' : '👤 Individuální školení 1:1';
+    const typeLabel = isImpl ? '🏢 Firemní implementace' : '👤 Vzdělání pro jednotlivce';
     const now = new Date().toLocaleString('cs-CZ', { timeZone: 'Europe/Prague' });
 
     const areaRows = area_scores
@@ -101,6 +101,8 @@ function buildLeadEmail(body: any): string {
         ${row('Prioritní oblasti', Array.isArray(priority_areas) ? priority_areas.join(', ') : priority_areas)}
         ${row('Orientační cena', price_range, true)}
     ` : `
+        ${row('Telefon', phone)}
+        ${row('Zájem o', body.depth)}
         ${row('Co chce zlepšit', Array.isArray(improve_areas) ? improve_areas.join(', ') : improve_areas)}
         ${row('Preferovaný formát', preferred_format)}
     `;
@@ -150,7 +152,7 @@ function buildLeadEmail(body: any): string {
     </table>
 
     ${areaRows ? `
-    <p style="margin:20px 0 8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;color:#94a3b8;">Oblasti A–F</p>
+    <p style="margin:20px 0 8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;color:#94a3b8;">Oblasti A–E</p>
     <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
       <tr>${areaRows}</tr>
     </table>` : ''}
