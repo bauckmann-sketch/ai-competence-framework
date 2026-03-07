@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
 
 /**
- * Event tracking endpoint — logs events to Airtable "Events" table.
+ * Event tracking endpoint — saves events to the existing Airtable Submissions table.
+ * Uses EVT_ prefix in ID field to distinguish event rows from quiz submissions.
  * Body: { event: string, properties?: Record<string, unknown>, ts?: string }
- *
- * Tracked events:
- *   webinar_click           — user clicked "Zobrazit termíny" on results page
- *   training_lead_sent      — user submitted individual training inquiry
- *   implementation_lead_sent — user submitted company implementation inquiry
  */
 export async function POST(request: Request) {
     try {
@@ -21,19 +17,23 @@ export async function POST(request: Request) {
         // Always log to console (visible in Vercel function logs)
         console.log(`[TRACK] ${event}`, JSON.stringify(properties ?? {}));
 
-        // Save to Airtable "Events" table if configured
         const apiKey = process.env.AIRTABLE_API_KEY;
         const baseId = process.env.AIRTABLE_BASE_ID;
-        const eventsTable = process.env.AIRTABLE_EVENTS_TABLE || 'Events';
+        const tableName = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
 
         if (apiKey && baseId) {
-            const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(eventsTable)}`;
+            const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(tableName)}`;
+
+            // Reuse existing Submissions table columns — EVT_ prefix makes events easy to filter
             const fields: Record<string, any> = {
-                'Event': event,
+                'ID': `EVT_${event}_${Date.now()}`,
                 'Timestamp': ts || new Date().toISOString(),
-                'Properties': JSON.stringify(properties ?? {}),
-                'Level': properties?.level ?? '',
-                'Score': properties?.score ?? null,
+                'Level': String(properties?.level ?? ''),
+                'Score': typeof properties?.score === 'number' ? properties.score : null,
+                'Version': event,  // repurpose Version field as event name
+                'Group': 'event_track',
+                'Email': '',
+                'Answers (JSON)': JSON.stringify({ event, ...properties }),
             };
 
             const r = await fetch(url, {
@@ -46,16 +46,16 @@ export async function POST(request: Request) {
             });
 
             if (!r.ok) {
-                // Log but don't fail — tracking must never break the user flow
                 const err = await r.json().catch(() => ({}));
-                console.warn('[TRACK] Airtable save failed:', err);
+                console.warn('[TRACK] Airtable save failed:', JSON.stringify(err));
+            } else {
+                console.log(`[TRACK] Saved to Airtable: ${event}`);
             }
         }
 
         return NextResponse.json({ ok: true });
     } catch (err) {
-        // Silently swallow errors — tracking must never break the user flow
         console.error('[TRACK] Error:', err);
-        return NextResponse.json({ ok: true }); // still 200
+        return NextResponse.json({ ok: true }); // always 200 — never block user
     }
 }
