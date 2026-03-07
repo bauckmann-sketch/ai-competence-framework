@@ -263,6 +263,7 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
         const a = result.answers?.['QX2'] || result.answers?.['Q0_EMAIL'] || '';
         return a === '__skip__' ? '' : a;
     });
+    const [phone, setPhone] = useState('');
     const [consentContact, setConsentContact] = useState(false);
     const [consentNewsletter, setConsentNewsletter] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -282,6 +283,7 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                 body: JSON.stringify({
                     lead_type: 'training_1to1',
                     email,
+                    phone,
                     depth: selectedDepth,
                     estimated_price: selectedDepthInfo?.price,
                     role: result.answers?.['Q0_1'],
@@ -317,9 +319,9 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     <div className="space-y-1 pr-8">
                         <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1">
                             <GraduationCap className="h-3.5 w-3.5 text-slate-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Školení pro jednotlivce</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Pro jednotlivce</span>
                         </div>
-                        <h2 className="text-2xl font-black text-slate-900 leading-tight">Školení na míru</h2>
+                        <h2 className="text-2xl font-black text-slate-900 leading-tight">Vzdělání pro jednotlivce</h2>
                         <p className="text-sm text-slate-500">Vyberte, jak hluboko se chcete ponořit. Poskytneme vám konkrétní nabídku termínů do 24 h.</p>
                     </div>
 
@@ -328,8 +330,8 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                             {DEPTH_INDIVIDUAL_OPTS.map(opt => (
                                 <button key={opt.value} type="button" onClick={() => setSelectedDepth(opt.value)}
                                     className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all flex justify-between items-center ${selectedDepth === opt.value
-                                            ? 'border-primary bg-primary/5'
-                                            : 'border-slate-200 hover:border-primary/40'
+                                        ? 'border-primary bg-primary/5'
+                                        : 'border-slate-200 hover:border-primary/40'
                                         }`}>
                                     <span className="text-sm font-semibold">{opt.label}</span>
                                     <span className={`text-sm font-black whitespace-nowrap ml-4 ${selectedDepth === opt.value ? 'text-primary' : 'text-slate-400'
@@ -341,6 +343,7 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
 
                     <div className="border-t border-slate-100 pt-6 space-y-4">
                         <Input placeholder="Email *" value={email} onChange={setEmail} required type="email" />
+                        <Input placeholder="Telefon" value={phone} onChange={setPhone} type="tel" />
                         <div className="space-y-3">
                             <Checkbox checked={consentContact} onChange={setConsentContact} required
                                 label="Souhlasím s kontaktováním ohledně nabídky Inovatix" />
