@@ -2,8 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 import { CalculationResult } from '@/types';
-import { Building2, GraduationCap, X, ExternalLink, ChevronRight, Send, RefreshCw } from 'lucide-react';
+import { Building2, GraduationCap, X, ExternalLink, ChevronRight, Send, RefreshCw, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { track } from '@/lib/track';
+import copyData from '@/data/v10/copy.json';
 
 const WHATSAPP_URL = 'https://chat.whatsapp.com/GQDdu5fvzSn5XYis1MkvWb';
 const WHATSAPP_QR = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(WHATSAPP_URL)}&format=png&margin=12&color=000000&bgcolor=ffffff`;
@@ -170,7 +172,7 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     instrument_version: result.version,
                 }),
             });
-            if (r.ok) { setSubmitted(true); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
+            if (r.ok) { setSubmitted(true); track('implementation_lead_sent', { level: result.level, score: result.totalPercent }); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
         } catch { setError('Chyba připojení. Zkuste znovu.'); }
         setSubmitting(false);
     };
@@ -298,7 +300,7 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     instrument_version: result.version,
                 }),
             });
-            if (r.ok) { setSubmitted(true); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
+            if (r.ok) { setSubmitted(true); track('training_lead_sent', { level: result.level, score: result.totalPercent }); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
         } catch { setError('Chyba připojení. Zkuste znovu.'); }
         setSubmitting(false);
     };
@@ -364,7 +366,53 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
     );
 }
 
-// ─── WhatsApp block ───────────────────────────────────────────────────────────
+// ─── Webinar block ────────────────────────────────────────────────────────────
+function WebinarBlock({ result }: { result: CalculationResult }) {
+    const wb = (copyData as any).webinar_block ?? {};
+    return (
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[28px] overflow-hidden shadow-xl border border-slate-700">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+                {/* Text side */}
+                <div className="md:col-span-3 p-8 flex flex-col justify-center space-y-4">
+                    <div className="flex items-center gap-2">
+                        <span className="bg-green-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{wb.badge ?? 'ZDARMA'}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{wb.eyebrow}</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white leading-tight">{wb.title}</h3>
+                    <p className="text-slate-400 text-sm leading-relaxed">{wb.description}</p>
+                    {wb.bullets && (
+                        <ul className="space-y-2">
+                            {(wb.bullets as string[]).map((b, i) => (
+                                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                                    <span className="text-green-400 mt-0.5 shrink-0">✓</span> {b}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    <a
+                        href={wb.cta_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => track('webinar_click', { level: result.level, score: result.totalPercent })}
+                        className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-black py-3.5 px-6 rounded-2xl text-sm transition-colors shadow-lg shadow-green-900/30 w-fit mt-2"
+                    >
+                        <Calendar className="h-4 w-4" />
+                        {wb.cta_label}
+                    </a>
+                </div>
+                {/* Visual side */}
+                <div className="md:col-span-2 hidden md:flex items-center justify-center p-8">
+                    <div className="text-center space-y-3">
+                        <div className="text-7xl">🎓</div>
+                        <p className="text-slate-400 text-xs font-semibold">Live webináře každý týden</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── WhatsApp block ────────────────────────────────────────────────────────────
 function WhatsAppBlock() {
     return (
         <div className="bg-gradient-to-r from-[#1a3c2a] to-[#0d2218] rounded-[28px] overflow-hidden shadow-xl">
@@ -474,6 +522,9 @@ export function CtaSection({ result, onReset }: { result: CalculationResult; onR
                     </div>
                 </div>
             </div>
+
+            {/* Webinar block */}
+            <WebinarBlock result={result} />
 
             {/* WhatsApp block */}
             <WhatsAppBlock />
