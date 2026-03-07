@@ -96,7 +96,7 @@ function HeroRadarChart() {
                 <PolarAngleAxis dataKey="area" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 700 }} />
                 <Radar name="Váš výsledek" dataKey="user" stroke="#DD3C20" fill="#DD3C20" fillOpacity={0.2} strokeWidth={2} dot={{ r: 3, fill: '#DD3C20' }} />
                 <Radar name="Komunita" dataKey="avg" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.08} strokeWidth={1.5} strokeDasharray="4 3" />
-                <Tooltip formatter={(v: any, name: string) => [`${v}/20`, name]} contentStyle={{ fontSize: 11 }} />
+                <Tooltip formatter={(v: any, name?: string) => [`${v}/20`, name ?? '']} contentStyle={{ fontSize: 11 }} />
             </RadarChart>
         </ResponsiveContainer>
     );
@@ -219,7 +219,11 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
 
                                     {/* Level badge */}
                                     <div className="bg-gradient-to-r from-orange-900 to-slate-900 rounded-2xl px-4 py-3 flex items-center gap-3">
-                                        <div className="text-2xl">🏗️</div>
+                                        <img
+                                            src="/images/personas/builder.jpg"
+                                            alt="Builder"
+                                            className="w-9 h-9 rounded-full object-cover border-2 border-orange-400/50 shrink-0"
+                                        />
                                         <div>
                                             <div className="text-[10px] text-orange-300 font-black uppercase tracking-widest">Vaše úroveň</div>
                                             <div className="text-sm font-black text-white">Builder</div>
@@ -228,11 +232,7 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
                                     </div>
                                 </div>
 
-                                {/* Floating "community" badge */}
-                                <div className="absolute -top-3 -right-3 bg-white rounded-2xl shadow-lg border border-slate-100 px-3 py-2 flex items-center gap-2">
-                                    <Users className="h-4 w-4 text-primary" />
-                                    <span className="text-xs font-black text-slate-700">+2 400 respondentů</span>
-                                </div>
+
                             </div>
                         </div>
                     </motion.div>
