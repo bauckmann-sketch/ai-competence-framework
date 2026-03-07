@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isValidEmail } from '@/lib/email';
 
 // Lead capture endpoint — saves lead + result snapshot, sends email to bauckmann@inovatix.cz
 // Body: { lead_type, email, ...contact, ...formData, ...resultSnapshot }
@@ -7,7 +8,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { email, consent_marketing, lead_type } = body;
 
-        if (!email || !email.includes('@')) {
+        if (!email || !isValidEmail(email)) {
             return NextResponse.json({ error: 'Vyžadujeme platný email' }, { status: 400 });
         }
         if (!consent_marketing) {
