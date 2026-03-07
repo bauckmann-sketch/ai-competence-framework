@@ -18,6 +18,10 @@ import {
     Plus,
     Minus
 } from 'lucide-react';
+import {
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+    ResponsiveContainer, Legend, Tooltip
+} from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -111,8 +115,19 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
 
     return (
         <div className="bg-slate-50 min-h-screen font-inter selection:bg-primary/10">
+            {/* LOGO HEADER */}
+            <div className="flex justify-center pt-8 pb-0 px-6">
+                <a href="https://www.inovatix.cz" target="_blank" rel="noopener noreferrer">
+                    <img
+                        src="/images/logo-inovatix-dark.svg"
+                        alt="Inovatix"
+                        className="h-10 md:h-12 w-auto"
+                    />
+                </a>
+            </div>
+
             {/* 1. HERO SECTION */}
-            <Section className="pt-24 pb-16 text-center">
+            <Section className="pt-10 pb-16 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -251,13 +266,72 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
                     </div>
                     <div className="relative group">
                         <div className="absolute -inset-4 bg-primary/20 rounded-[40px] blur-2xl group-hover:bg-primary/30 transition-all" />
-                        <div className="relative bg-white p-4 rounded-[40px] border border-slate-200 shadow-2xl">
-                            <div className="aspect-[4/3] bg-slate-100 rounded-[32px] flex flex-col items-center justify-center p-8 text-center space-y-4">
-                                <div className="h-20 w-20 rounded-full border-4 border-slate-200 border-t-primary animate-spin-slow mb-4" />
-                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Vizualizace výsledků</p>
-                                <div className="h-2 w-32 bg-slate-200 rounded-full" />
-                                <div className="h-2 w-48 bg-slate-200 rounded-full" />
-                                <div className="h-2 w-24 bg-slate-200 rounded-full" />
+                        <div className="relative bg-white p-6 rounded-[40px] border border-slate-200 shadow-2xl">
+                            {/* Level badge */}
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ukázka výsledku</span>
+                                <span className="bg-primary/10 text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Power User</span>
+                            </div>
+
+                            {/* Radar chart */}
+                            <div className="h-64 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <RadarChart
+                                        cx="50%" cy="50%" outerRadius="72%"
+                                        data={[
+                                            { subject: 'A', user: 16, avg: 11, fullMark: 20 },
+                                            { subject: 'B', user: 14, avg: 10, fullMark: 20 },
+                                            { subject: 'C', user: 12, avg: 9, fullMark: 20 },
+                                            { subject: 'D', user: 15, avg: 12, fullMark: 20 },
+                                            { subject: 'E', user: 10, avg: 8, fullMark: 20 },
+                                        ]}
+                                    >
+                                        <PolarGrid stroke="#e2e8f0" />
+                                        <PolarAngleAxis
+                                            dataKey="subject"
+                                            tick={{ fill: '#475569', fontSize: 13, fontWeight: 900 }}
+                                        />
+                                        <PolarRadiusAxis angle={90} domain={[0, 20]} tick={false} axisLine={false} />
+                                        <Radar
+                                            name="Vás výsledek"
+                                            dataKey="user"
+                                            stroke="#DD3C20"
+                                            fill="#DD3C20"
+                                            fillOpacity={0.45}
+                                        />
+                                        <Radar
+                                            name="Průměr komunity"
+                                            dataKey="avg"
+                                            stroke="#0EA5E9"
+                                            fill="#0EA5E9"
+                                            fillOpacity={0.15}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: '#fff',
+                                                border: '1px solid #e2e8f0',
+                                                borderRadius: '12px',
+                                                fontSize: '12px'
+                                            }}
+                                        />
+                                        <Legend
+                                            wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }}
+                                            formatter={(value) => <span style={{ color: '#64748b', fontWeight: 700 }}>{value}</span>}
+                                        />
+                                    </RadarChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            {/* Mini score bars */}
+                            <div className="mt-4 grid grid-cols-5 gap-2">
+                                {[['A', 80], ['B', 70], ['C', 60], ['D', 75], ['E', 50]].map(([area, pct]) => (
+                                    <div key={area} className="text-center space-y-1">
+                                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                            <div className="h-full bg-primary/70 rounded-full" style={{ width: `${pct}%` }} />
+                                        </div>
+                                        <span className="text-[9px] font-black text-slate-400">{area}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -343,17 +417,43 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
                 </div>
             </Section>
 
-            {/* FOOTER */}
-            <footer className="bg-slate-50 py-16 px-6 border-t border-slate-100 text-center">
-                <div className="max-w-4xl mx-auto space-y-8">
-                    <div className="flex flex-col items-center gap-4">
-                        <Badge className="bg-slate-200 text-slate-600 rounded-full px-4 py-1 uppercase text-[9px] font-black tracking-widest">
-                            AI Competence Framework V10
-                        </Badge>
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
-                            © 2026 Inovatix. Poskytujeme AI školení a implementace.
-                        </p>
+            {/* O NÁS */}
+            <Section className="bg-white border-t border-slate-100">
+                <div className="space-y-8 text-center">
+                    <div className="flex justify-center">
+                        <img
+                            src="/images/logo-inovatix-dark.svg"
+                            alt="Inovatix"
+                            className="h-10 w-auto opacity-80"
+                        />
                     </div>
+                    <h2 className="text-3xl md:text-4xl font-black text-slate-900">O nás</h2>
+                    <p className="text-slate-600 leading-relaxed max-w-3xl mx-auto text-lg">
+                        <strong>Inovatix</strong> je česká společnost zaměřená na praktické využití umělé inteligence ve firmách i u jednotlivců.
+                        Pomáháme lidem a organizacím pochopit, jak AI funguje, jak ji bezpečně integrovat do pracovních procesů
+                        a jak z ní vytěžit maximum — bez planého buzzwordu, ale s konkrétními výsledky.
+                    </p>
+                    <p className="text-slate-500 leading-relaxed max-w-3xl mx-auto">
+                        Nabízíme školení, workshopy, individuální konzultace i komplexní AI implementace na míru.
+                        AI Competence Framework je naší metodikou pro měření a rozvoj AI kompetencí — ověřenou na stovkách účastníků
+                        napříč různými obory a rolemi.
+                    </p>
+                    <a
+                        href="https://www.inovatix.cz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-primary font-black hover:underline text-sm uppercase tracking-widest"
+                    >
+                        Více o nás na inovatix.cz <ArrowRight className="h-4 w-4" />
+                    </a>
+                </div>
+            </Section>
+
+            <footer className="bg-slate-50 py-10 px-6 border-t border-slate-100 text-center">
+                <div className="max-w-4xl mx-auto">
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+                        © 2026 Inovatix. Poskytujeme AI školení a implementace.
+                    </p>
                 </div>
             </footer>
 
