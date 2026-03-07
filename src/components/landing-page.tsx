@@ -79,6 +79,29 @@ const AccordionItem = ({ q, a }: { q: string, a: string }) => {
     );
 };
 
+// Demo radar chart for hero visual — shows what users get
+const HERO_CHART_DATA = [
+    { area: 'A', user: 16, avg: 11 },
+    { area: 'B', user: 14, avg: 10 },
+    { area: 'C', user: 12, avg: 8 },
+    { area: 'D', user: 15, avg: 9 },
+    { area: 'E', user: 10, avg: 7 },
+];
+
+function HeroRadarChart() {
+    return (
+        <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={HERO_CHART_DATA} margin={{ top: 4, right: 16, bottom: 4, left: 16 }}>
+                <PolarGrid stroke="#e2e8f0" strokeWidth={1} />
+                <PolarAngleAxis dataKey="area" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 700 }} />
+                <Radar name="Váš výsledek" dataKey="user" stroke="#DD3C20" fill="#DD3C20" fillOpacity={0.2} strokeWidth={2} dot={{ r: 3, fill: '#DD3C20' }} />
+                <Radar name="Komunita" dataKey="avg" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.08} strokeWidth={1.5} strokeDasharray="4 3" />
+                <Tooltip formatter={(v: any, name: string) => [`${v}/20`, name]} contentStyle={{ fontSize: 11 }} />
+            </RadarChart>
+        </ResponsiveContainer>
+    );
+}
+
 export function LandingPage({ data, onStart }: LandingPageProps) {
     const landing = data.landing_page;
     const sections = landing.sections;
@@ -126,44 +149,96 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
                 </a>
             </div>
 
-            {/* 1. HERO SECTION */}
-            <Section className="pt-10 pb-16 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
-                >
-                    <Badge className="bg-primary/10 text-primary border-primary/20 rounded-full px-6 py-2 uppercase text-[10px] font-black tracking-[0.2em]">
-                        {data.framework_name}
-                    </Badge>
-                    <div className="space-y-4">
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]">
-                            {hero.headline}
-                        </h1>
-                        <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium">
-                            {hero.subheadline}
-                        </p>
-                    </div>
+            {/* 1. HERO SECTION — 2-column: text left, spider chart right */}
+            <section className="pt-8 pb-20 px-6">
+                <div className="max-w-6xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+                    >
+                        {/* LEFT: Text + CTA */}
+                        <div className="space-y-8">
+                            <Badge className="bg-primary/10 text-primary border-primary/20 rounded-full px-6 py-2 uppercase text-[10px] font-black tracking-[0.2em]">
+                                AI Index · Diagnostika kompetencí
+                            </Badge>
 
-                    <div className="flex flex-wrap justify-center gap-6 pt-4">
-                        {hero.bullets.map((b: string, i: number) => (
-                            <div key={i} className="flex items-center gap-2 text-slate-700 font-bold">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                <span>{b}</span>
+                            <div className="space-y-4">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.1]">
+                                    {hero.headline}
+                                    {hero.headline_accent && (
+                                        <span className="block text-primary mt-1">{hero.headline_accent}</span>
+                                    )}
+                                </h1>
+                                <p className="text-lg text-slate-500 max-w-xl font-medium leading-relaxed">
+                                    {hero.subheadline}
+                                </p>
                             </div>
-                        ))}
-                    </div>
 
-                    <div className="pt-6">
-                        {ctaButton(hero.cta)}
-                    </div>
+                            <div className="flex flex-wrap gap-4">
+                                {hero.bullets.map((b: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-2 text-slate-700 font-bold text-sm bg-white px-4 py-2 rounded-full border border-slate-100 shadow-sm">
+                                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                                        <span>{b}</span>
+                                    </div>
+                                ))}
+                            </div>
 
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest pt-4">
-                        <Info className="h-3 w-3 inline mr-1 -mt-0.5" />
-                        {hero.disclaimer}
-                    </p>
-                </motion.div>
-            </Section>
+                            <div className="space-y-4">
+                                {ctaButton(hero.cta)}
+                                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest flex items-center gap-1">
+                                    <Info className="h-3 w-3 shrink-0" />
+                                    {hero.disclaimer}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* RIGHT: Spider chart visual preview */}
+                        <div className="relative flex items-center justify-center hidden lg:flex">
+                            {/* Glow background */}
+                            <div className="absolute inset-0 bg-gradient-radial from-primary/5 to-transparent rounded-3xl" />
+
+                            <div className="relative w-full max-w-sm">
+                                {/* Card mockup */}
+                                <div className="bg-white rounded-[28px] shadow-2xl border border-slate-100 p-6 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-primary">AI Competence Framework</div>
+                                            <div className="text-lg font-black text-slate-900 mt-0.5">Váš AI Index</div>
+                                        </div>
+                                        <div className="bg-primary/10 rounded-2xl px-4 py-2 text-center">
+                                            <div className="text-2xl font-black text-primary">77%</div>
+                                            <div className="text-[9px] font-bold text-slate-400 uppercase">Skóre</div>
+                                        </div>
+                                    </div>
+
+                                    {/* Interactive radar chart demo */}
+                                    <div className="h-52 -mx-2">
+                                        <HeroRadarChart />
+                                    </div>
+
+                                    {/* Level badge */}
+                                    <div className="bg-gradient-to-r from-orange-900 to-slate-900 rounded-2xl px-4 py-3 flex items-center gap-3">
+                                        <div className="text-2xl">🏗️</div>
+                                        <div>
+                                            <div className="text-[10px] text-orange-300 font-black uppercase tracking-widest">Vaše úroveň</div>
+                                            <div className="text-sm font-black text-white">Builder</div>
+                                        </div>
+                                        <div className="ml-auto text-[10px] text-orange-300/70 font-bold">Top 15 %</div>
+                                    </div>
+                                </div>
+
+                                {/* Floating "community" badge */}
+                                <div className="absolute -top-3 -right-3 bg-white rounded-2xl shadow-lg border border-slate-100 px-3 py-2 flex items-center gap-2">
+                                    <Users className="h-4 w-4 text-primary" />
+                                    <span className="text-xs font-black text-slate-700">+2 400 respondentů</span>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
 
             {/* 2. WHAT YOU GET */}
             <Section className="bg-white border-y border-slate-100">
