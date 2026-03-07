@@ -564,5 +564,18 @@
     "body_implementation": "děkujeme za vaši poptávku firemní implementace AI. Náš tým ji přijal a ozve se vám do 24 hodin s orientační nabídkou na míru.",
     "footer": "Tým Inovatix",
     "ps": "P.S. Mezitím můžete sdílet váš AI Competence Report s kolegy."
+  },
+  "webinar_block": {
+    "eyebrow": "Bezplatné webináře",
+    "title": "Naučte se AI prakticky — zdarma",
+    "description": "Každý týden živé webináře o AI nástrojích, workflow a automatizaci. Bez nutnosti platit, bez závazků.",
+    "bullets": [
+      "Praktické ukázky v reálném čase",
+      "Konkrétní nástroje a šablony ke stažení",
+      "Q&A s lektorem po každém webináři"
+    ],
+    "cta_label": "Zobrazit termíny a přihlásit se",
+    "cta_url": "https://www.inovatix.cz/bezplatne-seminare-a-kurzy",
+    "badge": "ZDARMA"
   }
 }
