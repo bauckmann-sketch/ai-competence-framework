@@ -54,6 +54,16 @@ export async function sendResultsEmail(
     D: 'Workflow', E: 'Systémy', F: 'Tvorba'
   };
 
+  // Persona image mapping (absolute URL for email clients)
+  const personaImages: Record<string, string> = {
+    'Explorer': `${APP_URL}/images/personas/couch-potato.jpg`,
+    'User': `${APP_URL}/images/personas/jogger.jpg`,
+    'Power User': `${APP_URL}/images/personas/gym-rat.jpg`,
+    'Builder': `${APP_URL}/images/personas/builder.jpg`,
+    'Architect': `${APP_URL}/images/personas/architect.jpg`,
+  };
+  const personaImgUrl = personaImages[result.level ?? ''] ?? null;
+
   // v13 has only areas A-E (F removed)
   const isV13 = (result as any).version === 'v13';
   const activeAreas = isV13 ? ['A', 'B', 'C', 'D', 'E'] : ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -110,6 +120,7 @@ export async function sendResultsEmail(
     <h1 class="title">Vaše výsledky diagnostiky</h1>
     
     <div class="hero-card">
+      ${personaImgUrl ? `<div style="display:table-cell;vertical-align:middle;width:90px;"><img src="${personaImgUrl}" alt="${result.level}" width="80" height="80" style="border-radius:50%;object-fit:cover;border:3px solid #DD3C20;display:block;"/></div>` : ''}
       <div class="score-value">${result.totalPercent}%</div>
       <div class="score-info">
         <div style="font-size: 12px; color: #DD3C20; font-weight: 800; text-transform: uppercase;">Vaše úroveň</div>
