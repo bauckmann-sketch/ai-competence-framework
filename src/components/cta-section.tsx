@@ -162,7 +162,7 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     role: result.answers?.['Q0_1'],
                     people_count: people, program_depth: depth, speed, format,
                     estimated_price: estimatedPrice,
-                    consent_marketing: consentContact, consent_newsletter: consentNewsletter,
+                    consent_marketing: consentContact,
                     skill_score_total: result.totalPercent,
                     level: result.level,
                     area_scores: result.areaScores,
@@ -234,8 +234,6 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                         <div className="space-y-3 pt-1">
                             <Checkbox checked={consentContact} onChange={setConsentContact} required
                                 label="Souhlasím s kontaktováním ohledně nabídky Inovatix" />
-                            <Checkbox checked={consentNewsletter} onChange={setConsentNewsletter}
-                                label="Chci dostávat newsletters a novinky (volitelné)" />
                         </div>
                     </div>
 
@@ -267,7 +265,6 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
     });
     const [phone, setPhone] = useState('');
     const [consentContact, setConsentContact] = useState(false);
-    const [consentNewsletter, setConsentNewsletter] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
@@ -290,7 +287,6 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     estimated_price: selectedDepthInfo?.price,
                     role: result.answers?.['Q0_1'],
                     consent_marketing: consentContact,
-                    consent_newsletter: consentNewsletter,
                     skill_score_total: result.totalPercent,
                     level: result.level,
                     area_scores: result.areaScores,
@@ -349,8 +345,6 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                         <div className="space-y-3">
                             <Checkbox checked={consentContact} onChange={setConsentContact} required
                                 label="Souhlasím s kontaktováním ohledně nabídky Inovatix" />
-                            <Checkbox checked={consentNewsletter} onChange={setConsentNewsletter}
-                                label="Chci dostávat newsletters a novinky (volitelné)" />
                         </div>
                     </div>
 
