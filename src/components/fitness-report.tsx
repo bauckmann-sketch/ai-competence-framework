@@ -16,6 +16,14 @@ const LEVEL_BG: Record<string, string> = {
     architect: 'from-red-900 to-slate-900',
 };
 
+const LEVEL_IMAGE: Record<string, string> = {
+    explorer: '/images/personas/couch-potato.jpg',
+    user: '/images/personas/jogger.jpg',
+    'power user': '/images/personas/gym-rat.jpg',
+    builder: '/images/personas/builder.jpg',
+    architect: '/images/personas/architect.jpg',
+};
+
 const LEVEL_STATUS: Record<string, string> = {
     explorer: 'Začínáte',
     user: 'Rekreační provoz',
@@ -45,6 +53,7 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
     const l = (level ?? '').toLowerCase().trim();
     const bg = LEVEL_BG[l] ?? 'from-slate-800 to-slate-900';
     const status = LEVEL_STATUS[l] ?? 'Vyhodnoceno';
+    const personaImage = LEVEL_IMAGE[l] ?? null;
 
     return (
         <Card className="border-2 border-primary/20 shadow-xl overflow-hidden mb-12 bg-white">
@@ -53,6 +62,19 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -ml-32 -mb-32" />
 
                 <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    {/* Persona image */}
+                    {personaImage && (
+                        <div className="flex-shrink-0">
+                            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl ring-4 ring-primary/30">
+                                <img
+                                    src={personaImage}
+                                    alt={level}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     <div className="text-center md:text-left space-y-4 flex-grow">
                         <div className="inline-block bg-primary/20 text-primary border border-primary/30 text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-[0.2em]">
                             AI Competence Report
@@ -60,6 +82,7 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
                         <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
                             {level}
                         </h2>
+                        <p className="text-white/60 text-sm font-medium">{status}</p>
                     </div>
 
                     <div className="flex-shrink-0 bg-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-800 flex flex-col items-center justify-center min-w-[180px]">
