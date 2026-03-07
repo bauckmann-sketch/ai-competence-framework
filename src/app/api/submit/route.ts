@@ -70,7 +70,7 @@ export async function POST(request: Request) {
             emailsSent.add(emailKey);
             console.log(`[Email] Sending to: ${email} for record: ${recordId}`);
             // Fire-and-forget — don't block response on email
-            sendResultsEmail(email, { ...result, version } as any, recordId)
+            sendResultsEmail(email, { ...result, version } as any, recordId, aggregates)
                 .then(() => console.log(`[Email] Sent OK for ${email}`))
                 .catch((err) => {
                     emailsSent.delete(emailKey); // allow retry on error
