@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { saveSubmission, getAggregates } from '@/lib/persistence';
 import { calculateScore } from '@/lib/scoring-engine';
-import { sendResultsEmail } from '@/lib/email';
+import { sendResultsEmail, isValidEmail } from '@/lib/email';
 import scoringV1 from '@/data/v1/scoring.json';
 import scoringV3 from '@/data/v3/scoring.json';
 import scoringV4 from '@/data/v4/scoring.json';
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
         // Send results email if user provided their email (not skipped)
         const email = answers.QX2 || answers.Q0_EMAIL;
         const emailKey = `${recordId}:${email}`;
-        if (email && email !== '__skip__' && email.includes('@') && recordId && !emailsSent.has(emailKey)) {
+        if (email && email !== '__skip__' && isValidEmail(email) && recordId && !emailsSent.has(emailKey)) {
             emailsSent.add(emailKey);
             console.log(`[Email] Sending to: ${email} for record: ${recordId}`);
             // Fire-and-forget — don't block response on email
