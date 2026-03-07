@@ -1,5 +1,16 @@
 import { CalculationResult } from '@/types';
 
+/**
+ * RFC 5322-based email validation.
+ * Much stricter than a simple includes('@') check.
+ */
+export function isValidEmail(email: string): boolean {
+  if (!email || typeof email !== 'string') return false;
+  // RFC 5322 simplified — covers 99.9 % of real addresses
+  const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+  return re.test(email.trim());
+}
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-competence-framework-wfrx.vercel.app';
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AI Competence Framework <onboarding@resend.dev>';
 
@@ -28,7 +39,7 @@ export async function sendResultsEmail(
     return;
   }
 
-  if (!to || to === '__skip__' || !to.includes('@')) return;
+  if (!to || to === '__skip__' || !isValidEmail(to)) return;
 
   const actualTo = process.env.RESEND_TO_OVERRIDE || to;
   const resultUrl = `${APP_URL}/r/${airtableRecordId}`;
@@ -123,7 +134,7 @@ export async function sendResultsEmail(
     </div>
 
     <div class="section">
-      <div class="section-title">Profil kompetencí A–F</div>
+      <div class="section-title">Profil kompetencí A–E</div>
       ${profileHtml}
     </div>
 
