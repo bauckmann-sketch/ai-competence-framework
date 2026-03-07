@@ -397,7 +397,7 @@
         {
           "metric": "skill_score",
           "label": "Kompetence (Skill)",
-          "note": "Skóre A–F (0–100)"
+          "note": "Skóre A–E (0–100)"
         },
         {
           "metric": "adoption_investment_index",
@@ -444,7 +444,7 @@
         "headline": "Co získáte",
         "cards": [
           {
-            "title": "Kompetence (Skill) – profil A–F",
+            "title": "Kompetence (Skill) – profil A–E",
             "text": "Jak kvalitně a systematicky AI používáte."
           },
           {
@@ -467,8 +467,7 @@
           "B Promptování",
           "C Ověřování",
           "D Workflow",
-          "E Systémy",
-          "F Tvorba"
+          "E Systémy"
         ],
         "cta": "Začít dotazník"
       },
@@ -492,7 +491,7 @@
         "headline": "Ukázka výsledku",
         "text": "Výsledek není jen číslo. Dostanete přehled, kde máte největší návratnost zlepšení a co udělat jako první.",
         "preview_assets_hint": [
-          "Skill skóre + radar A–F",
+          "Skill skóre + radar A–E",
           "Adopce/Investice index",
           "Srovnání s komunitou (kategorie + placené nástroje)"
         ],
