@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent } from './ui/card';
 import { Anchor, Dumbbell, ShieldCheck, Activity, Settings, Palette } from 'lucide-react';
 import { CalculationResult } from '@/types';
+import copyData from '@/data/v10/copy.json';
 
 interface FitnessReportProps {
     result: CalculationResult;
@@ -24,14 +25,6 @@ const LEVEL_IMAGE: Record<string, string> = {
     architect: '/images/personas/architect.jpg',
 };
 
-const LEVEL_STATUS: Record<string, string> = {
-    explorer: 'Začínáte',
-    user: 'Rekreační provoz',
-    'power user': 'V provozu',
-    builder: 'Ve výstavbě',
-    architect: 'Orchestrátor',
-};
-
 // Ordered muscle groups — F shown only for pre-v13 versions
 const ALL_MUSCLE_GROUPS = [
     { id: 'A', name: 'Základy & orientace', icon: <Anchor className="w-4 h-4" /> },
@@ -41,6 +34,13 @@ const ALL_MUSCLE_GROUPS = [
     { id: 'E', name: 'Systémy & automatizace', icon: <Settings className="w-4 h-4" /> },
     { id: 'F', name: 'Tvorba & komunikace', icon: <Palette className="w-4 h-4" /> },
 ];
+
+// Helper: find level copy from external data (case-insensitive)
+function getLevelCopy(level: string): { tagline?: string; description?: string } {
+    const lc = (copyData as any).level_copy ?? {};
+    const key = Object.keys(lc).find(k => k.toLowerCase() === (level ?? '').toLowerCase().trim());
+    return key ? lc[key] : {};
+}
 
 export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
     const { level, totalPercent, areaScores, version } = result;
@@ -52,8 +52,8 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
 
     const l = (level ?? '').toLowerCase().trim();
     const bg = LEVEL_BG[l] ?? 'from-slate-800 to-slate-900';
-    const status = LEVEL_STATUS[l] ?? 'Vyhodnoceno';
     const personaImage = LEVEL_IMAGE[l] ?? null;
+    const { tagline } = getLevelCopy(level ?? '');
 
     return (
         <Card className="border-2 border-primary/20 shadow-xl overflow-hidden mb-12 bg-white">
@@ -82,7 +82,9 @@ export const FitnessReport: React.FC<FitnessReportProps> = ({ result }) => {
                         <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
                             {level}
                         </h2>
-                        <p className="text-white/60 text-sm font-medium">{status}</p>
+                        {tagline && (
+                            <p className="text-white/70 text-sm font-medium max-w-xs leading-relaxed">{tagline}</p>
+                        )}
                     </div>
 
                     <div className="flex-shrink-0 bg-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-800 flex flex-col items-center justify-center min-w-[180px]">
