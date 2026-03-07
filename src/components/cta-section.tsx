@@ -360,9 +360,58 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
     );
 }
 
+// ─── Countdown hook ────────────────────────────────────────────────────────────
+function useCountdown(targetIso: string | null) {
+    const [parts, setParts] = React.useState({ d: 0, h: 0, m: 0, s: 0, expired: false });
+
+    React.useEffect(() => {
+        if (!targetIso) return;
+        const target = new Date(targetIso).getTime();
+
+        const tick = () => {
+            const diff = target - Date.now();
+            if (diff <= 0) { setParts({ d: 0, h: 0, m: 0, s: 0, expired: true }); return; }
+            setParts({
+                d: Math.floor(diff / 86400000),
+                h: Math.floor((diff % 86400000) / 3600000),
+                m: Math.floor((diff % 3600000) / 60000),
+                s: Math.floor((diff % 60000) / 1000),
+                expired: false,
+            });
+        };
+
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [targetIso]);
+
+    return parts;
+}
+
 // ─── Webinar block ────────────────────────────────────────────────────────────
 function WebinarBlock({ result }: { result: CalculationResult }) {
     const wb = (copyData as any).webinar_block ?? {};
+    const [webinar, setWebinar] = React.useState<{ name: string; date: string; registrationUrl: string } | null>(null);
+    const [loadError, setLoadError] = React.useState(false);
+    const countdown = useCountdown(webinar?.date ?? null);
+
+    React.useEffect(() => {
+        fetch('/api/webinar')
+            .then(r => r.json())
+            .then(data => {
+                if (data.webinar) setWebinar(data.webinar);
+                else setLoadError(true);
+            })
+            .catch(() => setLoadError(true));
+    }, []);
+
+    const ctaUrl = webinar?.registrationUrl ?? wb.cta_url;
+
+    // Format date for display
+    const formattedDate = webinar
+        ? new Date(webinar.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague' })
+        : null;
+
     return (
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[28px] overflow-hidden shadow-xl border border-slate-700">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
@@ -372,8 +421,37 @@ function WebinarBlock({ result }: { result: CalculationResult }) {
                         <span className="bg-green-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{wb.badge ?? 'ZDARMA'}</span>
                         <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{wb.eyebrow}</span>
                     </div>
-                    <h3 className="text-2xl font-black text-white leading-tight">{wb.title}</h3>
+
+                    {/* Dynamic webinar name */}
+                    {webinar ? (
+                        <div className="space-y-1">
+                            <h3 className="text-2xl font-black text-white leading-tight">{webinar.name}</h3>
+                            <p className="text-green-400 text-sm font-bold">{formattedDate} CET</p>
+                        </div>
+                    ) : (
+                        <h3 className="text-2xl font-black text-white leading-tight">{wb.title}</h3>
+                    )}
+
                     <p className="text-slate-400 text-sm leading-relaxed">{wb.description}</p>
+
+                    {/* Countdown */}
+                    {webinar && !countdown.expired && (
+                        <div className="flex items-center gap-3">
+                            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Za</span>
+                            {([
+                                { v: countdown.d, l: 'dní' },
+                                { v: countdown.h, l: 'hod' },
+                                { v: countdown.m, l: 'min' },
+                                { v: countdown.s, l: 'sek' },
+                            ] as const).map(({ v, l }) => (
+                                <div key={l} className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center min-w-[52px]">
+                                    <div className="text-xl font-black text-green-400 tabular-nums leading-none">{String(v).padStart(2, '0')}</div>
+                                    <div className="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">{l}</div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     {wb.bullets && (
                         <ul className="space-y-2">
                             {(wb.bullets as string[]).map((b, i) => (
@@ -384,14 +462,14 @@ function WebinarBlock({ result }: { result: CalculationResult }) {
                         </ul>
                     )}
                     <a
-                        href={wb.cta_url}
+                        href={ctaUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => track('webinar_click', { level: result.level, score: result.totalPercent })}
                         className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-black py-3.5 px-6 rounded-2xl text-sm transition-colors shadow-lg shadow-green-900/30 w-fit mt-2"
                     >
                         <Calendar className="h-4 w-4" />
-                        {wb.cta_label}
+                        {webinar ? 'Přihlásit se zdarma' : wb.cta_label}
                     </a>
                 </div>
                 {/* Visual side */}
@@ -405,6 +483,7 @@ function WebinarBlock({ result }: { result: CalculationResult }) {
         </div>
     );
 }
+
 
 // ─── WhatsApp block ────────────────────────────────────────────────────────────
 function WhatsAppBlock() {
