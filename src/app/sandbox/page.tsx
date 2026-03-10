@@ -136,7 +136,7 @@ export default function SandboxPage() {
             <div className="bg-amber-50 border-b border-amber-200 px-6 py-2 flex items-center gap-6 text-xs text-amber-800">
                 <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-primary inline-block" /> Otázky se <strong>počítají</strong> do skóre</span>
                 <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-slate-300 inline-block" /> Otázky se <strong>nepočítají</strong> (kontext/klasifikace)</span>
-                <span className="ml-auto italic">Skóre se změní pouze u barevně označených sekcí SA–SF</span>
+                <span className="ml-auto italic">Skóre se změní pouze u barevně označených sekcí SA–SE</span>
             </div>
 
             <div className="flex h-[calc(100vh-86px)]">
@@ -238,7 +238,7 @@ export default function SandboxPage() {
 
                     {/* Area scores */}
                     <div className="space-y-3">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Oblasti A–F</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Oblasti A–E</p>
                         {activeAreas.map(area => {
                             const data = result?.areaScores?.[area];
                             const p = data ? Math.round((data.raw / data.max) * 100) : 0;

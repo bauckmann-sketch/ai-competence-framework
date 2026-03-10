@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendResultsEmail } from '@/lib/email';
+import { sendResultsEmail, isValidEmail } from '@/lib/email';
 import { getAggregates } from '@/lib/persistence';
 import { calculateScore } from '@/lib/scoring-engine';
 import scoringV8 from '@/data/v8/scoring.json';
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         if (secret !== SECRET) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
-        if (!to || !to.includes('@')) {
+        if (!to || !isValidEmail(to)) {
             return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
         }
 

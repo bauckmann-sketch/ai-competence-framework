@@ -1,5 +1,16 @@
 import { CalculationResult } from '@/types';
 
+/**
+ * RFC 5322-based email validation.
+ * Much stricter than a simple includes('@') check.
+ */
+export function isValidEmail(email: string): boolean {
+  if (!email || typeof email !== 'string') return false;
+  // RFC 5322 simplified — covers 99.9 % of real addresses
+  const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+  return re.test(email.trim());
+}
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-competence-framework-wfrx.vercel.app';
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'AI Competence Framework <onboarding@resend.dev>';
 
@@ -20,7 +31,8 @@ function areaRow(area: string, label: string, score: number): string {
 export async function sendResultsEmail(
   to: string,
   result: CalculationResult,
-  airtableRecordId: string
+  airtableRecordId: string,
+  aggregates?: { avgAreaScores?: Record<string, number>; avgTotalScore?: number; count?: number } | null
 ): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -28,20 +40,27 @@ export async function sendResultsEmail(
     return;
   }
 
-  if (!to || to === '__skip__' || !to.includes('@')) return;
+  if (!to || to === '__skip__' || !isValidEmail(to)) return;
 
   const actualTo = process.env.RESEND_TO_OVERRIDE || to;
   const resultUrl = `${APP_URL}/r/${airtableRecordId}`;
 
-  // Data for template
-  const adoptionIndex = result.secondaryMetrics?.adoption_investment_index?.value ?? '-';
-  const adoptionBand = result.secondaryMetrics?.adoption_investment_index?.label ?? 'Nezadáno';
-  const reliabilityBadge = result.secondaryMetrics?.reliability_badge ?? 'Nezadáno';
+  // Data for template — adoption/reliability removed from user email per design decision
 
   const areaLabels: Record<string, string> = {
     A: 'Základy', B: 'Promptování', C: 'Ověřování',
     D: 'Workflow', E: 'Systémy', F: 'Tvorba'
   };
+
+  // Persona image mapping (absolute URL for email clients)
+  const personaImages: Record<string, string> = {
+    'Explorer': `${APP_URL}/images/personas/couch-potato.jpg`,
+    'User': `${APP_URL}/images/personas/jogger.jpg`,
+    'Power User': `${APP_URL}/images/personas/gym-rat.jpg`,
+    'Builder': `${APP_URL}/images/personas/builder.jpg`,
+    'Architect': `${APP_URL}/images/personas/architect.jpg`,
+  };
+  const personaImgUrl = personaImages[result.level ?? ''] ?? null;
 
   // v13 has only areas A-E (F removed)
   const isV13 = (result as any).version === 'v13';
@@ -54,28 +73,47 @@ export async function sendResultsEmail(
 
   // Radar Chart generation via QuickChart.io
   const radarData = activeAreas.map(a => result.areaScores[a]?.raw ?? 0);
+  // Build dual-dataset radar: user vs community avg
+  const communityData = activeAreas.map(a => aggregates?.avgAreaScores?.[a] != null
+    ? Math.round((aggregates.avgAreaScores![a] / 20) * 20) // already raw
+    : 0
+  );
   const chartConfig = {
     type: 'radar',
     data: {
       labels: activeAreas,
-      datasets: [{
-        label: 'Profil AI kompetencí',
-        data: radarData,
-        backgroundColor: 'rgba(221, 60, 32, 0.1)',
-        borderColor: '#DD3C20',
-        pointBackgroundColor: '#DD3C20',
-        borderWidth: 2
-      }]
+      datasets: [
+        {
+          label: 'Váš výsledek',
+          data: radarData,
+          backgroundColor: 'rgba(221, 60, 32, 0.15)',
+          borderColor: '#DD3C20',
+          pointBackgroundColor: '#DD3C20',
+          borderWidth: 2.5
+        },
+        ...(aggregates?.avgAreaScores && Object.keys(aggregates.avgAreaScores).length > 0 ? [{
+          label: 'Průměr komunity',
+          data: activeAreas.map(a => {
+            const pct = aggregates!.avgAreaScores![a] ?? 0;
+            return Math.round((pct / 100) * 20);
+          }),
+          backgroundColor: 'rgba(100, 116, 139, 0.1)',
+          borderColor: '#94a3b8',
+          pointBackgroundColor: '#94a3b8',
+          borderWidth: 2,
+          borderDash: [4, 4]
+        }] : [])
+      ]
     },
     options: {
       scale: {
         ticks: { beginAtZero: true, max: 20, stepSize: 5, fontSize: 10 },
         pointLabels: { fontSize: 12, fontStyle: 'bold' }
       },
-      legend: { display: false }
+      legend: { display: true, position: 'bottom', labels: { fontSize: 11 } }
     }
   };
-  const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}&w=500&h=300`;
+  const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}&w=520&h=340`;
 
   const html = `<!DOCTYPE html>
 <html lang="cs">
@@ -99,6 +137,7 @@ export async function sendResultsEmail(
     <h1 class="title">Vaše výsledky diagnostiky</h1>
     
     <div class="hero-card">
+      ${personaImgUrl ? `<div style="display:table-cell;vertical-align:middle;width:90px;"><img src="${personaImgUrl}" alt="${result.level}" width="80" height="80" style="border-radius:50%;object-fit:cover;border:3px solid #DD3C20;display:block;"/></div>` : ''}
       <div class="score-value">${result.totalPercent}%</div>
       <div class="score-info">
         <div style="font-size: 12px; color: #DD3C20; font-weight: 800; text-transform: uppercase;">Vaše úroveň</div>
@@ -107,23 +146,15 @@ export async function sendResultsEmail(
     </div>
 
     <!-- Spider Chart -->
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="${chartUrl}" width="100%" style="max-width: 500px; height: auto;" alt="Graf kompetencí" />
-    </div>
-
-    <div style="display: table; width: 100%; border-spacing: 10px 0;">
-      <div style="display: table-cell; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; width: 50%;">
-        <div style="font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Adopce & Investice</div>
-        <div style="font-size: 14px; font-weight: 700;">${adoptionIndex}/10 (${adoptionBand})</div>
-      </div>
-      <div style="display: table-cell; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; width: 50%;">
-        <div style="font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Spolehlivost faktů</div>
-        <div style="font-size: 14px; font-weight: 700;">${reliabilityBadge}</div>
-      </div>
+    <div style="text-align: center; margin-bottom: 24px;">
+      <img src="${chartUrl}" width="100%" style="max-width: 520px; height: auto;" alt="Graf kompetencí" />
+      ${aggregates?.avgAreaScores && Object.keys(aggregates.avgAreaScores).length > 0 ? `
+      <p style="font-size:11px;color:#94a3b8;margin:8px 0 0;">Červená — váš výsledek · Šedá — průměr komunity (${aggregates.count ?? '?'} respondentů)</p>
+      ` : ''}
     </div>
 
     <div class="section">
-      <div class="section-title">Profil kompetencí A–F</div>
+      <div class="section-title">Profil kompetencí A–E</div>
       ${profileHtml}
     </div>
 

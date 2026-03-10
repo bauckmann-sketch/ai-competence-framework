@@ -2,8 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 import { CalculationResult } from '@/types';
-import { Building2, GraduationCap, X, ExternalLink, ChevronRight, Send, RefreshCw } from 'lucide-react';
+import { Building2, GraduationCap, X, ExternalLink, ChevronRight, Send, RefreshCw, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { track } from '@/lib/track';
+import copyData from '@/data/v10/copy.json';
 
 const WHATSAPP_URL = 'https://chat.whatsapp.com/GQDdu5fvzSn5XYis1MkvWb';
 const WHATSAPP_QR = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(WHATSAPP_URL)}&format=png&margin=12&color=000000&bgcolor=ffffff`;
@@ -160,7 +162,7 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     role: result.answers?.['Q0_1'],
                     people_count: people, program_depth: depth, speed, format,
                     estimated_price: estimatedPrice,
-                    consent_marketing: consentContact, consent_newsletter: consentNewsletter,
+                    consent_marketing: consentContact,
                     skill_score_total: result.totalPercent,
                     level: result.level,
                     area_scores: result.areaScores,
@@ -170,7 +172,7 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                     instrument_version: result.version,
                 }),
             });
-            if (r.ok) { setSubmitted(true); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
+            if (r.ok) { setSubmitted(true); track('implementation_lead_sent', { level: result.level, score: result.totalPercent }); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
         } catch { setError('Chyba připojení. Zkuste znovu.'); }
         setSubmitting(false);
     };
@@ -232,8 +234,6 @@ function ImplementationModal({ open, onClose, result }: { open: boolean; onClose
                         <div className="space-y-3 pt-1">
                             <Checkbox checked={consentContact} onChange={setConsentContact} required
                                 label="Souhlasím s kontaktováním ohledně nabídky Inovatix" />
-                            <Checkbox checked={consentNewsletter} onChange={setConsentNewsletter}
-                                label="Chci dostávat newsletters a novinky (volitelné)" />
                         </div>
                     </div>
 
@@ -263,8 +263,8 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
         const a = result.answers?.['QX2'] || result.answers?.['Q0_EMAIL'] || '';
         return a === '__skip__' ? '' : a;
     });
+    const [phone, setPhone] = useState('');
     const [consentContact, setConsentContact] = useState(false);
-    const [consentNewsletter, setConsentNewsletter] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
@@ -282,11 +282,11 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                 body: JSON.stringify({
                     lead_type: 'training_1to1',
                     email,
+                    phone,
                     depth: selectedDepth,
                     estimated_price: selectedDepthInfo?.price,
                     role: result.answers?.['Q0_1'],
                     consent_marketing: consentContact,
-                    consent_newsletter: consentNewsletter,
                     skill_score_total: result.totalPercent,
                     level: result.level,
                     area_scores: result.areaScores,
@@ -296,7 +296,7 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     instrument_version: result.version,
                 }),
             });
-            if (r.ok) { setSubmitted(true); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
+            if (r.ok) { setSubmitted(true); track('training_lead_sent', { level: result.level, score: result.totalPercent }); } else { setError('Nepodařilo se odeslat. Zkuste znovu.'); }
         } catch { setError('Chyba připojení. Zkuste znovu.'); }
         setSubmitting(false);
     };
@@ -317,9 +317,9 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                     <div className="space-y-1 pr-8">
                         <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1">
                             <GraduationCap className="h-3.5 w-3.5 text-slate-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Školení pro jednotlivce</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Pro jednotlivce</span>
                         </div>
-                        <h2 className="text-2xl font-black text-slate-900 leading-tight">Školení na míru</h2>
+                        <h2 className="text-2xl font-black text-slate-900 leading-tight">Vzdělání pro jednotlivce</h2>
                         <p className="text-sm text-slate-500">Vyberte, jak hluboko se chcete ponořit. Poskytneme vám konkrétní nabídku termínů do 24 h.</p>
                     </div>
 
@@ -328,8 +328,8 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
                             {DEPTH_INDIVIDUAL_OPTS.map(opt => (
                                 <button key={opt.value} type="button" onClick={() => setSelectedDepth(opt.value)}
                                     className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all flex justify-between items-center ${selectedDepth === opt.value
-                                            ? 'border-primary bg-primary/5'
-                                            : 'border-slate-200 hover:border-primary/40'
+                                        ? 'border-primary bg-primary/5'
+                                        : 'border-slate-200 hover:border-primary/40'
                                         }`}>
                                     <span className="text-sm font-semibold">{opt.label}</span>
                                     <span className={`text-sm font-black whitespace-nowrap ml-4 ${selectedDepth === opt.value ? 'text-primary' : 'text-slate-400'
@@ -341,11 +341,10 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
 
                     <div className="border-t border-slate-100 pt-6 space-y-4">
                         <Input placeholder="Email *" value={email} onChange={setEmail} required type="email" />
+                        <Input placeholder="Telefon" value={phone} onChange={setPhone} type="tel" />
                         <div className="space-y-3">
                             <Checkbox checked={consentContact} onChange={setConsentContact} required
                                 label="Souhlasím s kontaktováním ohledně nabídky Inovatix" />
-                            <Checkbox checked={consentNewsletter} onChange={setConsentNewsletter}
-                                label="Chci dostávat newsletters a novinky (volitelné)" />
                         </div>
                     </div>
 
@@ -361,7 +360,132 @@ function TrainingModal({ open, onClose, result }: { open: boolean; onClose: () =
     );
 }
 
-// ─── WhatsApp block ───────────────────────────────────────────────────────────
+// ─── Countdown hook ────────────────────────────────────────────────────────────
+function useCountdown(targetIso: string | null) {
+    const [parts, setParts] = React.useState({ d: 0, h: 0, m: 0, s: 0, expired: false });
+
+    React.useEffect(() => {
+        if (!targetIso) return;
+        const target = new Date(targetIso).getTime();
+
+        const tick = () => {
+            const diff = target - Date.now();
+            if (diff <= 0) { setParts({ d: 0, h: 0, m: 0, s: 0, expired: true }); return; }
+            setParts({
+                d: Math.floor(diff / 86400000),
+                h: Math.floor((diff % 86400000) / 3600000),
+                m: Math.floor((diff % 3600000) / 60000),
+                s: Math.floor((diff % 60000) / 1000),
+                expired: false,
+            });
+        };
+
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [targetIso]);
+
+    return parts;
+}
+
+// ─── Webinar block ────────────────────────────────────────────────────────────
+function WebinarBlock({ result }: { result: CalculationResult }) {
+    const wb = (copyData as any).webinar_block ?? {};
+    const [webinar, setWebinar] = React.useState<{ name: string; date: string; registrationUrl: string } | null>(null);
+    const [loadError, setLoadError] = React.useState(false);
+    const countdown = useCountdown(webinar?.date ?? null);
+
+    React.useEffect(() => {
+        fetch('/api/webinar')
+            .then(r => r.json())
+            .then(data => {
+                if (data.webinar) setWebinar(data.webinar);
+                else setLoadError(true);
+            })
+            .catch(() => setLoadError(true));
+    }, []);
+
+    const ctaUrl = webinar?.registrationUrl ?? wb.cta_url;
+
+    // Format date for display
+    const formattedDate = webinar
+        ? new Date(webinar.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague' })
+        : null;
+
+    return (
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[28px] overflow-hidden shadow-xl border border-slate-700">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+                {/* Text side */}
+                <div className="md:col-span-3 p-8 flex flex-col justify-center space-y-4">
+                    <div className="flex items-center gap-2">
+                        <span className="bg-green-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{wb.badge ?? 'ZDARMA'}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{wb.eyebrow}</span>
+                    </div>
+
+                    {/* Dynamic webinar name */}
+                    {webinar ? (
+                        <div className="space-y-1">
+                            <h3 className="text-2xl font-black text-white leading-tight">{webinar.name}</h3>
+                            <p className="text-green-400 text-sm font-bold">{formattedDate} CET</p>
+                        </div>
+                    ) : (
+                        <h3 className="text-2xl font-black text-white leading-tight">{wb.title}</h3>
+                    )}
+
+                    <p className="text-slate-400 text-sm leading-relaxed">{wb.description}</p>
+
+                    {/* Countdown */}
+                    {webinar && !countdown.expired && (
+                        <div className="flex items-center gap-3">
+                            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Za</span>
+                            {([
+                                { v: countdown.d, l: 'dní' },
+                                { v: countdown.h, l: 'hod' },
+                                { v: countdown.m, l: 'min' },
+                                { v: countdown.s, l: 'sek' },
+                            ] as const).map(({ v, l }) => (
+                                <div key={l} className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-center min-w-[52px]">
+                                    <div className="text-xl font-black text-green-400 tabular-nums leading-none">{String(v).padStart(2, '0')}</div>
+                                    <div className="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">{l}</div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {wb.bullets && (
+                        <ul className="space-y-2">
+                            {(wb.bullets as string[]).map((b, i) => (
+                                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                                    <span className="text-green-400 mt-0.5 shrink-0">✓</span> {b}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    <a
+                        href={ctaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => track('webinar_click', { level: result.level, score: result.totalPercent })}
+                        className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-black py-3.5 px-6 rounded-2xl text-sm transition-colors shadow-lg shadow-green-900/30 w-fit mt-2"
+                    >
+                        <Calendar className="h-4 w-4" />
+                        {webinar ? 'Přihlásit se zdarma' : wb.cta_label}
+                    </a>
+                </div>
+                {/* Visual side */}
+                <div className="md:col-span-2 hidden md:flex items-center justify-center p-8">
+                    <div className="text-center space-y-3">
+                        <div className="text-7xl">🎓</div>
+                        <p className="text-slate-400 text-xs font-semibold">Live webináře každý týden</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+// ─── WhatsApp block ────────────────────────────────────────────────────────────
 function WhatsAppBlock() {
     return (
         <div className="bg-gradient-to-r from-[#1a3c2a] to-[#0d2218] rounded-[28px] overflow-hidden shadow-xl">
@@ -471,6 +595,9 @@ export function CtaSection({ result, onReset }: { result: CalculationResult; onR
                     </div>
                 </div>
             </div>
+
+            {/* Webinar block */}
+            <WebinarBlock result={result} />
 
             {/* WhatsApp block */}
             <WhatsAppBlock />

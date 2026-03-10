@@ -18,6 +18,10 @@ import {
     Plus,
     Minus
 } from 'lucide-react';
+import {
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+    ResponsiveContainer, Legend, Tooltip
+} from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -75,6 +79,29 @@ const AccordionItem = ({ q, a }: { q: string, a: string }) => {
     );
 };
 
+// Demo radar chart for hero visual — shows what users get
+const HERO_CHART_DATA = [
+    { area: 'A', user: 16, avg: 11 },
+    { area: 'B', user: 14, avg: 10 },
+    { area: 'C', user: 12, avg: 8 },
+    { area: 'D', user: 15, avg: 9 },
+    { area: 'E', user: 10, avg: 7 },
+];
+
+function HeroRadarChart() {
+    return (
+        <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={HERO_CHART_DATA} margin={{ top: 4, right: 16, bottom: 4, left: 16 }}>
+                <PolarGrid stroke="#e2e8f0" strokeWidth={1} />
+                <PolarAngleAxis dataKey="area" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 700 }} />
+                <Radar name="Váš výsledek" dataKey="user" stroke="#DD3C20" fill="#DD3C20" fillOpacity={0.2} strokeWidth={2} dot={{ r: 3, fill: '#DD3C20' }} />
+                <Radar name="Komunita" dataKey="avg" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.08} strokeWidth={1.5} strokeDasharray="4 3" />
+                <Tooltip formatter={(v: any, name?: string) => [`${v}/20`, name ?? '']} contentStyle={{ fontSize: 11 }} />
+            </RadarChart>
+        </ResponsiveContainer>
+    );
+}
+
 export function LandingPage({ data, onStart }: LandingPageProps) {
     const landing = data.landing_page;
     const sections = landing.sections;
@@ -111,44 +138,107 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
 
     return (
         <div className="bg-slate-50 min-h-screen font-inter selection:bg-primary/10">
-            {/* 1. HERO SECTION */}
-            <Section className="pt-24 pb-16 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
-                >
-                    <Badge className="bg-primary/10 text-primary border-primary/20 rounded-full px-6 py-2 uppercase text-[10px] font-black tracking-[0.2em]">
-                        {data.framework_name}
-                    </Badge>
-                    <div className="space-y-4">
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]">
-                            {hero.headline}
-                        </h1>
-                        <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium">
-                            {hero.subheadline}
-                        </p>
-                    </div>
+            {/* LOGO HEADER */}
+            <div className="flex justify-center pt-8 pb-0 px-6">
+                <a href="https://www.inovatix.cz" target="_blank" rel="noopener noreferrer">
+                    <img
+                        src="/images/logo-inovatix-dark.svg"
+                        alt="Inovatix"
+                        className="h-10 md:h-12 w-auto"
+                    />
+                </a>
+            </div>
 
-                    <div className="flex flex-wrap justify-center gap-6 pt-4">
-                        {hero.bullets.map((b: string, i: number) => (
-                            <div key={i} className="flex items-center gap-2 text-slate-700 font-bold">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                <span>{b}</span>
+            {/* 1. HERO SECTION — 2-column: text left, spider chart right */}
+            <section className="pt-8 pb-20 px-6">
+                <div className="max-w-6xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+                    >
+                        {/* LEFT: Text + CTA */}
+                        <div className="space-y-8">
+                            <Badge className="bg-primary/10 text-primary border-primary/20 rounded-full px-6 py-2 uppercase text-[10px] font-black tracking-[0.2em]">
+                                AI Index · Diagnostika kompetencí
+                            </Badge>
+
+                            <div className="space-y-4">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.1]">
+                                    {hero.headline}
+                                    {hero.headline_accent && (
+                                        <span className="block text-primary mt-1">{hero.headline_accent}</span>
+                                    )}
+                                </h1>
+                                <p className="text-lg text-slate-500 max-w-xl font-medium leading-relaxed">
+                                    {hero.subheadline}
+                                </p>
                             </div>
-                        ))}
-                    </div>
 
-                    <div className="pt-6">
-                        {ctaButton(hero.cta)}
-                    </div>
+                            <div className="flex flex-wrap gap-4">
+                                {hero.bullets.map((b: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-2 text-slate-700 font-bold text-sm bg-white px-4 py-2 rounded-full border border-slate-100 shadow-sm">
+                                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                                        <span>{b}</span>
+                                    </div>
+                                ))}
+                            </div>
 
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest pt-4">
-                        <Info className="h-3 w-3 inline mr-1 -mt-0.5" />
-                        {hero.disclaimer}
-                    </p>
-                </motion.div>
-            </Section>
+                            <div className="space-y-4">
+                                {ctaButton(hero.cta)}
+                                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest flex items-center gap-1">
+                                    <Info className="h-3 w-3 shrink-0" />
+                                    {hero.disclaimer}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* RIGHT: Spider chart visual preview */}
+                        <div className="relative flex items-center justify-center hidden lg:flex">
+                            {/* Glow background */}
+                            <div className="absolute inset-0 bg-gradient-radial from-primary/5 to-transparent rounded-3xl" />
+
+                            <div className="relative w-full max-w-sm">
+                                {/* Card mockup */}
+                                <div className="bg-white rounded-[28px] shadow-2xl border border-slate-100 p-6 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-primary">AI Competence Framework</div>
+                                            <div className="text-lg font-black text-slate-900 mt-0.5">Váš AI Index</div>
+                                        </div>
+                                        <div className="bg-primary/10 rounded-2xl px-4 py-2 text-center">
+                                            <div className="text-2xl font-black text-primary">77%</div>
+                                            <div className="text-[9px] font-bold text-slate-400 uppercase">Skóre</div>
+                                        </div>
+                                    </div>
+
+                                    {/* Interactive radar chart demo */}
+                                    <div className="h-52 -mx-2">
+                                        <HeroRadarChart />
+                                    </div>
+
+                                    {/* Level badge */}
+                                    <div className="bg-gradient-to-r from-orange-900 to-slate-900 rounded-2xl px-4 py-3 flex items-center gap-3">
+                                        <img
+                                            src="/images/personas/builder.jpg"
+                                            alt="Builder"
+                                            className="w-9 h-9 rounded-full object-cover border-2 border-orange-400/50 shrink-0"
+                                        />
+                                        <div>
+                                            <div className="text-[10px] text-orange-300 font-black uppercase tracking-widest">Vaše úroveň</div>
+                                            <div className="text-sm font-black text-white">Builder</div>
+                                        </div>
+                                        <div className="ml-auto text-[10px] text-orange-300/70 font-bold">Top 15 %</div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
 
             {/* 2. WHAT YOU GET */}
             <Section className="bg-white border-y border-slate-100">
@@ -251,13 +341,72 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
                     </div>
                     <div className="relative group">
                         <div className="absolute -inset-4 bg-primary/20 rounded-[40px] blur-2xl group-hover:bg-primary/30 transition-all" />
-                        <div className="relative bg-white p-4 rounded-[40px] border border-slate-200 shadow-2xl">
-                            <div className="aspect-[4/3] bg-slate-100 rounded-[32px] flex flex-col items-center justify-center p-8 text-center space-y-4">
-                                <div className="h-20 w-20 rounded-full border-4 border-slate-200 border-t-primary animate-spin-slow mb-4" />
-                                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Vizualizace výsledků</p>
-                                <div className="h-2 w-32 bg-slate-200 rounded-full" />
-                                <div className="h-2 w-48 bg-slate-200 rounded-full" />
-                                <div className="h-2 w-24 bg-slate-200 rounded-full" />
+                        <div className="relative bg-white p-6 rounded-[40px] border border-slate-200 shadow-2xl">
+                            {/* Level badge */}
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ukázka výsledku</span>
+                                <span className="bg-primary/10 text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Power User</span>
+                            </div>
+
+                            {/* Radar chart */}
+                            <div className="h-64 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <RadarChart
+                                        cx="50%" cy="50%" outerRadius="72%"
+                                        data={[
+                                            { subject: 'A', user: 16, avg: 11, fullMark: 20 },
+                                            { subject: 'B', user: 14, avg: 10, fullMark: 20 },
+                                            { subject: 'C', user: 12, avg: 9, fullMark: 20 },
+                                            { subject: 'D', user: 15, avg: 12, fullMark: 20 },
+                                            { subject: 'E', user: 10, avg: 8, fullMark: 20 },
+                                        ]}
+                                    >
+                                        <PolarGrid stroke="#e2e8f0" />
+                                        <PolarAngleAxis
+                                            dataKey="subject"
+                                            tick={{ fill: '#475569', fontSize: 13, fontWeight: 900 }}
+                                        />
+                                        <PolarRadiusAxis angle={90} domain={[0, 20]} tick={false} axisLine={false} />
+                                        <Radar
+                                            name="Vás výsledek"
+                                            dataKey="user"
+                                            stroke="#DD3C20"
+                                            fill="#DD3C20"
+                                            fillOpacity={0.45}
+                                        />
+                                        <Radar
+                                            name="Průměr komunity"
+                                            dataKey="avg"
+                                            stroke="#0EA5E9"
+                                            fill="#0EA5E9"
+                                            fillOpacity={0.15}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: '#fff',
+                                                border: '1px solid #e2e8f0',
+                                                borderRadius: '12px',
+                                                fontSize: '12px'
+                                            }}
+                                        />
+                                        <Legend
+                                            wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }}
+                                            formatter={(value) => <span style={{ color: '#64748b', fontWeight: 700 }}>{value}</span>}
+                                        />
+                                    </RadarChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            {/* Mini score bars */}
+                            <div className="mt-4 grid grid-cols-5 gap-2">
+                                {[['A', 80], ['B', 70], ['C', 60], ['D', 75], ['E', 50]].map(([area, pct]) => (
+                                    <div key={area} className="text-center space-y-1">
+                                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                            <div className="h-full bg-primary/70 rounded-full" style={{ width: `${pct}%` }} />
+                                        </div>
+                                        <span className="text-[9px] font-black text-slate-400">{area}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -343,17 +492,43 @@ export function LandingPage({ data, onStart }: LandingPageProps) {
                 </div>
             </Section>
 
-            {/* FOOTER */}
-            <footer className="bg-slate-50 py-16 px-6 border-t border-slate-100 text-center">
-                <div className="max-w-4xl mx-auto space-y-8">
-                    <div className="flex flex-col items-center gap-4">
-                        <Badge className="bg-slate-200 text-slate-600 rounded-full px-4 py-1 uppercase text-[9px] font-black tracking-widest">
-                            AI Competence Framework V10
-                        </Badge>
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
-                            © 2026 Inovatix. Poskytujeme AI školení a implementace.
-                        </p>
+            {/* O NÁS */}
+            <Section className="bg-white border-t border-slate-100">
+                <div className="space-y-8 text-center">
+                    <div className="flex justify-center">
+                        <img
+                            src="/images/logo-inovatix-dark.svg"
+                            alt="Inovatix"
+                            className="h-10 w-auto opacity-80"
+                        />
                     </div>
+                    <h2 className="text-3xl md:text-4xl font-black text-slate-900">O nás</h2>
+                    <p className="text-slate-600 leading-relaxed max-w-3xl mx-auto text-lg">
+                        <strong>Inovatix</strong> je česká společnost zaměřená na praktické využití umělé inteligence ve firmách i u jednotlivců.
+                        Pomáháme lidem a organizacím pochopit, jak AI funguje, jak ji bezpečně integrovat do pracovních procesů
+                        a jak z ní vytěžit maximum — bez planého buzzwordu, ale s konkrétními výsledky.
+                    </p>
+                    <p className="text-slate-500 leading-relaxed max-w-3xl mx-auto">
+                        Nabízíme školení, workshopy, individuální konzultace i komplexní AI implementace na míru.
+                        AI Competence Framework je naší metodikou pro měření a rozvoj AI kompetencí — ověřenou na stovkách účastníků
+                        napříč různými obory a rolemi.
+                    </p>
+                    <a
+                        href="https://www.inovatix.cz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-primary font-black hover:underline text-sm uppercase tracking-widest"
+                    >
+                        Více o nás na inovatix.cz <ArrowRight className="h-4 w-4" />
+                    </a>
+                </div>
+            </Section>
+
+            <footer className="bg-slate-50 py-10 px-6 border-t border-slate-100 text-center">
+                <div className="max-w-4xl mx-auto">
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+                        © 2026 Inovatix. Poskytujeme AI školení a implementace.
+                    </p>
                 </div>
             </footer>
 

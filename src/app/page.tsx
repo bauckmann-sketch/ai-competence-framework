@@ -147,7 +147,7 @@ export default function Home() {
                     <ul className="text-[13px] space-y-2 text-slate-600 mb-6 text-left">
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                        Metodika A–F
+                        Metodika A–E
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-slate-300" />
