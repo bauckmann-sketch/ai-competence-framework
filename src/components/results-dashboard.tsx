@@ -33,6 +33,7 @@ import { cn } from '@/lib/utils';
 
 import { FitnessReport } from './fitness-report';
 import { CtaSection } from './cta-section';
+import { CourseRecommendations } from './course-recommendations';
 
 interface ResultsProps {
     result: CalculationResult;
@@ -357,6 +358,9 @@ export function ResultsDashboard({ result, aggregates, onReset }: ResultsProps) 
                         </div>
                     </div>
                 </section>
+
+                {/* SECTION: Doporučené kurzy na míru */}
+                <CourseRecommendations result={result} />
 
                 {/* SECTION 3: Srovnání s komunitou – TOP3 distribuce */}
                 {aggregates != null && (

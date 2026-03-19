@@ -1,0 +1,190 @@
+{
+  "areas": {
+    "A": {
+      "label": "AI základy a orientace",
+      "courses": [
+        {
+          "name": "ChatGPT od A do Z",
+          "slug": "chatgpt-od-a-do-z",
+          "url": "https://www.inovatix.cz/skoleni/chatgpt-od-a-do-z-jak-plne-vyuzit-potencial-umele-inteligence",
+          "priority": 1,
+          "reason": "Komplexní průvodce AI – od orientace po pokročilé techniky"
+        },
+        {
+          "name": "Jarní AI akademie 2026",
+          "slug": "jarni-ai-akademie",
+          "url": "https://www.inovatix.cz/skoleni/jarni-ai-akademie-2026",
+          "priority": 2,
+          "reason": "43 hodin komplexního AI vzdělávání"
+        }
+      ]
+    },
+    "B": {
+      "label": "Promptování a kontext",
+      "courses": [
+        {
+          "name": "Promptování – Jak mluvit s AI",
+          "slug": "promptovani",
+          "url": "https://www.inovatix.cz/skoleni/promptovani-jak-mluvit-s-ai",
+          "priority": 1,
+          "reason": "Naučte se strukturovat zadání pro konzistentní výsledky"
+        },
+        {
+          "name": "ChatGPT asistenti I",
+          "slug": "chatgpt-asistenti-1",
+          "url": "https://www.inovatix.cz/skoleni/chatgpt-asistenti-kompletni-pruvodce-tvorbou-ai-pomocniku",
+          "priority": 2,
+          "reason": "Tvorba asistentů s kontextem a instrukcemi"
+        },
+        {
+          "name": "ChatGPT asistenti II",
+          "slug": "chatgpt-asistenti-2",
+          "url": "https://www.inovatix.cz/skoleni/chatgpt-asistenti-ii-pokrocile-funkce-napojeni-na-svet",
+          "priority": 2,
+          "reason": "Pokročilé techniky promptování a napojení na data"
+        },
+        {
+          "name": "NotebookLM",
+          "slug": "notebooklm",
+          "url": "https://www.inovatix.cz/skoleni/notebooklm",
+          "priority": 3,
+          "reason": "Práce s kontextem nad vlastními dokumenty"
+        }
+      ]
+    },
+    "C": {
+      "label": "Ověřování a AI literacy",
+      "courses": [
+        {
+          "name": "NotebookLM",
+          "slug": "notebooklm",
+          "url": "https://www.inovatix.cz/skoleni/notebooklm",
+          "priority": 1,
+          "reason": "AI nad vlastními zdroji – minimalizace halucinací"
+        },
+        {
+          "name": "Promptování – Jak mluvit s AI",
+          "slug": "promptovani",
+          "url": "https://www.inovatix.cz/skoleni/promptovani-jak-mluvit-s-ai",
+          "priority": 2,
+          "reason": "Techniky pro ověřování a řízení kvality výstupů"
+        },
+        {
+          "name": "ChatGPT od A do Z",
+          "slug": "chatgpt-od-a-do-z",
+          "url": "https://www.inovatix.cz/skoleni/chatgpt-od-a-do-z-jak-plne-vyuzit-potencial-umele-inteligence",
+          "priority": 3,
+          "reason": "Pochopení limitů AI a práce se zdroji"
+        }
+      ]
+    },
+    "D": {
+      "label": "Workflow a produktivita",
+      "courses": [
+        {
+          "name": "Microsoft 365 Copilot I",
+          "slug": "ms-copilot",
+          "url": "https://www.inovatix.cz/skoleni/microsoft-365-copilot-i-ai-pro-vasi-kancelar",
+          "priority": 1,
+          "reason": "AI přímo ve vašich kancelářských nástrojích"
+        },
+        {
+          "name": "Prezentace za 5 minut (GAMMA.ai)",
+          "slug": "gamma-ai",
+          "url": "https://www.inovatix.cz/skoleni/prezentace-za-5-minut-gammaai-krok-za-krokem",
+          "priority": 2,
+          "reason": "Rychlé vytváření prezentací s AI"
+        }
+      ]
+    },
+    "E": {
+      "label": "Asistenti a automatizace",
+      "courses": [
+        {
+          "name": "AI Agenti: Když AI myslí a jedná",
+          "slug": "ai-agenti",
+          "url": "https://www.inovatix.cz/skoleni/ai-agenti-kdyz-ai-mysli-jedna-samostatne",
+          "priority": 1,
+          "reason": "Autonomní AI agenti pro škálování práce"
+        },
+        {
+          "name": "AI a automatizace",
+          "slug": "ai-automatizace",
+          "url": "https://www.inovatix.cz/skoleni/ai-automatizace-propojte-sve-asistenty-s-ostatnimi-nastroji",
+          "priority": 1,
+          "reason": "Propojení AI s dalšími nástroji a službami"
+        },
+        {
+          "name": "ChatGPT asistenti I",
+          "slug": "chatgpt-asistenti-1",
+          "url": "https://www.inovatix.cz/skoleni/chatgpt-asistenti-kompletni-pruvodce-tvorbou-ai-pomocniku",
+          "priority": 2,
+          "reason": "Stavba vlastních AI asistentů"
+        }
+      ]
+    }
+  },
+  "advanced_courses": [
+    {
+      "name": "Airtable",
+      "slug": "airtable",
+      "url": "https://www.inovatix.cz/skoleni/airtable",
+      "reason": "Relační databáze pro široké využití – Excel na steroidech"
+    },
+    {
+      "name": "n8n – stavba agentů pro laiky",
+      "slug": "n8n",
+      "url": "https://www.inovatix.cz/skoleni/n8n-stavba-agentu-pro-laiky",
+      "reason": "Praktické sestavování AI agentů a automatizací bez vývojářských znalostí"
+    },
+    {
+      "name": "OpenAI Platform + Agent Kit",
+      "slug": "ai-agenti-praxi",
+      "url": "https://www.inovatix.cz/skoleni/ai-agenti-v-praxi-stavime-budoucnost-s-openai-agentkit-bez-kodovani",
+      "reason": "Tvorba vlastních agentních systémů, práce s API a deployment"
+    },
+    {
+      "name": "MCP servery – praktické využití",
+      "slug": "mcp-servery",
+      "url": "https://www.inovatix.cz/skoleni/mcp-servery-prakticke-vyuziti-v-praxi",
+      "reason": "Propojování nástrojů, práce s daty a vytváření funkcí pro LLM"
+    },
+    {
+      "name": "Notion I",
+      "slug": "notion",
+      "url": "https://www.inovatix.cz/skoleni/notion-i-prakticke-zaklady-prace-v-notionu",
+      "reason": "Praktický úvod do práce s Notion od úplných základů"
+    },
+    {
+      "name": "VibeCoding",
+      "slug": "vibecoding",
+      "url": "https://www.inovatix.cz/skoleni/vibecoding-objevte-svet-tvorby-aplikaci-bez-programovani",
+      "reason": "Tvorba aplikací rychle, bezpečně a s podporou AI"
+    },
+    {
+      "name": "Cursor – AI pro efektivní práci",
+      "slug": "cursor",
+      "url": "https://www.inovatix.cz/skoleni/cursor-ai-pro-efektivni-praci-v-pocitaci",
+      "reason": "Vývoj AI-podporovaných aplikací s LLM asistencí"
+    }
+  ],
+  "advanced_bundle": {
+    "name": "AI nástroje pro pokročilé I",
+    "url": "https://www.inovatix.cz/skoleni/ai-nastroje-pro-pokrocile-i",
+    "note": "Všechny výše uvedené kurzy jsou součástí tohoto balíčku"
+  },
+  "bundles": {
+    "small": {
+      "name": "Balíček 4 webinářů",
+      "price": "3 360 Kč",
+      "discount": "30%",
+      "url": "https://www.inovatix.cz/balicek/vyhodny-balicek-4-webinaru-dle-vyberu"
+    },
+    "large": {
+      "name": "Balíček 11 webinářů",
+      "price": "6 600 Kč",
+      "discount": "50%",
+      "url": "https://www.inovatix.cz/balicek/vyhodny-balicek-11-webinaru-dle-vyberu"
+    }
+  }
+}
